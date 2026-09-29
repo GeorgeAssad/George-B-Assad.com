@@ -96,6 +96,16 @@ General recipe for any provider:
 | Wire | `DesignAsset.url` (already optional) and `MediaItem.videoUrl / posterUrl` (already in `domain/content.ts`) — components already accept them |
 | Security | Private buckets with short-lived signed URLs for print files; public bucket only for marketing media; never accept client-supplied object keys |
 
+## Car photography — your own photos, or a licensed library
+
+Today: 11 free-licensed Wikimedia Commons photos (credits on `/credits`). To use your own photography:
+
+1. Put the JPEG masters in `assets-src/cars/<slug>/main.jpg` (or point a manifest entry at a URL you own).
+2. Edit `photos/manifest.json`: `credit` (author = you, licence = `Copyright SuperCars` — and relax the allow-list in `tests/unit/car-photos.test.ts` deliberately), `crop`, `redact` (plates, faces), `focal`, `alt`.
+3. `npm run photos:process`, commit `public/cars/**` and `src/data/car-photos.ts`.
+
+With object storage (R2) the same files move to a bucket and `photoPath()` in `src/lib/car-photo.ts` returns the CDN URL; the components do not change.
+
 ## Marketing content / CMS
 
 `src/data/media.ts` and `reviews.ts` are shaped for a CMS. Replace their repository (`ContentRepository`) with a CMS fetch; the components need no change. Real reviews must replace the demo ones, and the "Demo content" labels are removed at the same time.
