@@ -19,3 +19,5 @@ test-results
 
 # original photographs (re-created by `npm run photos:fetch`)
 assets-src
+.venv
+__pycache__

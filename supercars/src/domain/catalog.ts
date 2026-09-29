@@ -82,23 +82,39 @@ export type VehicleTrait = "wing" | "wide-body";
 
 /* ------------------------------ Car photography ---------------------------- */
 
-/** Attribution that the photo's licence requires us to show. */
+/**
+ * Who made the image and on what terms. `third-party` images (e.g. Wikimedia Commons, Flickr) must carry the
+ * licence and a link to the original; `own` images (commissioned, licensed to us, or AI-generated) carry a
+ * plain label such as "AI-generated image" and no external links.
+ */
 export interface PhotoCredit {
+  readonly kind: "third-party" | "own";
   readonly title: string;
   readonly author: string;
-  /** Short licence name, e.g. "CC BY 4.0" or "CC0". */
+  /** Short licence name, e.g. "CC BY 4.0" or "CC0"; "SuperCars" for own images. */
   readonly licenseName: string;
-  readonly licenseUrl: string;
-  /** Page the original was published on (Wikimedia Commons file page). */
-  readonly sourceUrl: string;
+  readonly licenseUrl?: string;
+  /** Page the original was published on (third-party only). */
+  readonly sourceUrl?: string;
+  /** Where the original lives, e.g. "Wikimedia Commons" or "Flickr" (third-party only). */
+  readonly sourceName?: string;
+  /** Extra line shown with the credit, e.g. "Background removed." or "AI-generated image." */
+  readonly note?: string;
 }
 
 /**
- * A processed, self-hosted photograph of the car. File names are derived, not stored:
+ * `backdrop`: the whole photograph is shown (with its own background).
+ * `cutout`: the car only, on a transparent background, trimmed to the car; it stands on the site's own stage.
+ */
+export type CarPhotoMode = "backdrop" | "cutout";
+
+/**
+ * A processed, self-hosted image of the car. File names are derived, not stored:
  * `/cars/<generationSlug>/<id>-<width>.<avif|webp>` for every width in `widths`.
  */
 export interface CarPhoto {
   readonly id: string;
+  readonly mode: CarPhotoMode;
   readonly alt: string;
   /** Pixel size of the largest processed file. All widths share this aspect ratio. */
   readonly width: number;
@@ -106,7 +122,7 @@ export interface CarPhoto {
   readonly widths: readonly number[];
   /** Focus point in percent (0–100). Drives `object-position` when the photo is cropped. */
   readonly focal: { readonly x: number; readonly y: number };
-  /** Dominant colour shown while the image loads. */
+  /** Dominant colour shown while the image loads; "transparent" for cutouts. */
   readonly color: string;
   readonly credit: PhotoCredit;
 }

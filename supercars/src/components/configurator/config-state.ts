@@ -6,14 +6,12 @@ import { customizationSchema } from "@/lib/validation";
 /* Pure configurator state. No React, no I/O — so URL parsing, edit-mode
  * prefill and step gating are unit-tested. */
 
-export type Step = 1 | 2 | 3 | 4 | 5 | 6;
+export type Step = 1 | 2 | 3 | 4;
 export const STEPS: readonly { readonly id: Step; readonly label: string }[] = [
   { id: 1, label: "Your car" },
-  { id: 2, label: "Style" },
-  { id: 3, label: "Size" },
-  { id: 4, label: "Personalize" },
-  { id: 5, label: "Preview" },
-  { id: 6, label: "Add to cart" },
+  { id: 2, label: "Design" }, // style + finish + size on one screen
+  { id: 3, label: "Personalize" },
+  { id: 4, label: "Review" }, // automatic preview + summary + add to cart
 ];
 
 export interface ConfigState {
@@ -57,7 +55,7 @@ export type ConfigAction =
   | { type: "goto"; step: Step }
   | { type: "replace"; state: ConfigState };
 
-const clampStep = (n: number): Step => Math.min(6, Math.max(1, Math.round(n))) as Step;
+const clampStep = (n: number): Step => Math.min(4, Math.max(1, Math.round(n))) as Step;
 
 export function configReducer(state: ConfigState, action: ConfigAction): ConfigState {
   switch (action.type) {
@@ -98,7 +96,7 @@ export function validateCustomization(state: Pick<ConfigState, "name" | "text" |
 export function canContinue(state: ConfigState): boolean {
   switch (state.step) {
     case 1: return state.carSlug !== null;
-    case 4: return validateCustomization(state).ok;
+    case 3: return validateCustomization(state).ok;
     default: return true;
   }
 }
@@ -127,7 +125,8 @@ export function initialFromParams(params: URLSearchParams, catalog: Catalog): Co
     state = { ...state, productId: catalog.products.find((p) => p.id === product || p.slug === product)!.id };
   }
 
-  const step: Step = !state.carSlug ? 1 : style ? (size ? 4 : 3) : 2;
+  // Style and size live on the same "Design" step, so a link is only "done" with that step once it carries both.
+  const step: Step = !state.carSlug ? 1 : style && size ? 3 : 2;
   return { ...state, step, maxStep: step };
 }
 
@@ -135,8 +134,8 @@ export function initialFromParams(params: URLSearchParams, catalog: Catalog): Co
 export function stateFromCartItem(item: CartItem): ConfigState {
   return {
     ...INITIAL_STATE,
-    step: 4,
-    maxStep: 6,
+    step: 3,
+    maxStep: 4,
     carSlug: item.carSlug,
     templateId: item.templateId,
     productId: item.productId,

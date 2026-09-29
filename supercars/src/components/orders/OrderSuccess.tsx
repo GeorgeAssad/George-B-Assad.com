@@ -172,7 +172,7 @@ export function OrderSuccess({ orderId, cars, templates }: OrderSuccessProps) {
       </div>
 
       {actions}
-      <p className="mt-6 text-center text-xs text-subtle">Need help? <Link href="/shipping" className="underline underline-offset-4">Shipping</Link> · <Link href="/returns" className="underline underline-offset-4">Returns</Link></p>
+      <p className="mt-6 text-center text-xs text-subtle">Need help? <Link href="/shipping" className="underline underline-offset-4">Shipping &amp; returns</Link></p>
     </div>
   );
 }

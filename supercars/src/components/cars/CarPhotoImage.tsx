@@ -14,10 +14,12 @@ interface CarPhotoImageProps {
 }
 
 /**
- * A self-hosted car photograph: AVIF → WebP, explicit dimensions (no layout shift),
- * focal-point cropping and a dominant-colour placeholder. Render inside a sized, positioned box.
+ * A self-hosted car image: AVIF → WebP, explicit dimensions (no layout shift).
+ * `backdrop` photos fill their box and crop around the focal point; `cutout` cars (transparent background)
+ * keep their own shape at full width and are composed on a stage by the caller.
  */
 export function CarPhotoImage({ slug, photo, sizes, priority = false, className = "", alt }: CarPhotoImageProps) {
+  const cutout = photo.mode === "cutout";
   return (
     <picture>
       <source type="image/avif" srcSet={photoSrcSet(slug, photo, "avif")} sizes={sizes} />
@@ -31,8 +33,8 @@ export function CarPhotoImage({ slug, photo, sizes, priority = false, className 
         loading={priority ? "eager" : "lazy"}
         decoding={priority ? "sync" : "async"}
         fetchPriority={priority ? "high" : "auto"}
-        className={`h-full w-full object-cover ${className}`}
-        style={{ objectPosition: `${photo.focal.x}% ${photo.focal.y}%`, backgroundColor: photo.color }}
+        className={`${cutout ? "block h-auto w-full" : "h-full w-full object-cover"} ${className}`}
+        style={cutout ? undefined : { objectPosition: `${photo.focal.x}% ${photo.focal.y}%`, backgroundColor: photo.color }}
       />
     </picture>
   );

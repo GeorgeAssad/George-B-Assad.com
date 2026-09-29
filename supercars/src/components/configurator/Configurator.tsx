@@ -1,6 +1,6 @@
 "use client";
 
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useReducer, useRef, useState } from "react";
 import type { CartItem, Customization } from "@/domain/cart";
 import type { TemplateId, SizeId } from "@/domain/catalog";
@@ -20,10 +20,9 @@ import { useCartQuote } from "@/lib/use-cart-quote";
 import { ConfiguratorSkeleton } from "./ConfiguratorSkeleton";
 import { PreviewPanel } from "./PreviewPanel";
 import { StepCar } from "./StepCar";
+import { PreviewStatus } from "./PreviewStatus";
+import { StepDesign } from "./StepDesign";
 import { StepPersonalize } from "./StepPersonalize";
-import { StepPreview } from "./StepPreview";
-import { StepSize } from "./StepSize";
-import { StepStyle } from "./StepStyle";
 import { StepSummary } from "./StepSummary";
 import { Stepper } from "./Stepper";
 import { INITIAL_STATE, canContinue, configReducer, initialFromParams, stateFromCartItem, validateCustomization, type Catalog, type ConfigState, type Step } from "./config-state";
@@ -31,11 +30,9 @@ import { useDesignPreview } from "./use-design-preview";
 
 const HEADINGS: Record<Step, { title: string; lead: string }> = {
   1: { title: "Choose your car.", lead: "Search the catalog and pick your model and generation." },
-  2: { title: "Choose your style.", lead: "Five design templates. You can change it any time." },
-  3: { title: "Choose your size.", lead: "Pick a finish and a size. Prices update instantly." },
-  4: { title: "Make it yours.", lead: "Add your name and, if you like, a line of text, a year and a place." },
-  5: { title: "Your preview.", lead: "We compose the poster from your car, style and details." },
-  6: { title: "Ready to add.", lead: "Check the details, then add it to your cart." },
+  2: { title: "Design your poster.", lead: "Pick a style, a finish and a size. Prices update instantly." },
+  3: { title: "Make it yours.", lead: "Add your name and, if you like, a line of text, a year and a place." },
+  4: { title: "Ready to add.", lead: "We compose your preview automatically. Check the details, then add it to your cart." },
 };
 
 const PRICE_PROBE_NAME = "PRICE";
@@ -53,7 +50,9 @@ function initFromParams(catalog: Catalog, params: URLSearchParams): ConfigState 
 
 export function Configurator({ catalog }: { catalog: Catalog }) {
   const hydrated = useHydrated();
-  return hydrated ? <ConfiguratorInner catalog={catalog} /> : <ConfiguratorSkeleton />;
+  // "Edit customization" in the cart drawer is a same-page navigation (/create → /create?edit=…): re-initialise from the cart line.
+  const editId = useSearchParams().get("edit") ?? "";
+  return hydrated ? <ConfiguratorInner key={editId} catalog={catalog} /> : <ConfiguratorSkeleton />;
 }
 
 function ConfiguratorInner({ catalog }: { catalog: Catalog }) {
@@ -61,7 +60,6 @@ function ConfiguratorInner({ catalog }: { catalog: Catalog }) {
   const [state, dispatch] = useReducer(configReducer, undefined, () => initFromParams(catalog, new URLSearchParams(searchParams.toString())));
   const [showErrors, setShowErrors] = useState(false);
   const [addedKey, setAddedKey] = useState<string | null>(null);
-  const router = useRouter();
   const cart = useCart();
   const toast = useToast();
   const headingRef = useRef<HTMLHeadingElement>(null);
@@ -104,7 +102,7 @@ function ConfiguratorInner({ catalog }: { catalog: Catalog }) {
 
   /* ---- effects ---- */
   useEffect(() => {
-    if (state.step === 5 && preview.status === "idle" && request) void preview.run();
+    if (state.step === 4 && preview.status === "idle" && request) void preview.run();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state.step, preview.status, request]);
 
@@ -139,13 +137,13 @@ function ConfiguratorInner({ catalog }: { catalog: Catalog }) {
 
   /* ---- actions ---- */
   const onNext = () => {
-    if (state.step === 4 && !check.ok) {
+    if (state.step === 3 && !check.ok) {
       setShowErrors(true);
       const first = Object.keys(check.errors)[0];
       if (first) document.querySelector<HTMLInputElement>(`input[id$="-${first}"]`)?.focus();
       return;
     }
-    if (state.step === 6) return addToCart();
+    if (state.step === 4) return addToCart();
     go((state.step + 1) as Step);
   };
 
@@ -160,17 +158,17 @@ function ConfiguratorInner({ catalog }: { catalog: Catalog }) {
     openCartDrawer();
   };
 
-  const primaryLabel = state.step === 4 ? "Generate preview" : state.step === 6 ? (editing ? "Update cart" : "Add to cart") : "Continue";
-  const primaryDisabled = state.step === 1 ? !canContinue(state) : state.step === 5 ? preview.status !== "ready" : state.step === 6 ? !check.ok || !line : false;
+  const primaryLabel = state.step === 4 ? (editing ? "Update cart" : "Add to cart") : "Continue";
+  const primaryDisabled = state.step === 1 ? !canContinue(state) : state.step === 4 ? !check.ok || !line || preview.status !== "ready" : false;
 
   return (
-    <div className="container-x py-6 sm:py-10">
+    <div className="container-x pb-28 pt-6 sm:pt-10 lg:pb-10">
       <div ref={topRef} className="scroll-mt-20" />
       <p className="eyebrow">SC / Create{editing ? " — editing" : ""}</p>
       <div className="mt-5"><Stepper current={state.step} maxStep={state.maxStep} onGo={go} /></div>
 
-      {/* Mobile: compact live preview pinned under the header (steps 2-4). */}
-      {entry && state.step >= 2 && state.step <= 4 && (
+      {/* Mobile: compact live preview pinned under the header (steps 2-3). */}
+      {entry && state.step >= 2 && state.step <= 3 && (
         <div className="glass sticky top-16 z-30 -mx-4 mt-5 flex items-center gap-3 border-x-0 px-4 py-2 lg:hidden">
           <div className="w-11 flex-none overflow-hidden rounded-[3px] ring-1 ring-line-strong">
             <PosterPreview template={template} vehicle={entry.generation.vehicle} customization={display} vehicleName={entry.generation.displayName} specs={entry.generation.specs} sizeId={state.sizeId} />
@@ -191,19 +189,29 @@ function ConfiguratorInner({ catalog }: { catalog: Catalog }) {
 
             <div className="mt-8">
               {state.step === 1 && <StepCar cars={catalog.cars} selected={state.carSlug} onSelect={(slug) => { dispatch({ type: "selectCar", slug }); track("car_selected", { carSlug: slug }); }} />}
-              {state.step === 2 && entry && <StepStyle templates={catalog.templates} entry={entry} customization={display} selected={state.templateId} onSelect={(id: TemplateId) => { dispatch({ type: "selectTemplate", id }); track("style_selected", { templateId: id }); }} />}
-              {state.step === 3 && <StepSize sizes={catalog.sizes} products={catalog.products} template={template} productId={state.productId} sizeId={state.sizeId} onProduct={(id) => dispatch({ type: "selectProduct", id })} onSize={(id: SizeId) => { dispatch({ type: "selectSize", id }); track("size_selected", { sizeId: id }); }} />}
-              {state.step === 4 && <StepPersonalize state={state} showErrors={showErrors} onChange={(field, value) => dispatch({ type: "setField", field, value })} />}
-              {state.step === 5 && (
-                <>
-                  {entry && <div className="mx-auto mb-8 max-w-[15rem] lg:hidden"><PreviewPanel entry={entry} template={template} customization={display} sizeId={state.sizeId} kind={product.kind} generating={preview.status === "running"} /></div>}
-                  <StepPreview preview={preview} onRetry={() => void preview.run()} />
-                </>
+              {state.step === 2 && entry && (
+                <StepDesign
+                  entry={entry}
+                  templates={catalog.templates}
+                  sizes={catalog.sizes}
+                  products={catalog.products}
+                  template={template}
+                  customization={display}
+                  productId={state.productId}
+                  sizeId={state.sizeId}
+                  onTemplate={(id: TemplateId) => { dispatch({ type: "selectTemplate", id }); track("style_selected", { templateId: id }); }}
+                  onProduct={(id) => dispatch({ type: "selectProduct", id })}
+                  onSize={(id: SizeId) => { dispatch({ type: "selectSize", id }); track("size_selected", { sizeId: id }); }}
+                />
               )}
-              {state.step === 6 && entry && check.ok && (
+              {state.step === 3 && <StepPersonalize state={state} showErrors={showErrors} onChange={(field, value) => dispatch({ type: "setField", field, value })} />}
+              {state.step === 4 && entry && check.ok && (
                 <>
-                  <div className="mx-auto mb-8 max-w-[15rem] lg:hidden"><PreviewPanel entry={entry} template={template} customization={display} sizeId={state.sizeId} kind={product.kind} /></div>
-                  <StepSummary entry={entry} template={template} product={product} size={size} customization={check.value} quantity={state.quantity} onQuantity={(q) => dispatch({ type: "setQuantity", quantity: q })} onEdit={go} quote={quote.quote} quoteFailed={quote.status === "error"} />
+                  <div className="mx-auto mb-6 max-w-[15rem] lg:hidden"><PreviewPanel entry={entry} template={template} customization={display} sizeId={state.sizeId} kind={product.kind} generating={preview.status === "running"} /></div>
+                  <PreviewStatus preview={preview} onRetry={() => void preview.run()} />
+                  <div className="mt-6">
+                    <StepSummary entry={entry} template={template} product={product} size={size} customization={check.value} quantity={state.quantity} onQuantity={(q) => dispatch({ type: "setQuantity", quantity: q })} onEdit={go} quote={quote.quote} quoteFailed={quote.status === "error"} />
+                  </div>
                 </>
               )}
             </div>
@@ -222,11 +230,11 @@ function ConfiguratorInner({ catalog }: { catalog: Catalog }) {
                   <><p className="spec">{state.quantity > 1 ? `Total ×${state.quantity}` : "Price"}</p><Price value={line.lineTotal} precise className="text-lg" /></>
                 ) : entry ? <Skeleton className="ml-auto h-9 w-24 lg:ml-0" /> : <p className="text-sm text-muted">Choose a car to see the price</p>}
               </div>
-              {added && state.step === 6 ? (
-                <Button size="lg" onClick={() => (editing ? router.push("/cart") : openCartDrawer())}><IconCheck size={18} /> View cart</Button>
+              {added && state.step === 4 ? (
+                <Button size="lg" onClick={openCartDrawer}><IconCheck size={18} /> View cart</Button>
               ) : (
                 <Button size="lg" onClick={onNext} disabled={primaryDisabled} aria-disabled={primaryDisabled}>
-                  {primaryLabel} {state.step !== 6 && <IconArrow size={18} />}
+                  {primaryLabel} {state.step !== 4 && <IconArrow size={18} />}
                 </Button>
               )}
             </div>
@@ -236,7 +244,7 @@ function ConfiguratorInner({ catalog }: { catalog: Catalog }) {
         {/* Desktop live preview */}
         <aside aria-label="Poster preview" className="hidden lg:block">
           <div className="sticky top-28">
-            <PreviewPanel entry={entry} template={template} customization={display} sizeId={state.sizeId} kind={product.kind} generating={state.step === 5 && preview.status === "running"} />
+            <PreviewPanel entry={entry} template={template} customization={display} sizeId={state.sizeId} kind={product.kind} generating={state.step === 4 && preview.status === "running"} />
             {entry && <p className="mt-4 text-center text-sm text-muted">{entry.generation.displayName} · {template.name} · {size.label}</p>}
           </div>
         </aside>

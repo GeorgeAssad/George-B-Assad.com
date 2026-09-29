@@ -4,7 +4,6 @@ import "@fontsource/barlow-condensed/500.css";
 import "@fontsource/barlow-condensed/600.css";
 import "@fontsource/barlow-condensed/700.css";
 import "./globals.css";
-import { BottomNav } from "@/components/layout/BottomNav";
 import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
 import { Providers } from "@/components/layout/Providers";
@@ -38,9 +37,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <a href="#main" className="skip-link">Skip to content</a>
         <Providers>
           <Header />
-          <main id="main" className="pb-24 lg:pb-0">{children}</main>
+          <main id="main" className="flex flex-1 flex-col">{children}</main>
           <Footer />
-          <BottomNav />
         </Providers>
       </body>
     </html>

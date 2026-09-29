@@ -107,6 +107,9 @@ body {
   -webkit-font-smoothing: antialiased;
   overflow-x: clip;
   min-height: 100dvh;
+  /* Header, main and footer stack to exactly one screen; pages that fit never scroll. */
+  display: flex;
+  flex-direction: column;
 }
 
 ::selection {
@@ -307,12 +310,6 @@ fieldset {
   border-radius: 0.75rem;
 }
 
-/* Reveal-on-scroll: only hidden when scripting is available, so no-JS shows everything. */
-@media (scripting: enabled) {
-  .reveal:not([data-inview]) { opacity: 0; transform: translateY(18px); }
-  .reveal { transition: opacity 0.8s var(--ease), transform 0.8s var(--ease); transition-delay: var(--reveal-delay, 0ms); }
-}
-
 .zoom-img { transition: transform 0.9s var(--ease); }
 @media (hover: hover) { .group:hover .zoom-img { transform: scale(1.04); } }
 
@@ -324,7 +321,6 @@ fieldset {
     transition-duration: 0.01ms !important;
     transition-delay: 0ms !important;
   }
-  .reveal:not([data-inview]) { opacity: 1 !important; transform: none !important; }
 }
 
 .sr-only-focusable:not(:focus):not(:focus-within) {
@@ -457,3 +453,66 @@ fieldset {
     mask-composite: intersect;
   }
 }
+
+/* ---------------------------------------------------------------------------
+   Studio stage: transparent ("cutout") cars on the site's own showroom floor.
+   --------------------------------------------------------------------------- */
+.studio-stage {
+  background:
+    radial-gradient(ellipse 58% 62% at 50% 0%, rgb(255 255 255 / 0.11), transparent 70%),
+    radial-gradient(ellipse 74% 42% at 50% 100%, color-mix(in srgb, var(--red) 34%, transparent), transparent 74%),
+    linear-gradient(180deg, #0b0c0f 0%, #08090b 60%, #050506 100%);
+  background-color: #050506; /* after the shorthand, which would otherwise reset it: stays dark in the light theme */
+}
+/* Glossy floor plane that fades toward the horizon and the edges. */
+.studio-floor {
+  background: linear-gradient(180deg, transparent 0, rgb(255 255 255 / 0.075) 34%, rgb(255 255 255 / 0.02) 100%);
+  -webkit-mask-image: radial-gradient(ellipse 72% 100% at 50% 0, #000 38%, transparent 76%);
+  mask-image: radial-gradient(ellipse 72% 100% at 50% 0, #000 38%, transparent 76%);
+}
+/* Red rim light + soft drop shadow follow the car's own silhouette. */
+.studio-car {
+  filter: drop-shadow(0 0 18px color-mix(in srgb, var(--red) 18%, transparent)) drop-shadow(0 26px 26px rgb(0 0 0 / 0.5));
+}
+.studio-shadow {
+  position: absolute;
+  left: 8%;
+  right: 8%;
+  bottom: -2.2%;
+  height: 8%;
+  background: radial-gradient(ellipse at center, rgb(0 0 0 / 0.85), transparent 68%);
+  filter: blur(6px);
+  pointer-events: none;
+}
+.studio-reflection {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 100%;
+  transform: scaleY(-1);
+  opacity: 0.26;
+  pointer-events: none;
+  /* mask is in local space: after the flip, local bottom (the car's wheels) is the visual top of the reflection */
+  -webkit-mask-image: linear-gradient(to top, rgb(0 0 0 / 0.9), transparent 52%);
+  mask-image: linear-gradient(to top, rgb(0 0 0 / 0.9), transparent 52%);
+  filter: blur(0.6px);
+}
+/* Turntable ring under the car. */
+.studio-ring {
+  position: absolute;
+  border-radius: 50%;
+  border: 1px solid rgb(255 255 255 / 0.16);
+  box-shadow: 0 0 0 14px rgb(255 255 255 / 0.025), 0 0 70px color-mix(in srgb, var(--red) 28%, transparent) inset;
+  transform: perspective(800px) rotateX(74deg);
+  pointer-events: none;
+}
+/* The car drives into the frame once on load. */
+@keyframes drive-in {
+  from { opacity: 0; transform: translate3d(9%, 0, 0) scale(0.98); filter: blur(10px); }
+  to { opacity: 1; transform: none; filter: blur(0); }
+}
+.drive-in { animation: drive-in 1.15s var(--ease) backwards; animation-delay: var(--d, 120ms); }
+@media (prefers-reduced-motion: reduce) { .drive-in { animation: none !important; } }
+/* Hover: the car eases forward inside its tile. */
+.studio-lift { transition: transform 0.7s var(--ease); }
+@media (hover: hover) { .group:hover .studio-lift { transform: translate3d(1.5%, -3%, 0) scale(1.035); } }
