@@ -32,7 +32,7 @@ export function StepCar({ cars, selected, onSelect }: StepCarProps) {
       {results.length > 0 ? (
         <fieldset className="mt-4">
           <legend className="sr-only">Choose your car</legend>
-          <div className="grid gap-3 sm:grid-cols-2">
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             {results.map((c) => (
               <RadioCard key={c.generation.slug} name="car" value={c.generation.slug} checked={selected === c.generation.slug} onChange={() => onSelect(c.generation.slug)}>
                 <div className="flex items-center gap-3 p-3">

@@ -5,7 +5,7 @@ import { SectionHeading } from "@/components/ui/SectionHeading";
 
 export function FeaturedStyles({ templates, entry }: { templates: readonly DesignTemplate[]; entry: CarEntry }) {
   return (
-    <section aria-labelledby="styles-title" className="border-y border-line bg-surface py-24 sm:py-32">
+    <section aria-labelledby="styles-title" className="cv-auto border-y border-line bg-surface py-24 sm:py-32">
       <div className="container-x">
         <Reveal>
           <SectionHeading id="styles-title" eyebrow="SC / 05 — Design styles" title="Five ways to see one car." lead="Same car, same name, five completely different posters. Every style is a design template, so the artwork can change while the layout stays true." />
@@ -15,7 +15,7 @@ export function FeaturedStyles({ templates, entry }: { templates: readonly Desig
         {templates.map((t, i) => (
           <li key={t.id} className="w-[68vw] max-w-[19rem] flex-none snap-start lg:w-auto lg:max-w-none">
             <Reveal delay={i * 70}>
-              <StyleCard template={t} vehicle={entry.generation.vehicle} vehicleName={entry.generation.displayName} specs={entry.generation.specs} index={i} />
+              <StyleCard template={t} vehicle={entry.generation.vehicle} vehicleName={entry.generation.displayName} specs={entry.generation.specs} index={i} image={t.previewImage} />
             </Reveal>
           </li>
         ))}

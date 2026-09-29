@@ -23,7 +23,7 @@ export function Footer() {
   return (
     <footer className="mt-24 border-t border-line bg-surface">
       <div className="container-x py-14">
-        <div className="grid gap-12 lg:grid-cols-[1.3fr_2.2fr]">
+        <div className="grid grid-cols-1 gap-12 lg:grid-cols-[1.3fr_2.2fr]">
           <div>
             <Logo />
             <p className="mt-5 max-w-xs text-sm text-muted">Premium personalized automotive artwork, made for your car.</p>

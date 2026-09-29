@@ -1,6 +1,6 @@
 import type { DecorationId, DesignTemplate, SizeId, VehicleAsset } from "@/domain/catalog";
 import { GROUND_Y, VEHICLE_VIEWBOX, WHEEL_CY, vehicleShapes } from "./vehicle-shapes";
-import { FONT_VAR, POSTER_WIDTH } from "./poster-geometry";
+import { POSTER_WIDTH } from "./poster-geometry";
 
 /* Data-driven decorative elements. A template lists ids; this registry draws
  * them. Underlay elements sit behind the vehicle, overlay elements above. */
@@ -18,8 +18,6 @@ export interface DecorationContext {
 }
 
 type Draw = (c: DecorationContext) => React.ReactNode;
-
-const mono = { fontFamily: FONT_VAR.mono } as const;
 
 const techGrid: Draw = ({ id, W, H, template }) => (
   <g>
@@ -172,13 +170,13 @@ const blueprintDims: Draw = ({ W, template, vehicle, art }) => {
       <line x1={right} y1={y1 - t} x2={right} y2={y1 + t} />
       <line x1={left} y1={art.y + 250 * s} x2={left} y2={y1 + t} strokeDasharray="3 3" opacity="0.6" />
       <line x1={right} y1={art.y + 250 * s} x2={right} y2={y1 + t} strokeDasharray="3 3" opacity="0.6" />
-      <text x={(left + right) / 2} y={y1 - 7} textAnchor="middle" fontSize="13" fill={c} stroke="none" letterSpacing="3" style={mono}>L</text>
+      <text x={(left + right) / 2} y={y1 - 7} textAnchor="middle" fontSize="13" fill={c} stroke="none" letterSpacing="3" className="pf-mono">L</text>
       <line x1={rear} y1={y2} x2={front} y2={y2} />
       <line x1={rear} y1={y2 - t} x2={rear} y2={y2 + t} />
       <line x1={front} y1={y2 - t} x2={front} y2={y2 + t} />
       <line x1={rear} y1={wheelY + 70 * s} x2={rear} y2={y2 - t} strokeDasharray="3 3" opacity="0.6" />
       <line x1={front} y1={wheelY + 70 * s} x2={front} y2={y2 - t} strokeDasharray="3 3" opacity="0.6" />
-      <text x={(rear + front) / 2} y={y2 + 16} textAnchor="middle" fontSize="13" fill={c} stroke="none" letterSpacing="3" style={mono}>WB</text>
+      <text x={(rear + front) / 2} y={y2 + 16} textAnchor="middle" fontSize="13" fill={c} stroke="none" letterSpacing="3" className="pf-mono">WB</text>
     </g>
   );
 };
@@ -199,7 +197,7 @@ const laurel: Draw = ({ W, H, template }) => {
           <ellipse key={`${side}-${i}`} cx={side * (Math.abs(l.x) + 8)} cy={l.y} rx={3.2} ry={8} transform={`rotate(${side * (90 - Math.abs(l.rot)) * -0.6 + (side < 0 ? -20 : 20)} ${side * (Math.abs(l.x) + 8)} ${l.y})`} />
         )),
       )}
-      <text textAnchor="middle" y={7} fontSize="20" fontWeight="700" letterSpacing="2" fill={c} style={{ fontFamily: FONT_VAR.serif }}>SC</text>
+      <text textAnchor="middle" y={7} fontSize="20" fontWeight="700" letterSpacing="2" fill={c} className="pf-serif">SC</text>
     </g>
   );
 };
@@ -207,7 +205,7 @@ const laurel: Draw = ({ W, H, template }) => {
 const microLabels: Draw = ({ W, H, template, sizeLabel }) => {
   const m = template.layout.margin * W;
   const fill = template.layout.ink;
-  const props = { fontSize: 13, letterSpacing: 3, fill, opacity: 0.55, style: mono } as const;
+  const props = { fontSize: 13, letterSpacing: 3, fill, opacity: 0.55, className: "pf-mono" } as const;
   return (
     <g>
       <text x={m} y={H * 0.055} {...props}>{`SC / ${template.id.toUpperCase()}-01`}</text>

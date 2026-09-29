@@ -26,7 +26,7 @@ export default function HowItWorksPage() {
   return (
     <div className="container-x py-12 sm:py-16">
       <SectionHeading as="h1" eyebrow="SC / Process" title="How it works." lead="From your car to your wall, in four steps." />
-      <ol className="mt-14 grid gap-4 md:grid-cols-2">
+      <ol className="mt-14 grid grid-cols-1 gap-4 md:grid-cols-2">
         {STEPS.map(([n, title, body]) => (
           <li key={n} className="card p-6 sm:p-8">
             <p className="spec">Step {n}</p>

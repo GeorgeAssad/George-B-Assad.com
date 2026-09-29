@@ -11,15 +11,16 @@ const STEPS = [
 
 export function HowItWorks() {
   return (
-    <section aria-labelledby="how-title" className="border-y border-line bg-surface py-20 sm:py-28">
+    <section aria-labelledby="how-title" className="cv-auto border-y border-line bg-surface py-20 sm:py-28">
       <div className="container-x">
         <Reveal><SectionHeading id="how-title" eyebrow="SC / 03 — How it works" title="Four steps. One poster." /></Reveal>
-        <ol className="relative mt-14 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+        <ol className="relative mt-14 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
           {STEPS.map((s, i) => (
             <li key={s.n}>
               <Reveal delay={i * 90} className="h-full">
                 <div className="card relative h-full overflow-hidden p-6">
-                  <span className="pointer-events-none absolute -right-2 -top-4 font-display text-[7.5rem] font-bold leading-none text-fg/[0.045]" aria-hidden="true">{s.n}</span>
+                  {/* Decorative watermark drawn with a pseudo-element, so it is not text content. */}
+                  <span data-n={s.n} className="pointer-events-none absolute -right-2 -top-4 font-display text-[7.5rem] font-bold leading-none text-fg/[0.045] after:content-[attr(data-n)]" aria-hidden="true" />
                   <div className="flex size-12 items-center justify-center rounded-full border border-line-strong text-red-text">{s.icon}</div>
                   <p className="spec mt-6">Step {s.n}</p>
                   <h3 className="h-display mt-2 text-3xl">{s.title}</h3>

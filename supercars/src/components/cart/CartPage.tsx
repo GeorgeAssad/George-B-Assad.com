@@ -15,7 +15,7 @@ export function CartPage() {
 
   if (!hydrated) {
     return (
-      <div className="grid gap-10 lg:grid-cols-[1fr_24rem]" aria-busy="true">
+      <div className="grid grid-cols-1 gap-10 lg:grid-cols-[1fr_24rem]" aria-busy="true">
         <div className="space-y-5"><Skeleton className="h-40" /><Skeleton className="h-40" /></div>
         <Skeleton className="h-64" />
       </div>
@@ -35,7 +35,7 @@ export function CartPage() {
   }
 
   return (
-    <div className="grid items-start gap-10 lg:grid-cols-[minmax(0,1fr)_24rem] lg:gap-14">
+    <div className="grid grid-cols-1 items-start gap-10 lg:grid-cols-[minmax(0,1fr)_24rem] lg:gap-14">
       <section aria-label="Cart items">
         <CartLines items={items} status={q.status} quote={q.quote} onQuantity={setQuantity} onRemove={remove} onRetry={q.retry} />
       </section>

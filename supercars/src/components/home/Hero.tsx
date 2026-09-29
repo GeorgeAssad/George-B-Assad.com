@@ -20,7 +20,7 @@ export function Hero({ main, second, racing, blueprint }: HeroProps) {
       <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_70%_50%_at_60%_88%,color-mix(in_srgb,var(--red)_26%,transparent),transparent_72%)]" aria-hidden="true" />
       <div className="speed-lines absolute inset-x-0 top-0 -z-10 h-full opacity-70" aria-hidden="true" />
 
-      <div className="container-x grid items-center gap-8 py-8 lg:min-h-[calc(100svh-4.5rem)] lg:grid-cols-[1.05fr_1fr] lg:gap-6 lg:py-16">
+      <div className="container-x grid grid-cols-1 items-center gap-8 py-8 lg:min-h-[calc(100svh-4.5rem)] lg:grid-cols-[1.05fr_1fr] lg:gap-6 lg:py-16">
         <div className="relative z-10">
           <p className="eyebrow stagger" style={{ ["--d" as string]: "60ms" }}>SC / 01 — Personalized automotive artwork</p>
           <h1 id="hero-title" className="h-display stagger mt-5 text-[clamp(3.5rem,12vw,8.6rem)]" style={{ ["--d" as string]: "160ms" }}>

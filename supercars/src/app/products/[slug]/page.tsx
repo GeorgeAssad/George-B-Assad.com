@@ -31,7 +31,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     title: product.name,
     description: product.description,
     alternates: { canonical: `/products/${product.slug}` },
-    openGraph: { title: `${product.name} | SuperCars`, description: product.description, images: [{ url: "/og/shop.png", width: 1200, height: 630, alt: product.name }] },
+    openGraph: { title: `${product.name} | SuperCars`, description: product.description, images: [{ url: "/og/shop.jpg", width: 1200, height: 630, alt: product.name }] },
   };
 }
 
@@ -47,7 +47,7 @@ export default async function ProductPage({ params }: Props) {
 
   return (
     <article>
-      <div className="container-x grid gap-12 py-12 sm:py-16 lg:grid-cols-[1.05fr_1fr] lg:gap-20">
+      <div className="container-x grid grid-cols-1 gap-12 py-12 sm:py-16 lg:grid-cols-[1.05fr_1fr] lg:gap-20">
         <div className="wall relative flex items-center justify-center rounded-3xl border border-line px-10 pb-14 pt-20">
           <div className="absolute left-1/2 top-8 h-1.5 w-28 -translate-x-1/2 rounded-full bg-fg/70 shadow-[0_22px_50px_18px_color-mix(in_srgb,var(--fg)_22%,transparent)]" aria-hidden="true" />
           {entry && (

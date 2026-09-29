@@ -12,7 +12,7 @@ export default function AboutPage() {
   return (
     <div className="container-x py-12 sm:py-16">
       <SectionHeading as="h1" eyebrow="SC / About" title="A studio for car people." lead="SuperCars turns the car you love into a piece of artwork made for one owner." />
-      <div className="mt-14 grid max-w-5xl gap-10 md:grid-cols-2">
+      <div className="mt-14 grid grid-cols-1 max-w-5xl gap-10 md:grid-cols-2">
         <div className="space-y-4 text-lg text-muted">
           <p>Most car posters are the same picture of a similar car. We start from the opposite end: your exact model, a design style that suits it, and the details that make it yours.</p>
           <p>Behind the storefront is an automated pipeline: a design engine composes the artwork, a print file is prepared at exact dimensions, and a fulfilment partner prints and ships it.</p>

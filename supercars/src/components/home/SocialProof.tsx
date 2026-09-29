@@ -5,12 +5,12 @@ import { SectionHeading } from "@/components/ui/SectionHeading";
 
 export function SocialProof({ reviews }: { reviews: readonly DemoReview[] }) {
   return (
-    <section aria-labelledby="proof-title" className="container-x py-24 sm:py-32">
+    <section aria-labelledby="proof-title" className="cv-auto container-x py-24 sm:py-32">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <Reveal><SectionHeading id="proof-title" eyebrow="SC / 08 — Reviews" title="What owners say." /></Reveal>
         <Badge tone="demo">Demo content · not real reviews</Badge>
       </div>
-      <ul className="mt-12 grid gap-4 md:grid-cols-3">
+      <ul className="mt-12 grid grid-cols-1 gap-4 md:grid-cols-3">
         {reviews.map((r, i) => (
           <li key={r.id}>
             <Reveal delay={i * 90} className="h-full">

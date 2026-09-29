@@ -183,7 +183,7 @@ function ConfiguratorInner({ catalog }: { catalog: Catalog }) {
         </div>
       )}
 
-      <div className="mt-8 grid gap-10 lg:mt-12 lg:grid-cols-[minmax(0,1fr)_26rem] lg:gap-14 xl:grid-cols-[minmax(0,1fr)_30rem]">
+      <div className="mt-8 grid grid-cols-1 gap-10 lg:mt-12 lg:grid-cols-[minmax(0,1fr)_26rem] lg:gap-14 xl:grid-cols-[minmax(0,1fr)_30rem]">
         <div className="min-w-0">
           <div key={state.step} className="page-enter">
             <h1 ref={headingRef} tabIndex={-1} className="h-display text-[clamp(2.6rem,7vw,4.5rem)] outline-none">{heading.title}</h1>

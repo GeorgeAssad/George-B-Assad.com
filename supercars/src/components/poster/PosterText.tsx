@@ -1,5 +1,5 @@
 import type { TextStyleSpec } from "@/domain/catalog";
-import { FONT_VAR, fitFontSize } from "./poster-geometry";
+import { FONT_CLASS, fitFontSize } from "./poster-geometry";
 
 interface PosterTextProps {
   readonly text: string;
@@ -32,7 +32,7 @@ export function PosterText({ text, style, canvasWidth, margin, y, opacity = 1, x
       letterSpacing={`${style.tracking}em`}
       fill={style.color}
       opacity={opacity}
-      style={{ fontFamily: FONT_VAR[style.font] }}
+      className={FONT_CLASS[style.font]}
     >
       {content}
     </text>

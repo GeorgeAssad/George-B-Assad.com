@@ -106,6 +106,11 @@ video {
   max-width: 100%;
 }
 
+/* <fieldset> defaults to min-width: min-content, which lets long content force horizontal scrolling. */
+fieldset {
+  min-width: 0;
+}
+
 /* --------------------------------------------------------- utilities ---- */
 @layer components {
   .container-x {
@@ -400,3 +405,12 @@ video {
   0% { transform: translateY(-100%); }
   100% { transform: translateY(300%); }
 }
+
+/* Poster SVG type families as classes (keeps the repeated font stacks out of the markup). */
+.pf-display { font-family: var(--font-display), "Barlow Condensed", "Arial Narrow", sans-serif; }
+.pf-sans { font-family: var(--font-sans), Inter, system-ui, sans-serif; }
+.pf-serif { font-family: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif; }
+.pf-mono { font-family: ui-monospace, "SF Mono", "Cascadia Mono", Menlo, Consolas, monospace; }
+
+/* Skip layout/paint of long below-the-fold sections until they approach the viewport. */
+.cv-auto { content-visibility: auto; contain-intrinsic-size: auto 900px; }

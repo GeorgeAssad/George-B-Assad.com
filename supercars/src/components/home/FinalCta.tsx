@@ -4,7 +4,7 @@ import { IconArrow } from "@/components/ui/icons";
 
 export function FinalCta() {
   return (
-    <section aria-labelledby="final-title" className="container-x py-24 sm:py-32">
+    <section aria-labelledby="final-title" className="cv-auto container-x py-24 sm:py-32">
       <Reveal>
         <div className="relative isolate overflow-hidden rounded-[2rem] border border-line-strong bg-surface px-6 py-20 text-center sm:px-16 sm:py-28">
           <div className="tech-grid absolute inset-0 -z-10 opacity-70" aria-hidden="true" />

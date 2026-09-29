@@ -126,7 +126,7 @@ export function CarExplorer({ entries, brands }: { entries: readonly CarEntry[];
 
       <div className="mt-6">
         {results.length > 0 ? (
-          <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <ul className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {results.map((entry, i) => (
               <li key={entry.generation.slug}><CarCard entry={entry} index={i} /></li>
             ))}

@@ -23,7 +23,7 @@ export const templates: readonly DesignTemplate[] = [
     tagline: "Quiet, precise, gallery-clean.",
     description:
       "Generous white space, one thin red rule and editorial type. Lets the silhouette do the talking.",
-    previewImage: "/templates/minimal.png",
+    previewImage: "/templates/minimal.jpg",
     surcharge: money(0),
     layout: {
       background: {
@@ -58,7 +58,7 @@ export const templates: readonly DesignTemplate[] = [
     tagline: "Engineering drawing, fully dimensioned.",
     description:
       "Deep navy paper, hairline grid, dimension lines and a wireframe silhouette. Made for the technical minded.",
-    previewImage: "/templates/blueprint.png",
+    previewImage: "/templates/blueprint.jpg",
     surcharge: money(0),
     layout: {
       background: {
@@ -93,7 +93,7 @@ export const templates: readonly DesignTemplate[] = [
     tagline: "Speed you can hang on a wall.",
     description:
       "Near-black canvas, a red diagonal, speed lines and a chequered strip. Motorsport energy, kept disciplined.",
-    previewImage: "/templates/racing.png",
+    previewImage: "/templates/racing.jpg",
     surcharge: money(0),
     layout: {
       background: {
@@ -129,7 +129,7 @@ export const templates: readonly DesignTemplate[] = [
     tagline: "Motor-club poster, printed in ink.",
     description:
       "Warm paper stock, a double keyline, laurels and serif lettering. A nod to the golden age of motoring prints.",
-    previewImage: "/templates/heritage.png",
+    previewImage: "/templates/heritage.jpg",
     surcharge: money(0),
     layout: {
       background: {
@@ -164,7 +164,7 @@ export const templates: readonly DesignTemplate[] = [
     tagline: "Black, gold and restraint.",
     description:
       "Deep black, fine gold keylines and a soft spotlight. Understated luxury for a statement wall.",
-    previewImage: "/templates/luxury.png",
+    previewImage: "/templates/luxury.jpg",
     surcharge: money(1000),
     layout: {
       background: {

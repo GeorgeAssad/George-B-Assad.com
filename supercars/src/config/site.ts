@@ -29,3 +29,7 @@ export const siteConfig = {
 } as const;
 
 export const isPreviewOrDev = siteConfig.appEnv !== "production";
+
+/** Search-engine indexing is OFF by default: this is a prototype with placeholder legal text.
+ * Set NEXT_PUBLIC_ALLOW_INDEXING=true (build variable) only for the real launch. */
+export const allowIndexing = process.env.NEXT_PUBLIC_ALLOW_INDEXING === "true";

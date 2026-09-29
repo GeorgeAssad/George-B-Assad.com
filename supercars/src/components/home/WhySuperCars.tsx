@@ -12,10 +12,10 @@ const REASONS = [
 
 export function WhySuperCars() {
   return (
-    <section aria-labelledby="why-title" className="border-y border-line bg-surface py-24 sm:py-32">
+    <section aria-labelledby="why-title" className="cv-auto border-y border-line bg-surface py-24 sm:py-32">
       <div className="container-x">
         <Reveal><SectionHeading id="why-title" eyebrow="SC / 07 — Why SuperCars" title="Built for car people." /></Reveal>
-        <ul className="mt-14 grid gap-px overflow-hidden rounded-2xl border border-line bg-line sm:grid-cols-2 lg:grid-cols-5">
+        <ul className="mt-14 grid grid-cols-1 gap-px overflow-hidden rounded-2xl border border-line bg-line sm:grid-cols-2 lg:grid-cols-5">
           {REASONS.map((r, i) => (
             <li key={r.title} className="bg-surface">
               <Reveal delay={i * 60} className="h-full">

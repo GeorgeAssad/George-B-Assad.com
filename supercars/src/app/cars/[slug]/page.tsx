@@ -38,8 +38,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     title,
     description,
     alternates: { canonical: `/cars/${generation.slug}` },
-    openGraph: { title: `${title} | SuperCars`, description, type: "website", images: [{ url: `/og/cars/${generation.slug}.png`, width: 1200, height: 630, alt: `${generation.displayName} poster preview` }] },
-    twitter: { card: "summary_large_image", title: `${title} | SuperCars`, description, images: [`/og/cars/${generation.slug}.png`] },
+    openGraph: { title: `${title} | SuperCars`, description, type: "website", images: [{ url: `/og/cars/${generation.slug}.jpg`, width: 1200, height: 630, alt: `${generation.displayName} poster preview` }] },
+    twitter: { card: "summary_large_image", title: `${title} | SuperCars`, description, images: [`/og/cars/${generation.slug}.jpg`] },
   };
 }
 
@@ -77,7 +77,7 @@ export default async function CarPage({ params }: Props) {
           </ol>
         </nav>
 
-        <div className="grid gap-12 lg:grid-cols-[1.15fr_1fr] lg:gap-16">
+        <div className="grid grid-cols-1 gap-12 lg:grid-cols-[1.15fr_1fr] lg:gap-16">
           <div>
             <div className="flex flex-wrap items-center gap-2">
               <Badge tone="outline">{generation.performance}</Badge>
@@ -119,7 +119,7 @@ export default async function CarPage({ params }: Props) {
       {related.length > 0 && (
         <section aria-labelledby="car-related" className="container-x pb-24">
           <SectionHeading id="car-related" eyebrow="SC / More" title="More machines." />
-          <ul className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <ul className="mt-10 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {related.map((e, i) => <li key={e.generation.slug}><CarCard entry={e} index={i} /></li>)}
           </ul>
         </section>

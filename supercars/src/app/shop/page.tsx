@@ -17,7 +17,7 @@ export default async function ShopPage() {
   return (
     <div className="container-x py-12 sm:py-16">
       <SectionHeading as="h1" eyebrow="SC / Shop" title="Posters made for your car." lead="Every poster is made to order around your exact car. Choose a finish, then design it." />
-      <ul className="mt-12 grid gap-5 md:grid-cols-2">
+      <ul className="mt-12 grid grid-cols-1 gap-5 md:grid-cols-2">
         {products.map((p, i) => {
           const entry = (i === 0 ? m3 : gtr) ?? m3!;
           return <li key={p.id}><ProductCard product={p} entry={entry} template={tpl(i === 0 ? "racing" : "heritage")} name={i === 0 ? "GEORGE" : "ALEX"} /></li>;

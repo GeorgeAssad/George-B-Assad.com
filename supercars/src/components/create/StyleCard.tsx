@@ -10,15 +10,22 @@ interface StyleCardProps {
   readonly name?: string;
   readonly href?: string;
   readonly index?: number;
+  /** Pre-rendered preview (lazy JPEG) used instead of an inline SVG where the car/name are fixed. */
+  readonly image?: string;
 }
 
 /** Marketing style tile (link). The interactive selectable version lives in the configurator. */
-export function StyleCard({ template, vehicle, vehicleName, specs, name = "George", href, index = 0 }: StyleCardProps) {
+export function StyleCard({ template, vehicle, vehicleName, specs, name = "George", href, index = 0, image }: StyleCardProps) {
   return (
     <Link href={href ?? `/create?style=${template.id}`} className="group card card-lift block overflow-hidden p-3" aria-label={`${template.name} style: ${template.tagline}`}>
       <div className="overflow-hidden rounded-lg">
         <div className="zoom-img">
-          <PosterPreview template={template} vehicle={vehicle} customization={{ name: name.toUpperCase() }} vehicleName={vehicleName} specs={specs} sizeId="40x60" />
+          {image ? (
+            // eslint-disable-next-line @next/next/no-img-element -- static pre-rendered JPEG; no runtime image optimizer on the edge
+            <img src={image} alt={`${template.name} style poster preview`} width={600} height={840} loading="lazy" decoding="async" className="block h-auto w-full" />
+          ) : (
+            <PosterPreview template={template} vehicle={vehicle} customization={{ name: name.toUpperCase() }} vehicleName={vehicleName} specs={specs} sizeId="40x60" />
+          )}
         </div>
       </div>
       <div className="px-1 pb-1 pt-4">

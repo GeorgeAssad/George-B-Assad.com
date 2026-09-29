@@ -1,0 +1,39 @@
+# =============================================================================
+# SuperCars — local Worker secrets for `wrangler dev` (copy to .dev.vars, which is git-ignored)
+#
+# The prototype runs with NONE of the secrets below. Every provider defaults to
+# its built-in mock. Real secrets belong in Cloudflare (Workers Secrets /
+# `wrangler secret put`) and, for local dev, in `.dev.vars` (git-ignored).
+# See INTEGRATIONS.md for exactly where each one is read.
+# =============================================================================
+
+# --- Environment: development | preview | production -------------------------
+APP_ENV=development
+
+# --- Public (safe for the browser; baked in at BUILD time) -------------------
+# Set these as Cloudflare *build* variables (Workers Builds > Settings > Variables).
+NEXT_PUBLIC_SITE_URL=http://localhost:3000
+NEXT_PUBLIC_APP_ENV=development
+# Keep search engines out until launch. Set to "true" only for the real launch.
+NEXT_PUBLIC_ALLOW_INDEXING=false
+
+# --- Provider selection (server-only). Only "mock" is implemented today. -----
+# Selecting anything else FAILS CLOSED with an error until its integration exists.
+PAYMENT_PROVIDER=mock        # mock | stripe
+AI_PROVIDER=mock             # mock | openai
+FULFILLMENT_PROVIDER=mock    # mock | prodigi | gelato
+SUPPORT_PROVIDER=mock        # mock | ai-agent
+
+# --- Secrets (server-only). Leave EMPTY in this file. ------------------------
+# Optional in the prototype: signs the demo checkout session (>= 32 chars).
+# Recommended on any public deployment so demo sessions can't be forged.
+CHECKOUT_SIGNING_SECRET=
+
+# Future integrations — placeholders, NOT read by any code yet:
+DATABASE_URL=
+PAYMENT_SECRET_KEY=          # e.g. Stripe secret key (server only)
+PAYMENT_WEBHOOK_SECRET=
+AI_API_KEY=                  # image generation / upscaling
+OPENAI_API_KEY=
+FULFILLMENT_API_KEY=         # print partner
+EMAIL_API_KEY=               # transactional email

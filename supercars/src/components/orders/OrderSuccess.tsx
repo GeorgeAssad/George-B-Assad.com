@@ -119,7 +119,7 @@ export function OrderSuccess({ orderId, cars, templates }: OrderSuccessProps) {
         <div className="mt-6"><OrderTimeline entries={timeline} animate /></div>
       </section>
 
-      <div className="mt-6 grid items-start gap-6 lg:grid-cols-[minmax(0,1.4fr)_1fr]">
+      <div className="mt-6 grid grid-cols-1 items-start gap-6 lg:grid-cols-[minmax(0,1.4fr)_1fr]">
         <section aria-labelledby="items-title" className="card p-6 sm:p-8">
           <h2 id="items-title" className="h-display text-3xl">Your order</h2>
           <ul className="mt-5 divide-y divide-line">

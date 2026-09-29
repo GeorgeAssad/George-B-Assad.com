@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 /* SERVER-ONLY ENVIRONMENT. Never import this file from a client component.
- * Only NEXT_PUBLIC_* values may be read in the browser, and none of them are
+ * Only public build-time variables (see config/site.ts) reach the browser, and none of them are
  * secrets. Secrets (payment, AI, fulfilment, email, database) will be read here
  * from Cloudflare secrets — see INTEGRATIONS.md. The prototype runs with NONE
  * of them set. */

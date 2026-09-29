@@ -74,7 +74,7 @@ export function CheckoutForm({ destinations }: { destinations: readonly Shipping
   const total = q.quote?.totals.total;
   const errorList = useMemo(() => Object.entries(errors).filter(([, m]) => m) as [keyof Values, string][], [errors]);
 
-  if (!hydrated) return <div className="grid gap-10 lg:grid-cols-[1fr_26rem]" aria-busy="true"><div className="space-y-4"><Skeleton className="h-64" /><Skeleton className="h-64" /></div><Skeleton className="h-80" /></div>;
+  if (!hydrated) return <div className="grid grid-cols-1 gap-10 lg:grid-cols-[1fr_26rem]" aria-busy="true"><div className="space-y-4"><Skeleton className="h-64" /><Skeleton className="h-64" /></div><Skeleton className="h-80" /></div>;
 
   if (items.length === 0 && !done) {
     return <EmptyState icon={<IconCart size={24} />} title="Nothing to check out." message="Your cart is empty. Create a poster first, then come back to pay." action={{ label: "Create your poster", href: "/create" }} secondary={{ label: "Explore cars", href: "/cars" }} />;
@@ -127,7 +127,7 @@ export function CheckoutForm({ destinations }: { destinations: readonly Shipping
   const processing = phase.kind === "processing";
 
   return (
-    <form onSubmit={submit} noValidate className="grid items-start gap-10 lg:grid-cols-[minmax(0,1fr)_26rem] lg:gap-14" aria-busy={processing}>
+    <form onSubmit={submit} noValidate className="grid grid-cols-1 items-start gap-10 lg:grid-cols-[minmax(0,1fr)_26rem] lg:gap-14" aria-busy={processing}>
       <div className="space-y-12">
         {errorList.length > 0 && (
           <div ref={summaryRef} tabIndex={-1} role="alert" className="rounded-2xl border border-red-text/60 bg-surface p-5 outline-none">
@@ -141,7 +141,7 @@ export function CheckoutForm({ destinations }: { destinations: readonly Shipping
         <fieldset disabled={processing} className="space-y-5">
           <legend className="mb-5 flex items-center gap-3"><span className="spec">01</span><span className="h-display text-3xl">Customer</span></legend>
           <FormField id="co-name" label="Full name" required error={errors.name}>{(a) => <input {...a} name="name" type="text" autoComplete="name" value={values.name} onChange={set("name")} className="field" maxLength={80} />}</FormField>
-          <div className="grid gap-5 sm:grid-cols-2">
+          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
             <FormField id="co-email" label="Email" required error={errors.email} hint="For your order confirmation.">{(a) => <input {...a} name="email" type="email" inputMode="email" autoComplete="email" value={values.email} onChange={set("email")} className="field" maxLength={254} />}</FormField>
             <FormField id="co-phone" label="Phone (optional)" error={errors.phone} hint="Only used for delivery updates.">{(a) => <input {...a} name="phone" type="tel" inputMode="tel" autoComplete="tel" value={values.phone} onChange={set("phone")} className="field" maxLength={24} />}</FormField>
           </div>
@@ -151,7 +151,7 @@ export function CheckoutForm({ destinations }: { destinations: readonly Shipping
           <legend className="mb-5 flex items-center gap-3"><span className="spec">02</span><span className="h-display text-3xl">Shipping</span></legend>
           <FormField id="co-line1" label="Address" required error={errors.line1}>{(a) => <input {...a} name="line1" type="text" autoComplete="address-line1" value={values.line1} onChange={set("line1")} className="field" maxLength={100} />}</FormField>
           <FormField id="co-line2" label="Apartment, suite (optional)" error={errors.line2}>{(a) => <input {...a} name="line2" type="text" autoComplete="address-line2" value={values.line2} onChange={set("line2")} className="field" maxLength={100} />}</FormField>
-          <div className="grid gap-5 sm:grid-cols-2">
+          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
             <FormField id="co-city" label="City" required error={errors.city}>{(a) => <input {...a} name="city" type="text" autoComplete="address-level2" value={values.city} onChange={set("city")} className="field" maxLength={60} />}</FormField>
             <FormField id="co-postalCode" label="Postal code" required error={errors.postalCode}>{(a) => <input {...a} name="postalCode" type="text" autoComplete="postal-code" value={values.postalCode} onChange={set("postalCode")} className="field" maxLength={12} />}</FormField>
           </div>

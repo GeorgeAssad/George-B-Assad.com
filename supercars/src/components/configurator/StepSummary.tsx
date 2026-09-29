@@ -49,7 +49,7 @@ export function StepSummary({ entry, template, product, size, customization, qua
         </div>
       </dl>
       <p className="mt-3 text-xs text-subtle">Price is calculated by our server from the catalog. Shipping is added at checkout.</p>
-      <ul className="mt-6 grid gap-3 text-sm text-muted sm:grid-cols-3">
+      <ul className="mt-6 grid grid-cols-1 gap-3 text-sm text-muted sm:grid-cols-3">
         <li className="flex items-center gap-2"><IconLock size={16} className="text-red-text" /> Demo checkout, no card needed</li>
         <li className="flex items-center gap-2"><IconPackage size={16} className="text-red-text" /> Printed &amp; shipped to you</li>
         <li className="flex items-center gap-2"><IconShield size={16} className="text-red-text" /> Checked before it prints</li>

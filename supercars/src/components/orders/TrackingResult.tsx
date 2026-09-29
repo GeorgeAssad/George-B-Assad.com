@@ -29,7 +29,7 @@ export function TrackingResult({ order, animate = false }: { order: PublicOrderV
 
       <div className="mt-8"><OrderTimeline entries={order.timeline} animate={animate} /></div>
 
-      <dl className="mt-10 grid gap-6 border-t border-line pt-8 sm:grid-cols-3">
+      <dl className="mt-10 grid grid-cols-1 gap-6 border-t border-line pt-8 sm:grid-cols-3">
         <div>
           <dt className="spec">Estimated delivery</dt>
           <dd className="mt-1.5 font-medium">{formatDateRange(order.estimatedDelivery.from, order.estimatedDelivery.to)}</dd>

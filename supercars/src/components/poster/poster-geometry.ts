@@ -21,9 +21,5 @@ export function fitFontSize(text: string, fontSize: number, maxWidth: number, st
   return w <= maxWidth ? fontSize : Math.max(fontSize * 0.35, (fontSize * maxWidth) / w);
 }
 
-export const FONT_VAR: Record<TextStyleSpec["font"], string> = {
-  display: "var(--font-display), 'Barlow Condensed', 'Arial Narrow', sans-serif",
-  sans: "var(--font-sans), Inter, system-ui, sans-serif",
-  serif: "'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia, serif",
-  mono: "ui-monospace, 'SF Mono', 'Cascadia Mono', Menlo, Consolas, monospace",
-};
+/** CSS classes (defined in globals.css) that select each poster type family. */
+export const FONT_CLASS: Record<TextStyleSpec["font"], string> = { display: "pf-display", sans: "pf-sans", serif: "pf-serif", mono: "pf-mono" };

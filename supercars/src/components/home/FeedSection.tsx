@@ -16,7 +16,7 @@ interface FeedSectionProps {
 /** Placeholder feed. `MediaItem.videoUrl/posterUrl` let a CMS or object store supply real clips later. */
 export function FeedSection({ items, entries, templates }: FeedSectionProps) {
   return (
-    <section aria-labelledby="feed-title" className="border-y border-line bg-surface py-24 sm:py-32">
+    <section aria-labelledby="feed-title" className="cv-auto border-y border-line bg-surface py-24 sm:py-32">
       <div className="container-x">
         <div className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
           <Reveal><SectionHeading id="feed-title" eyebrow="SC / 09 — Seen on the feed" title="Your car. Your wall." /></Reveal>

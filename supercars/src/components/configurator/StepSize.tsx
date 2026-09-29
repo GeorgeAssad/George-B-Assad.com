@@ -22,7 +22,7 @@ export function StepSize({ sizes, products, template, productId, sizeId, onProdu
     <div className="space-y-10">
       <fieldset>
         <legend className="spec mb-3">Finish</legend>
-        <div className="grid gap-3 sm:grid-cols-2">
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
           {products.map((p) => (
             <RadioCard key={p.id} name="finish" value={p.id} checked={productId === p.id} onChange={() => onProduct(p.id)}>
               <div className="p-4 pr-11">

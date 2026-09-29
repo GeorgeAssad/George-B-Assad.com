@@ -10,9 +10,9 @@ interface Item { readonly product: Product; readonly entry: CarEntry; readonly t
 
 export function ProductShowcase({ items }: { items: readonly Item[] }) {
   return (
-    <section aria-labelledby="showcase-title" className="container-x py-24 sm:py-32">
+    <section aria-labelledby="showcase-title" className="cv-auto container-x py-24 sm:py-32">
       <Reveal><SectionHeading id="showcase-title" eyebrow="SC / 06 — Product" title="Made to hang." lead="Choose a print on premium paper, or have it framed and ready for the wall." /></Reveal>
-      <ul className="mt-14 grid gap-5 lg:grid-cols-2">
+      <ul className="mt-14 grid grid-cols-1 gap-5 lg:grid-cols-2">
         {items.map(({ product, entry, template, name }, i) => {
           const cheapest = product.variants.reduce((a, b) => (a.price.amount <= b.price.amount ? a : b));
           return (

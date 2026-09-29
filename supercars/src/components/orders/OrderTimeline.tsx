@@ -26,7 +26,7 @@ function Node({ state, animate, index }: { state: TimelineEntry["state"]; animat
 /** Vertical on mobile, horizontal from md. `animate` plays the entrance on the first stage. */
 export function OrderTimeline({ entries, animate = false }: { entries: readonly TimelineEntry[]; animate?: boolean }) {
   return (
-    <ol className="grid gap-0 md:grid-cols-5" aria-label="Order progress">
+    <ol className="grid grid-cols-1 gap-0 md:grid-cols-5" aria-label="Order progress">
       {entries.map((e, i) => (
         <li key={e.stage} className="relative flex gap-4 pb-8 last:pb-0 md:flex-col md:gap-3 md:pb-0">
           {i < entries.length - 1 && (
