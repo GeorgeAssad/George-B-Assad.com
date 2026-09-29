@@ -7,9 +7,10 @@ export const carPhotos: Readonly<Record<string, readonly CarPhoto[]>> = {
   "bmw-m3-g80": [
     {
       id: "main",
+      mode: "cutout",
       alt: "Blue BMW M3 Competition (G80), front three-quarter view, parked on grass",
       width: 1920,
-      height: 1199,
+      height: 793,
       widths: [
         320,
         640,
@@ -20,22 +21,26 @@ export const carPhotos: Readonly<Record<string, readonly CarPhoto[]>> = {
         x: 50,
         y: 50
       },
-      color: "#494d4d",
+      color: "transparent",
       credit: {
+        kind: "third-party",
         title: "BMW M3 (G80, 2022) (52227837026)",
         author: "Charles from Port Chester, New York",
         licenseName: "CC BY 2.0",
         licenseUrl: "https://creativecommons.org/licenses/by/2.0/",
-        sourceUrl: "https://commons.wikimedia.org/wiki/File:BMW_M3_(G80,_2022)_(52227837026).jpg"
+        sourceUrl: "https://commons.wikimedia.org/wiki/File:BMW_M3_(G80,_2022)_(52227837026).jpg",
+        sourceName: "Wikimedia Commons",
+        note: "Cropped, plates and faces covered, background removed."
       }
     }
   ],
   "bmw-m4-g82": [
     {
       id: "main",
+      mode: "cutout",
       alt: "Dark blue BMW M4 Competition (G82), front three-quarter view",
       width: 1920,
-      height: 1056,
+      height: 940,
       widths: [
         320,
         640,
@@ -46,22 +51,26 @@ export const carPhotos: Readonly<Record<string, readonly CarPhoto[]>> = {
         x: 50,
         y: 50
       },
-      color: "#4a4a4a",
+      color: "transparent",
       credit: {
+        kind: "third-party",
         title: "2021 BMW M4 Competition",
         author: "Calreyn88",
         licenseName: "CC BY 4.0",
         licenseUrl: "https://creativecommons.org/licenses/by/4.0/",
-        sourceUrl: "https://commons.wikimedia.org/wiki/File:2021_BMW_M4_Competition.jpg"
+        sourceUrl: "https://commons.wikimedia.org/wiki/File:2021_BMW_M4_Competition.jpg",
+        sourceName: "Wikimedia Commons",
+        note: "Cropped, plates and faces covered, background removed."
       }
     }
   ],
   "porsche-911-992": [
     {
       id: "main",
+      mode: "cutout",
       alt: "Blue Porsche 911 Carrera S (992), front three-quarter view",
       width: 1920,
-      height: 1200,
+      height: 963,
       widths: [
         320,
         640,
@@ -72,22 +81,26 @@ export const carPhotos: Readonly<Record<string, readonly CarPhoto[]>> = {
         x: 50,
         y: 55
       },
-      color: "#323c47",
+      color: "transparent",
       credit: {
+        kind: "third-party",
         title: "2025 Porsche 911 Carrera S",
         author: "TTTNIS",
         licenseName: "CC0",
         licenseUrl: "https://creativecommons.org/publicdomain/zero/1.0/",
-        sourceUrl: "https://commons.wikimedia.org/wiki/File:2025_Porsche_911_Carrera_S.jpg"
+        sourceUrl: "https://commons.wikimedia.org/wiki/File:2025_Porsche_911_Carrera_S.jpg",
+        sourceName: "Wikimedia Commons",
+        note: "Cropped, plates and faces covered, background removed."
       }
     }
   ],
   "porsche-911-gt3-rs-992": [
     {
       id: "main",
+      mode: "cutout",
       alt: "Red Porsche 911 GT3 RS (992) with white stripes on a display turntable",
       width: 1920,
-      height: 1080,
+      height: 810,
       widths: [
         320,
         640,
@@ -98,22 +111,26 @@ export const carPhotos: Readonly<Record<string, readonly CarPhoto[]>> = {
         x: 55,
         y: 55
       },
-      color: "#372b3b",
+      color: "transparent",
       credit: {
+        kind: "third-party",
         title: "2024 911 GT3 RS (53536704621)",
         author: "Mustang Joe",
         licenseName: "CC0",
         licenseUrl: "https://creativecommons.org/publicdomain/zero/1.0/",
-        sourceUrl: "https://commons.wikimedia.org/wiki/File:2024_911_GT3_RS_(53536704621).jpg"
+        sourceUrl: "https://commons.wikimedia.org/wiki/File:2024_911_GT3_RS_(53536704621).jpg",
+        sourceName: "Wikimedia Commons",
+        note: "Cropped, plates and faces covered, background removed."
       }
     }
   ],
   "audi-rs6-c8": [
     {
       id: "main",
+      mode: "cutout",
       alt: "Dark blue Audi RS 6 Avant (C8) parked on grass under autumn trees",
       width: 1920,
-      height: 1200,
+      height: 981,
       widths: [
         320,
         640,
@@ -124,22 +141,26 @@ export const carPhotos: Readonly<Record<string, readonly CarPhoto[]>> = {
         x: 49,
         y: 53
       },
-      color: "#414022",
+      color: "transparent",
       credit: {
+        kind: "third-party",
         title: "Audi RS 6 Avant (2021) (52451226524)",
         author: "Charles from Port Chester, New York",
         licenseName: "CC BY 2.0",
         licenseUrl: "https://creativecommons.org/licenses/by/2.0/",
-        sourceUrl: "https://commons.wikimedia.org/wiki/File:Audi_RS_6_Avant_(2021)_(52451226524).jpg"
+        sourceUrl: "https://commons.wikimedia.org/wiki/File:Audi_RS_6_Avant_(2021)_(52451226524).jpg",
+        sourceName: "Wikimedia Commons",
+        note: "Cropped, plates and faces covered, background removed."
       }
     }
   ],
   "audi-r8-4s": [
     {
       id: "main",
+      mode: "cutout",
       alt: "White Audi R8 V10 Performance (Typ 4S), front three-quarter view in a showroom",
       width: 1920,
-      height: 1200,
+      height: 1218,
       widths: [
         320,
         640,
@@ -150,22 +171,26 @@ export const carPhotos: Readonly<Record<string, readonly CarPhoto[]>> = {
         x: 46,
         y: 48
       },
-      color: "#3d3a33",
+      color: "transparent",
       credit: {
+        kind: "third-party",
         title: "2023 Audi R8 Coupe V10 Performance RWD at Audi Manchester 01",
         author: "MoCars",
         licenseName: "CC0",
         licenseUrl: "https://creativecommons.org/publicdomain/zero/1.0/",
-        sourceUrl: "https://commons.wikimedia.org/wiki/File:2023_Audi_R8_Coupe_V10_Performance_RWD_at_Audi_Manchester_01.jpg"
+        sourceUrl: "https://commons.wikimedia.org/wiki/File:2023_Audi_R8_Coupe_V10_Performance_RWD_at_Audi_Manchester_01.jpg",
+        sourceName: "Wikimedia Commons",
+        note: "Cropped, plates and faces covered, background removed."
       }
     }
   ],
   "mercedes-amg-gt-c190": [
     {
       id: "main",
+      mode: "cutout",
       alt: "Yellow Mercedes-AMG GT S (C190), front three-quarter view on a display floor",
       width: 1920,
-      height: 1280,
+      height: 1352,
       widths: [
         320,
         640,
@@ -176,22 +201,26 @@ export const carPhotos: Readonly<Record<string, readonly CarPhoto[]>> = {
         x: 50,
         y: 49
       },
-      color: "#342d1f",
+      color: "transparent",
       credit: {
+        kind: "third-party",
         title: "Mercedes-AMG GT S (C190) front",
         author: "Tokumeigakarinoaoshima",
         licenseName: "CC0",
         licenseUrl: "https://creativecommons.org/publicdomain/zero/1.0/",
-        sourceUrl: "https://commons.wikimedia.org/wiki/File:Mercedes-AMG_GT_S_(C190)_front.JPG"
+        sourceUrl: "https://commons.wikimedia.org/wiki/File:Mercedes-AMG_GT_S_(C190)_front.JPG",
+        sourceName: "Wikimedia Commons",
+        note: "Cropped, plates and faces covered, background removed."
       }
     }
   ],
   "nissan-gt-r-r35": [
     {
       id: "main",
+      mode: "cutout",
       alt: "Grey-blue Nissan GT-R NISMO (R35) with carbon bonnet and red trim, on a black display stage",
       width: 1920,
-      height: 1199,
+      height: 1147,
       widths: [
         320,
         640,
@@ -202,48 +231,26 @@ export const carPhotos: Readonly<Record<string, readonly CarPhoto[]>> = {
         x: 53,
         y: 55
       },
-      color: "#222223",
+      color: "transparent",
       credit: {
+        kind: "third-party",
         title: "Nissan 4BA-R35 GT-R NISMO Special edition (Ent No.30302) (24021013210)",
         author: "先従隗始",
         licenseName: "CC0",
         licenseUrl: "https://creativecommons.org/publicdomain/zero/1.0/",
-        sourceUrl: "https://commons.wikimedia.org/wiki/File:Nissan_4BA-R35_GT-R_NISMO_Special_edition_(Ent_No.30302)_(24021013210).jpg"
-      }
-    }
-  ],
-  "toyota-gr-supra-a90": [
-    {
-      id: "main",
-      alt: "Yellow Toyota GR Supra (A90) seen from above and in front",
-      width: 1920,
-      height: 1281,
-      widths: [
-        320,
-        640,
-        1280,
-        1920
-      ],
-      focal: {
-        x: 52,
-        y: 50
-      },
-      color: "#5a5335",
-      credit: {
-        title: "Toyota GR Supra (A90) Washington DC Metro Area, USA (7)",
-        author: "OWS Photography",
-        licenseName: "CC BY 4.0",
-        licenseUrl: "https://creativecommons.org/licenses/by/4.0/",
-        sourceUrl: "https://commons.wikimedia.org/wiki/File:Toyota_GR_Supra_(A90)_Washington_DC_Metro_Area,_USA_(7).jpg"
+        sourceUrl: "https://commons.wikimedia.org/wiki/File:Nissan_4BA-R35_GT-R_NISMO_Special_edition_(Ent_No.30302)_(24021013210).jpg",
+        sourceName: "Wikimedia Commons",
+        note: "Cropped, plates and faces covered, background removed."
       }
     }
   ],
   "lamborghini-huracan-lp610": [
     {
       id: "main",
+      mode: "cutout",
       alt: "Lime green Lamborghini Huracán LP 610-4, front three-quarter view on a black show carpet",
       width: 1920,
-      height: 1200,
+      height: 1071,
       widths: [
         320,
         640,
@@ -254,22 +261,26 @@ export const carPhotos: Readonly<Record<string, readonly CarPhoto[]>> = {
         x: 49,
         y: 56
       },
-      color: "#2d2e18",
+      color: "transparent",
       credit: {
+        kind: "third-party",
         title: "Lamborghini Huracan LP610-4 (16280529768)",
         author: "Jacob Frey 4A",
         licenseName: "CC BY 2.0",
         licenseUrl: "https://creativecommons.org/licenses/by/2.0/",
-        sourceUrl: "https://commons.wikimedia.org/wiki/File:Lamborghini_Huracan_LP610-4_(16280529768).jpg"
+        sourceUrl: "https://commons.wikimedia.org/wiki/File:Lamborghini_Huracan_LP610-4_(16280529768).jpg",
+        sourceName: "Wikimedia Commons",
+        note: "Cropped, plates and faces covered, background removed."
       }
     }
   ],
   "ford-mustang-gt-s550": [
     {
       id: "main",
+      mode: "cutout",
       alt: "Black Ford Mustang GT (S550) with red brake calipers, parked on grass",
       width: 1920,
-      height: 1200,
+      height: 904,
       widths: [
         320,
         640,
@@ -280,13 +291,16 @@ export const carPhotos: Readonly<Record<string, readonly CarPhoto[]>> = {
         x: 50,
         y: 48
       },
-      color: "#3e413b",
+      color: "transparent",
       credit: {
+        kind: "third-party",
         title: "Ford Mustang GT (41657274580)",
         author: "FotoSleuth",
         licenseName: "CC BY 2.0",
         licenseUrl: "https://creativecommons.org/licenses/by/2.0/",
-        sourceUrl: "https://commons.wikimedia.org/wiki/File:Ford_Mustang_GT_(41657274580).jpg"
+        sourceUrl: "https://commons.wikimedia.org/wiki/File:Ford_Mustang_GT_(41657274580).jpg",
+        sourceName: "Wikimedia Commons",
+        note: "Cropped, plates and faces covered, background removed."
       }
     }
   ]

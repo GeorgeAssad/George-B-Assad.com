@@ -19,7 +19,9 @@ export function photoFallbackSrc(slug: string, photo: CarPhoto): string {
   return photoPath(slug, photo.id, w, "webp");
 }
 
-/** Plain-text credit line, e.g. `Photo: Jane Doe · CC BY 4.0 · Wikimedia Commons`. */
+/** Plain-text credit line, e.g. `Photo: Jane Doe · CC BY 4.0 · Wikimedia Commons` or `Image: SuperCars · AI-generated image`. */
 export function creditLine(photo: CarPhoto): string {
-  return `Photo: ${photo.credit.author} · ${photo.credit.licenseName} · Wikimedia Commons`;
+  const c = photo.credit;
+  if (c.kind === "own") return `Image: ${c.author}${c.note ? ` · ${c.note}` : ""}`;
+  return `Photo: ${c.author} · ${c.licenseName} · ${c.sourceName ?? "source"}`;
 }

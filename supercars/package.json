@@ -24,7 +24,8 @@
     "cf:dryrun": "wrangler deploy --dry-run --outdir .wrangler/dryrun",
     "verify": "npm run lint && npm run typecheck && npm test && npm run check:secrets && npm run audit:code && npm run build && npm run check:bundle",
     "photos:fetch": "node scripts/fetch-photos.mjs",
-    "photos:process": "node scripts/process-photos.mjs"
+    "photos:process": "node scripts/process-photos.mjs",
+    "photos:cutout": "node scripts/process-photos.mjs --framed && python3 scripts/cutout-photos.py"
   },
   "dependencies": {
     "@fontsource-variable/inter": "^5.3.0",

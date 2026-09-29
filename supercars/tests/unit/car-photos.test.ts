@@ -1,5 +1,6 @@
 import { existsSync, readFileSync, readdirSync, statSync } from "node:fs";
 import { join } from "node:path";
+import sharp from "sharp";
 import { describe, expect, it } from "vitest";
 import { generations } from "@/data/cars";
 import { carPhotos } from "@/data/car-photos";
@@ -23,20 +24,30 @@ describe("car photos: licences and credits", () => {
     for (const slug of Object.keys(carPhotos)) expect(slugs.has(slug)).toBe(true);
   });
 
-  it.each(all.map((x) => [`${x.slug}/${x.photo.id}`, x] as const))("%s has a complete, permissive credit", (_name, { photo }) => {
+  it.each(all.map((x) => [`${x.slug}/${x.photo.id}`, x] as const))("%s has a complete credit", (_name, { photo }) => {
     const c = photo.credit;
-    expect(c.licenseName).toMatch(ALLOWED_LICENCE);
-    expect(c.licenseName).not.toMatch(/SA|NC|ND/);
     expect(c.author.length).toBeGreaterThan(1);
     expect(c.title.length).toBeGreaterThan(3);
-    expect(c.licenseUrl).toMatch(/^https:\/\/creativecommons\.org\//);
-    expect(c.sourceUrl).toMatch(/^https:\/\/commons\.wikimedia\.org\/wiki\/File:/);
     expect(photo.alt.length).toBeGreaterThanOrEqual(20);
+    if (c.kind === "third-party") {
+      // Photographs by others: only licences that allow commercial use and adaptation without share-alike.
+      expect(c.licenseName).toMatch(ALLOWED_LICENCE);
+      expect(c.licenseName).not.toMatch(/SA|NC|ND/);
+      expect(c.licenseUrl).toMatch(/^https:\/\/creativecommons\.org\//);
+      expect(c.sourceUrl).toMatch(/^https:\/\/(commons\.wikimedia\.org\/wiki\/File:|www\.flickr\.com\/photos\/)/);
+      expect(c.sourceName).toMatch(/^(Wikimedia Commons|Flickr)$/);
+      if (photo.mode === "cutout") expect(c.note).toMatch(/background removed/i); // CC BY: changes must be stated
+    } else {
+      // Images we made or commissioned ourselves (including AI-generated): a plain label, no third-party links.
+      expect(c.licenseName).toBe("SuperCars");
+      expect(c.note).toMatch(/\S/);
+      expect(c.sourceUrl).toBeUndefined();
+    }
   });
 
   it("matches photos/manifest.json (credits cannot drift from the source of truth)", () => {
     const manifest = JSON.parse(readFileSync(join(root, "photos", "manifest.json"), "utf8")) as {
-      photos: { slug: string; id: string; alt: string; credit: unknown }[];
+      photos: { slug: string; id: string; mode?: string; alt: string; credit: unknown }[];
     };
     expect(manifest.photos.length).toBe(all.length);
     for (const m of manifest.photos) {
@@ -44,6 +55,7 @@ describe("car photos: licences and credits", () => {
       expect(built, `${m.slug}/${m.id} missing from car-photos.ts`).toBeDefined();
       expect(built?.credit).toEqual(m.credit);
       expect(built?.alt).toBe(m.alt);
+      expect(built?.mode).toBe(m.mode ?? "backdrop");
     }
   });
 });
@@ -54,13 +66,14 @@ describe("car photos: files", () => {
     expect([...photo.widths]).toEqual([...photo.widths].sort((a, b) => a - b));
     expect(photo.width).toBe(photo.widths[photo.widths.length - 1]);
     const aspect = photo.width / photo.height;
-    expect(aspect).toBeGreaterThan(1.3);
-    expect(aspect).toBeLessThan(2.4);
+    // Backdrop photos are cropped to a landscape frame; cutouts keep the car's own shape.
+    expect(aspect).toBeGreaterThan(photo.mode === "cutout" ? 1.2 : 1.3);
+    expect(aspect).toBeLessThan(photo.mode === "cutout" ? 3.2 : 2.4);
     expect(photo.focal.x).toBeGreaterThanOrEqual(0);
     expect(photo.focal.x).toBeLessThanOrEqual(100);
     expect(photo.focal.y).toBeGreaterThanOrEqual(0);
     expect(photo.focal.y).toBeLessThanOrEqual(100);
-    expect(photo.color).toMatch(/^#[0-9a-f]{6}$/);
+    expect(photo.color).toMatch(photo.mode === "cutout" ? /^transparent$/ : /^#[0-9a-f]{6}$/);
 
     let bytes = 0;
     for (const w of photo.widths) {
@@ -74,6 +87,15 @@ describe("car photos: files", () => {
       }
     }
     expect(bytes).toBeLessThan(1.1 * 1024 * 1024);
+  });
+
+  it("cutouts really are transparent and backdrops are not", async () => {
+    for (const { slug, photo } of all) {
+      for (const f of PHOTO_FORMATS) {
+        const meta = await sharp(join(publicDir, photoPath(slug, photo.id, photo.widths[0] ?? 320, f))).metadata();
+        expect(meta.hasAlpha, `${slug}/${photo.id}.${f}`).toBe(photo.mode === "cutout");
+      }
+    }
   });
 
   it("has no orphaned files in public/cars", () => {
