@@ -3,7 +3,6 @@
 import dynamic from "next/dynamic";
 import type { ReactNode } from "react";
 import { ToastProvider } from "@/components/ui/Toast";
-import { SupportLauncher } from "@/components/support/SupportLauncher";
 import { PageViewTracker } from "@/lib/analytics/PageViewTracker";
 
 // Dialog-based UI is code-split: it ships nothing until first opened.
@@ -17,7 +16,6 @@ export function Providers({ children }: { children: ReactNode }) {
       {children}
       <CartDrawer />
       <SupportChat />
-      <SupportLauncher />
     </ToastProvider>
   );
 }

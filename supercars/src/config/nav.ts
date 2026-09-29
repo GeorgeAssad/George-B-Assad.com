@@ -1,32 +1,13 @@
 export interface NavLink { readonly label: string; readonly href: string }
 
-export const primaryNav: readonly NavLink[] = [
-  { label: "Shop", href: "/shop" },
-  { label: "Cars", href: "/cars" },
-  { label: "How it works", href: "/how-it-works" },
-  { label: "About", href: "/about" },
-  { label: "Track order", href: "/track" },
-];
+/** The header has no menu: the only destinations a customer needs while ordering are "Track order" and the cart. */
+export const trackLink: NavLink = { label: "Track order", href: "/track" };
 
-export const footerNav = {
-  shop: [
-    { label: "Create your poster", href: "/create" },
-    { label: "Shop posters", href: "/shop" },
-    { label: "Explore cars", href: "/cars" },
-  ],
-  company: [
-    { label: "How it works", href: "/how-it-works" },
-    { label: "About", href: "/about" },
-  ],
-  service: [
-    { label: "Track order", href: "/track" },
-    { label: "Shipping", href: "/shipping" },
-    { label: "Returns", href: "/returns" },
-  ],
-  legal: [
-    { label: "Privacy", href: "/privacy" },
-    { label: "Terms", href: "/terms" },
-    { label: "Legal", href: "/legal" },
-    { label: "Photo credits", href: "/credits" },
-  ],
-} as const satisfies Record<string, readonly NavLink[]>;
+/** One-line footer. Everything here is either legally required or answers "where is my order / what will it cost". */
+export const footerLinks: readonly NavLink[] = [
+  { label: "Shipping & returns", href: "/shipping" },
+  { label: "Privacy", href: "/privacy" },
+  { label: "Terms", href: "/terms" },
+  { label: "Legal", href: "/legal" },
+  { label: "Photo credits", href: "/credits" },
+];

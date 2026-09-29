@@ -14,7 +14,7 @@ function subscribe(listener: () => void): () => void {
 }
 const getTheme = (): Theme => (document.documentElement.dataset.theme === "light" ? "light" : "dark");
 
-export function ThemeToggle() {
+export function ThemeToggle({ className = "size-10" }: { className?: string }) {
   const theme = useSyncExternalStore(subscribe, getTheme, () => "dark" as Theme);
 
   const toggle = () => {
@@ -28,7 +28,7 @@ export function ThemeToggle() {
   };
 
   return (
-    <button type="button" onClick={toggle} className="flex size-10 items-center justify-center rounded-full text-muted transition-colors hover:text-fg" aria-label={theme === "dark" ? "Switch to light theme" : "Switch to dark theme"}>
+    <button type="button" onClick={toggle} className={`flex items-center justify-center rounded-full text-muted transition-colors hover:text-fg ${className}`} aria-label={theme === "dark" ? "Switch to light theme" : "Switch to dark theme"}>
       {theme === "dark" ? <IconSun size={19} /> : <IconMoon size={19} />}
     </button>
   );

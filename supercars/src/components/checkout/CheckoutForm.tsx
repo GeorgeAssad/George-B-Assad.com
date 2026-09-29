@@ -77,7 +77,7 @@ export function CheckoutForm({ destinations }: { destinations: readonly Shipping
   if (!hydrated) return <div className="grid grid-cols-1 gap-10 lg:grid-cols-[1fr_26rem]" aria-busy="true"><div className="space-y-4"><Skeleton className="h-64" /><Skeleton className="h-64" /></div><Skeleton className="h-80" /></div>;
 
   if (items.length === 0 && !done) {
-    return <EmptyState icon={<IconCart size={24} />} title="Nothing to check out." message="Your cart is empty. Create a poster first, then come back to pay." action={{ label: "Create your poster", href: "/create" }} secondary={{ label: "Explore cars", href: "/cars" }} />;
+    return <EmptyState icon={<IconCart size={24} />} title="Nothing to check out." message="Your cart is empty. Create a poster first, then come back to pay." action={{ label: "Create your poster", href: "/create" }} />;
   }
 
   const submit = async (e: FormEvent) => {

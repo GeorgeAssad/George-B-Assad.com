@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { Button } from "@/components/ui/Button";
 import { Dialog } from "@/components/ui/Dialog";
 import { IconClose } from "@/components/ui/icons";
@@ -41,7 +40,6 @@ function DrawerBody() {
           {q.quote ? <OrderSummary totals={q.quote.totals} shippingPending /> : <p className="pb-2 text-sm text-muted">Calculating…</p>}
           <div className="mt-4 grid gap-2">
             <Button href="/checkout" size="lg" onClick={closeCartDrawer} aria-label="Checkout">Checkout</Button>
-            <Link href="/cart" onClick={closeCartDrawer} className="py-2 text-center text-xs font-semibold uppercase tracking-[0.14em] text-muted hover:text-fg">View full cart</Link>
           </div>
         </div>
       )}
