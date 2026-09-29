@@ -51,6 +51,17 @@ This folder is a self-contained Worker project. It does **not** touch any other 
 
 Nothing else is required: no database, KV, R2 or API keys. `NEXT_PUBLIC_SITE_URL` also sets the allowed same-origin for API calls if the site is reached on a hostname other than the one Cloudflare reports.
 
+### Troubleshooting a failed Cloudflare build
+
+| Symptom in the build log | Cause | Fix |
+| --- | --- | --- |
+| `Could not detect a directory containing static files` at the deploy step | Root directory is `/` and/or Build command is empty, so `wrangler` ran in the repo root (no `wrangler.jsonc` there) | **Settings → Build**: Root directory `supercars`, Build command `npm ci && npm run cf:build`, then **Retry build** |
+| The build log shows no `npm ci` / `next build` at all | Build command is `None` | Same as above |
+| `ENOENT … package.json` or `Cannot find … supercars` | The branch being built does not contain `supercars/` (e.g. the PR isn't merged) | Merge to the production branch, or change **Git branch** in Build settings |
+| `Worker name mismatch` / build refuses to deploy | Dashboard Worker name differs from `name` in `wrangler.jsonc` | Keep the Worker named `supercars` |
+
+The build settings are stored in the Cloudflare dashboard, **not** in this repository, so changing them requires editing them there.
+
 ### Environments
 
 | | Development | Preview | Production |
