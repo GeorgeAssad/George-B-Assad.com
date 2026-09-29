@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { HomeBand } from "@/components/home/HomeBand";
 import { HomeStage } from "@/components/home/HomeStage";
 import { getRepositories } from "@/server/repositories";
 import { HOME_HERO_SLUG } from "@/config/catalog";
@@ -11,8 +12,19 @@ export const metadata: Metadata = {
 };
 
 export default async function HomePage() {
-  const cars = await getRepositories().cars.listEntries();
+  const repos = getRepositories();
+  const [cars, templates, rules] = await Promise.all([repos.cars.listEntries(), repos.templates.list(), repos.products.getShippingRules()]);
   const hero = cars.find((e) => e.generation.slug === HOME_HERO_SLUG) ?? cars.find((e) => e.generation.photos[0]?.mode === "cutout") ?? cars[0];
   if (!hero) throw new Error("Missing demo data: cars");
-  return <HomeStage hero={hero} cars={cars} />;
+  const facts = [
+    `Delivered in ${rules.minBusinessDays}–${rules.maxBusinessDays} business days`,
+    "Heavyweight matte art paper",
+    "Demo checkout: nothing is charged",
+  ];
+  return (
+    <>
+      <HomeStage hero={hero} cars={cars} />
+      <HomeBand entry={hero} templates={templates} facts={facts} />
+    </>
+  );
 }

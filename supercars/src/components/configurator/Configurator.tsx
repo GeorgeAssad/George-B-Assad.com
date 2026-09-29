@@ -243,9 +243,13 @@ function ConfiguratorInner({ catalog }: { catalog: Catalog }) {
 
         {/* Desktop live preview */}
         <aside aria-label="Poster preview" className="hidden lg:block">
-          <div className="sticky top-28">
-            <PreviewPanel entry={entry} template={template} customization={display} sizeId={state.sizeId} kind={product.kind} generating={state.step === 4 && preview.status === "running"} />
-            {entry && <p className="mt-4 text-center text-sm text-muted">{entry.generation.displayName} · {template.name} · {size.label}</p>}
+          <div className="on-dark studio-stage grain sticky top-24 isolate overflow-hidden rounded-2xl border border-line px-5 pb-5 pt-9 text-fg">
+            <div className="picture-light" aria-hidden="true" />
+            {/* The poster never taller than the space under the header, so it is always fully visible. */}
+            <div className="mx-auto" style={{ maxWidth: "min(100%, calc((100svh - 17rem) * 0.714))" }}>
+              <PreviewPanel entry={entry} template={template} customization={display} sizeId={state.sizeId} kind={product.kind} generating={state.step === 4 && preview.status === "running"} />
+            </div>
+            {entry && <p className="mt-3 text-center text-sm text-muted">{entry.generation.displayName} · {template.name} · {size.label}</p>}
           </div>
         </aside>
       </div>
