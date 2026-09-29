@@ -10,62 +10,49 @@ async function loadAllImages(page: Page) {
 const brokenImages = (page: Page) =>
   page.evaluate(() => [...document.images].filter((i) => i.complete && i.naturalWidth === 0).map((i) => i.currentSrc || i.src));
 
-test("home: the hero shows a studio cutout of the car with a credit link", async ({ page }, info) => {
+test("home: the studio hero car is a loaded, fully visible cutout (desktop and tablet)", async ({ page }, info) => {
+  test.skip(info.project.name === "mobile", "phones show the car picker only, so everything fits one screen");
   await page.goto("/");
   const hero = page.locator("section[aria-labelledby='hero-title']");
   const img = hero.locator("picture img").first();
   await expect(img).toBeVisible();
   await expect.poll(() => img.evaluate((el: HTMLImageElement) => el.complete && el.naturalWidth)).toBeGreaterThan(300);
-  const src = await img.evaluate((el: HTMLImageElement) => el.currentSrc);
-  expect(src).toMatch(/\/cars\/nissan-gt-r-r35\/main-\d+\.(avif|webp)$/);
+  expect(await img.evaluate((el: HTMLImageElement) => el.currentSrc)).toMatch(/\/cars\/nissan-gt-r-r35\/main-\d+\.(avif|webp)$/);
   await expect(img).toHaveAttribute("width", /\d+/);
   await expect(img).toHaveAttribute("height", /\d+/);
   await expect(img).toHaveAttribute("fetchpriority", "high");
-  await expect(hero.getByRole("link", { name: /photo credit/i })).toHaveAttribute("href", "/credits");
-  // The cutout must sit fully inside the viewport (not clipped by the edge) and carry a floor reflection.
+  // The car drives in with a transform animation for its first ~1.3 s; afterwards it must sit inside the viewport.
   const vw = page.viewportSize()?.width ?? 0;
-  // Poll: the car drives in with a transform animation for its first ~1.3 s.
   await expect.poll(async () => {
     const box = await img.boundingBox();
     return !!box && box.x >= -1 && box.x + box.width <= vw + 1;
   }, { timeout: 8000 }).toBe(true);
-  await expect(hero.locator(".studio-reflection")).toHaveCount(1);
   await expectNoHorizontalScroll(page);
   await shot(page, "photo-home-hero", info.project.name);
 });
 
-test("home: hero copy stays readable over the photo", async ({ page }) => {
-  await page.goto("/");
-  const title = page.getByRole("heading", { level: 1 });
-  await expect(title).toBeVisible();
-  // The headline must be fully inside the dark scrim side of the hero, never under the bright part of the photo.
-  const box = await title.boundingBox();
-  const viewport = page.viewportSize();
-  expect(box && viewport && box.x + box.width <= viewport.width).toBe(true);
-  const color = await title.evaluate((el) => getComputedStyle(el).color);
-  expect(color).toBe("rgb(243, 243, 241)"); // .on-dark keeps light text even if the user chose the light theme
-});
-
-test("home: the photo hero stays dark in the light theme", async ({ page }) => {
+test("home: headline stays light on the dark stage even in the light theme", async ({ page }) => {
   await page.addInitScript(() => window.localStorage.setItem("sc-theme", "light"));
   await page.goto("/");
   const hero = page.locator("section[aria-labelledby='hero-title']");
   await expect(hero).toHaveCSS("background-color", "rgb(5, 5, 6)");
+  await expect(page.getByRole("heading", { level: 1 })).toHaveCSS("color", "rgb(243, 243, 241)");
 });
 
-test("cars: every card with an image loads it; cars without one keep their drawing", async ({ page }, info) => {
-  await page.goto("/cars");
+test("home: 12 car tiles — cutouts load, cars without an image keep their drawing", async ({ page }, info) => {
+  await page.goto("/");
   await loadAllImages(page);
   expect(await brokenImages(page)).toEqual([]);
-  const cards = page.locator("a[href^='/cars/']").filter({ has: page.locator("picture") });
-  expect(await cards.count()).toBe(10);
-  const e63 = page.getByRole("link", { name: /Mercedes-AMG E 63 S W213/ });
-  await expect(e63.locator("picture")).toHaveCount(0);
-  await expect(e63.locator("svg").first()).toBeVisible();
-  const supra = page.getByRole("link", { name: /GR Supra A90/ });
-  await expect(supra.locator("picture")).toHaveCount(0);
+  const tiles = page.locator("section[aria-labelledby='hero-title'] ul a[href^='/create?car=']");
+  expect(await tiles.count()).toBe(12);
+  expect(await tiles.filter({ has: page.locator("picture") }).count()).toBe(10);
+  for (const name of [/Mercedes-AMG E 63 S W213/, /GR Supra A90/]) {
+    const tile = page.getByRole("link", { name });
+    await expect(tile.locator("picture")).toHaveCount(0);
+    await expect(tile.locator("svg").first()).toBeVisible();
+  }
   await expectNoHorizontalScroll(page);
-  await shot(page, "photo-cars", info.project.name);
+  await shot(page, "photo-home-tiles", info.project.name);
 });
 
 test("car page: photo stage with a visible, working credit", async ({ page }, info) => {

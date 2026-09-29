@@ -73,6 +73,22 @@ The build settings are stored in the Cloudflare dashboard, **not** in this repos
 | Secrets | `.dev.vars` (git-ignored) | Worker secrets (preview) | Worker secrets |
 | Providers | all `mock` | all `mock` | all `mock` until real ones exist |
 
+## Pages (order-first)
+
+The store exists to take an order, so it has as few pages as possible and one way to do each thing.
+
+| Page | Job |
+| --- | --- |
+| `/` | One screen: what we sell + the 12 car tiles. A tile starts a poster for that car. |
+| `/create` | The designer: **car → design (style, finish, size) → personalize → review and add to cart**. |
+| `/cars/<slug>` | One-screen landing page per car (for ads and links): the car, three facts, price, one button. |
+| `/checkout`, `/order/success/<id>`, `/track` | Pay (demo), confirmation, order tracking. |
+| `/shipping`, `/privacy`, `/terms`, `/legal`, `/credits` | Required information, linked from a one-line footer. |
+
+Old URLs still work: `/shop`, `/cars` and `/products/*` go to `/create`; `/how-it-works` and `/about` go to `/`; `/returns` goes to `/shipping`; `/cart` goes to `/checkout` (the cart is the drawer opened from the header). The redirects are in `next.config.ts`.
+
+Rules that `tests/e2e/funnel.spec.ts` enforces: the home page, car pages, `/track` and the checkout entry fit one screen without scrolling (390×844, 768×1024, 1440×900); a page never shows two "create your poster" controls; the header is only logo, Track order and cart (a Create button appears only on pages that have no start button of their own); there is no bottom tab bar and no floating chat button (the chat link is in the footer).
+
 ## Car images
 
 Every car image is described in `photos/manifest.json` and turned into web files by two commands. To add or replace a car's image (your own studio shot, or an AI-generated one):

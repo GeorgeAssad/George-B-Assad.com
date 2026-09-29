@@ -5,9 +5,8 @@ async function addPosterToCart(page: Page, name = "GEORGE") {
   await page.goto("/create?car=bmw-m3-g80&style=racing&size=50x70");
   await expect(page.getByRole("heading", { name: "Make it yours." })).toBeVisible();
   await page.getByLabel(/^Name/).fill(name);
-  await page.getByRole("button", { name: "Generate preview" }).click();
-  await expect(page.getByText("Preview ready")).toBeVisible({ timeout: 15_000 });
   await page.getByRole("button", { name: "Continue" }).click();
+  await expect(page.getByText("Preview ready")).toBeVisible({ timeout: 15_000 });
   await page.getByRole("button", { name: "Add to cart" }).click();
   await expect(page.getByRole("dialog", { name: "Shopping cart" })).toBeVisible();
 }
@@ -66,8 +65,8 @@ test("golden path: cart → checkout → demo payment → confirmation → track
   await expect(page.getByRole("article", { name: `Order ${orderId}` })).toBeVisible();
 
   // The cart was emptied
-  await page.goto("/cart");
-  await expect(page.getByRole("heading", { name: "Your cart is empty." })).toBeVisible();
+  await page.goto("/checkout");
+  await expect(page.getByRole("heading", { name: "Nothing to check out." })).toBeVisible();
 
   // Tracking by number (no account)
   await page.goto("/track");
@@ -102,26 +101,24 @@ test("track: seeded demo orders, unknown orders and invalid input", async ({ pag
 
 test("cart: quantity, edit customization, remove, empty state", async ({ page }) => {
   await addPosterToCart(page, "ALEX");
-  await page.getByRole("dialog").getByRole("link", { name: /View full cart/i }).click();
-  await expect(page).toHaveURL(/\/cart$/);
-  await expect(page.getByText("€79.00").first()).toBeVisible();
+  const cart = page.getByRole("dialog", { name: "Shopping cart" });
+  await expect(cart.getByText("€79.00").first()).toBeVisible();
 
-  await page.getByRole("button", { name: /Increase quantity/ }).click();
-  await expect(page.getByText("€158.00").first()).toBeVisible();
+  await cart.getByRole("button", { name: /Increase quantity/ }).click();
+  await expect(cart.getByText("€158.00").first()).toBeVisible();
 
-  await page.getByRole("link", { name: /Edit customization/ }).click();
+  await cart.getByRole("link", { name: /Edit customization/ }).click();
   await expect(page.getByRole("heading", { name: "Make it yours." })).toBeVisible();
   await expect(page.getByLabel(/^Name/)).toHaveValue("ALEX");
   await page.getByLabel(/^Name/).fill("ALEXANDER");
-  await page.getByRole("button", { name: "Generate preview" }).click();
-  await expect(page.getByText("Preview ready")).toBeVisible({ timeout: 15_000 });
   await page.getByRole("button", { name: "Continue" }).click();
+  await expect(page.getByText("Preview ready")).toBeVisible({ timeout: 15_000 });
   await page.getByRole("button", { name: "Update cart" }).click();
-  await page.getByRole("dialog").getByRole("link", { name: /View full cart/i }).click();
-  await expect(page.getByText(/ALEXANDER/).first()).toBeVisible();
+  await expect(cart).toBeVisible();
+  await expect(cart.getByText(/ALEXANDER/).first()).toBeVisible();
 
-  await page.getByRole("button", { name: /Remove .* from cart/ }).click();
-  await expect(page.getByRole("heading", { name: "Your cart is empty." })).toBeVisible();
+  await cart.getByRole("button", { name: /Remove .* from cart/ }).click();
+  await expect(cart.getByText("Nothing here yet")).toBeVisible();
 });
 
 test("checkout with an empty cart shows a way forward", async ({ page }) => {
