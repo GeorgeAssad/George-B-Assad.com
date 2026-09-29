@@ -45,6 +45,26 @@
   --shadow-lift: 0 18px 44px -20px rgba(20, 20, 30, 0.35);
 }
 
+/* Photo-led sections keep the dark palette in both themes: the photographs are graded for a dark page. */
+.on-dark {
+  color-scheme: dark;
+  --bg: #050506;
+  --surface: #0b0c0e;
+  --elevated: #111215;
+  --raised: #181a1e;
+  --line: rgba(255, 255, 255, 0.09);
+  --line-strong: rgba(255, 255, 255, 0.18);
+  --fg: #f3f3f1;
+  --fg-muted: #b4b6bd;
+  --fg-subtle: #9a9ca4;
+  --red: #e10600;
+  --red-hover: #ff1c12;
+  --red-text: #ff4d40;
+  --on-red: #ffffff;
+  --glass: rgba(11, 12, 14, 0.86);
+  color: var(--fg);
+}
+
 @theme inline {
   --color-bg: var(--bg);
   --color-surface: var(--surface);
@@ -388,6 +408,15 @@ fieldset {
 }
 .hero-in { animation: rise 1s var(--ease) backwards; animation-delay: var(--d, 0ms); }
 .stagger { animation: page-in 0.8s var(--ease) backwards; animation-delay: var(--d, 0ms); }
+/* Photo hero: slow drift on the background photo; off for reduced motion. */
+@keyframes kenburns {
+  from { transform: scale(1.03) translate3d(0, 0, 0); }
+  to { transform: scale(1.11) translate3d(-1.4%, -0.8%, 0); }
+}
+.kenburns { animation: kenburns 28s ease-in-out infinite alternate; will-change: transform; }
+@media (prefers-reduced-motion: reduce) { .kenburns { animation: none !important; transform: none; will-change: auto; } }
+/* Shared colour grade so photographs from different photographers sit together. */
+.photo-cinema { filter: contrast(1.07) saturate(1.06) brightness(0.9); }
 .speed-lines {
   background-image: repeating-linear-gradient(90deg, transparent 0 46px, color-mix(in srgb, var(--fg) 7%, transparent) 46px 47px);
   mask-image: linear-gradient(90deg, transparent, #000 30%, #000 70%, transparent);
@@ -414,3 +443,17 @@ fieldset {
 
 /* Skip layout/paint of long below-the-fold sections until they approach the viewport. */
 .cv-auto { content-visibility: auto; contain-intrinsic-size: auto 900px; }
+
+/* Hero photo: melt the left edge and the top of the photograph into the page so text sits on solid dark. */
+.hero-photo-mask {
+  -webkit-mask-image: linear-gradient(180deg, #000 0, #000 55%, transparent 100%);
+  mask-image: linear-gradient(180deg, #000 0, #000 55%, transparent 100%);
+}
+@media (min-width: 1024px) {
+  .hero-photo-mask {
+    -webkit-mask-image: linear-gradient(90deg, transparent 0, rgba(0, 0, 0, 0.55) 22%, #000 46%), linear-gradient(180deg, transparent 0, #000 22%, #000 78%, transparent 100%);
+    mask-image: linear-gradient(90deg, transparent 0, rgba(0, 0, 0, 0.55) 22%, #000 46%), linear-gradient(180deg, transparent 0, #000 22%, #000 78%, transparent 100%);
+    -webkit-mask-composite: source-in;
+    mask-composite: intersect;
+  }
+}

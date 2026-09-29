@@ -11,7 +11,8 @@ const cars = await (await fetch(`${BASE}/sitemap.xml`)).text().then((x) => [...x
 const jobs = [
   ...["home", "create", "shop"].map((k) => ({ path: `/og-preview/${k}`, out: `public/og/${k}.jpg`, w: 1200, h: 630 })),
   ...cars.map((slug) => ({ path: `/og-preview/car/${slug}`, out: `public/og/cars/${slug}.jpg`, w: 1200, h: 630 })),
-  ...["minimal", "blueprint", "racing", "heritage", "luxury"].map((id) => ({ path: `/og-preview/template/${id}`, out: `public/templates/${id}.jpg`, w: 600, h: 840 })),
+  // Pass --no-templates to leave public/templates untouched (they do not depend on car photographs).
+  ...(process.argv.includes("--no-templates") ? [] : ["minimal", "blueprint", "racing", "heritage", "luxury"]).map((id) => ({ path: `/og-preview/template/${id}`, out: `public/templates/${id}.jpg`, w: 600, h: 840 })),
 ];
 
 mkdirSync("public/og/cars", { recursive: true });

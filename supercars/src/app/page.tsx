@@ -6,6 +6,7 @@ import { FeedSection } from "@/components/home/FeedSection";
 import { FinalCta } from "@/components/home/FinalCta";
 import { Hero } from "@/components/home/Hero";
 import { HowItWorks } from "@/components/home/HowItWorks";
+import { PhotoToPoster } from "@/components/home/PhotoToPoster";
 import { ProductShowcase } from "@/components/home/ProductShowcase";
 import { SocialProof } from "@/components/home/SocialProof";
 import { WhySuperCars } from "@/components/home/WhySuperCars";
@@ -37,13 +38,15 @@ export default async function HomePage() {
 
   const m3 = must(bySlug.get("bmw-m3-g80"), "bmw-m3-g80");
   const gtr = must(bySlug.get("nissan-gt-r-r35"), "nissan-gt-r-r35");
+  const gt3rs = must(bySlug.get("porsche-911-gt3-rs-992"), "porsche-911-gt3-rs-992");
   const featured = entries.filter((e) => e.generation.featured).slice(0, 6);
   const [poster, framed] = [must(products[0], "poster product"), must(products[1], "framed product")];
 
   return (
     <>
-      <Hero main={m3} second={gtr} racing={must(tplById.get("racing"), "racing")} blueprint={must(tplById.get("blueprint"), "blueprint")} />
+      <Hero main={gtr} second={m3} racing={must(tplById.get("racing"), "racing")} blueprint={must(tplById.get("blueprint"), "blueprint")} />
       <BrandStatement />
+      <PhotoToPoster entry={gt3rs} template={must(tplById.get("racing"), "racing")} />
       <HowItWorks />
       <FeaturedCars entries={featured} />
       <FeaturedStyles templates={templates} entry={m3} />

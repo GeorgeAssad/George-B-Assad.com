@@ -1,0 +1,460 @@
+{
+  "version": 1,
+  "photos": [
+    {
+      "slug": "bmw-m3-g80",
+      "id": "main",
+      "alt": "Blue BMW M3 Competition (G80), front three-quarter view, parked on grass",
+      "source": {
+        "file": "File:BMW M3 (G80, 2022) (52227837026).jpg",
+        "url": "https://upload.wikimedia.org/wikipedia/commons/e/e8/BMW_M3_%28G80%2C_2022%29_%2852227837026%29.jpg",
+        "width": 6000,
+        "height": 4000
+      },
+      "crop": {
+        "left": 0.0725,
+        "top": 0.0834,
+        "width": 0.9063,
+        "height": 0.8491
+      },
+      "redact": [
+        {
+          "left": 0.7938,
+          "top": 0.5576,
+          "width": 0.0469,
+          "height": 0.0562
+        }
+      ],
+      "focal": {
+        "x": 50,
+        "y": 50
+      },
+      "credit": {
+        "title": "BMW M3 (G80, 2022) (52227837026)",
+        "author": "Charles from Port Chester, New York",
+        "licenseName": "CC BY 2.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/2.0/",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:BMW_M3_(G80,_2022)_(52227837026).jpg"
+      }
+    },
+    {
+      "slug": "bmw-m4-g82",
+      "id": "main",
+      "alt": "Dark blue BMW M4 Competition (G82), front three-quarter view",
+      "source": {
+        "file": "File:2021 BMW M4 Competition.jpg",
+        "url": "https://upload.wikimedia.org/wikipedia/commons/1/10/2021_BMW_M4_Competition.jpg",
+        "width": 2939,
+        "height": 1617
+      },
+      "crop": {
+        "left": 0,
+        "top": 0,
+        "width": 1,
+        "height": 1
+      },
+      "redact": [
+        {
+          "left": 0.1344,
+          "top": 0.6307,
+          "width": 0.1375,
+          "height": 0.0875
+        },
+        {
+          "left": 0.6938,
+          "top": 0.0455,
+          "width": 0.0375,
+          "height": 0.0625
+        },
+        {
+          "left": 0.8625,
+          "top": 0.0795,
+          "width": 0.0344,
+          "height": 0.0568
+        }
+      ],
+      "focal": {
+        "x": 50,
+        "y": 50
+      },
+      "credit": {
+        "title": "2021 BMW M4 Competition",
+        "author": "Calreyn88",
+        "licenseName": "CC BY 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:2021_BMW_M4_Competition.jpg"
+      }
+    },
+    {
+      "slug": "porsche-911-992",
+      "id": "main",
+      "alt": "Blue Porsche 911 Carrera S (992), front three-quarter view",
+      "source": {
+        "file": "File:2025 Porsche 911 Carrera S.jpg",
+        "url": "https://upload.wikimedia.org/wikipedia/commons/9/96/2025_Porsche_911_Carrera_S.jpg",
+        "width": 4643,
+        "height": 2693
+      },
+      "crop": {
+        "left": 0.0344,
+        "top": 0,
+        "width": 0.9281,
+        "height": 1
+      },
+      "redact": [
+        {
+          "left": 0.3063,
+          "top": 0.0377,
+          "width": 0.0281,
+          "height": 0.0593
+        }
+      ],
+      "focal": {
+        "x": 50,
+        "y": 55
+      },
+      "credit": {
+        "title": "2025 Porsche 911 Carrera S",
+        "author": "TTTNIS",
+        "licenseName": "CC0",
+        "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:2025_Porsche_911_Carrera_S.jpg"
+      }
+    },
+    {
+      "slug": "porsche-911-gt3-rs-992",
+      "id": "main",
+      "alt": "Red Porsche 911 GT3 RS (992) with white stripes on a display turntable",
+      "source": {
+        "file": "File:2024 911 GT3 RS (53536704621).jpg",
+        "url": "https://upload.wikimedia.org/wikipedia/commons/d/dd/2024_911_GT3_RS_%2853536704621%29.jpg",
+        "width": 5344,
+        "height": 3006
+      },
+      "crop": {
+        "left": 0,
+        "top": 0,
+        "width": 1,
+        "height": 1
+      },
+      "redact": [
+        {
+          "left": 0.0938,
+          "top": 0.1389,
+          "width": 0.0469,
+          "height": 0.0889
+        },
+        {
+          "left": 0.0313,
+          "top": 0.1889,
+          "width": 0.0469,
+          "height": 0.0833
+        },
+        {
+          "left": 0.2875,
+          "top": 0.1611,
+          "width": 0.05,
+          "height": 0.0778
+        },
+        {
+          "left": 0.3406,
+          "top": 0.1556,
+          "width": 0.0438,
+          "height": 0.0778
+        },
+        {
+          "left": 0.4063,
+          "top": 0.1556,
+          "width": 0.0375,
+          "height": 0.0722
+        },
+        {
+          "left": 0.5719,
+          "top": 0.1778,
+          "width": 0.0344,
+          "height": 0.0611
+        }
+      ],
+      "focal": {
+        "x": 55,
+        "y": 55
+      },
+      "credit": {
+        "title": "2024 911 GT3 RS (53536704621)",
+        "author": "Mustang Joe",
+        "licenseName": "CC0",
+        "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:2024_911_GT3_RS_(53536704621).jpg"
+      }
+    },
+    {
+      "slug": "audi-rs6-c8",
+      "id": "main",
+      "alt": "Dark blue Audi RS 6 Avant (C8) parked on grass under autumn trees",
+      "source": {
+        "file": "File:Audi RS 6 Avant (2021) (52451226524).jpg",
+        "url": "https://upload.wikimedia.org/wikipedia/commons/4/46/Audi_RS_6_Avant_%282021%29_%2852451226524%29.jpg",
+        "width": 5824,
+        "height": 3980
+      },
+      "crop": {
+        "left": 0.0375,
+        "top": 0.1006,
+        "width": 0.9375,
+        "height": 0.8573
+      },
+      "redact": [
+        {
+          "left": 0.2,
+          "top": 0.6542,
+          "width": 0.05,
+          "height": 0.0686
+        }
+      ],
+      "focal": {
+        "x": 49,
+        "y": 53
+      },
+      "credit": {
+        "title": "Audi RS 6 Avant (2021) (52451226524)",
+        "author": "Charles from Port Chester, New York",
+        "licenseName": "CC BY 2.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/2.0/",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Audi_RS_6_Avant_(2021)_(52451226524).jpg"
+      }
+    },
+    {
+      "slug": "audi-r8-4s",
+      "id": "main",
+      "alt": "White Audi R8 V10 Performance (Typ 4S), front three-quarter view in a showroom",
+      "source": {
+        "file": "File:2023 Audi R8 Coupe V10 Performance RWD at Audi Manchester 01.jpg",
+        "url": "https://upload.wikimedia.org/wikipedia/commons/6/6c/2023_Audi_R8_Coupe_V10_Performance_RWD_at_Audi_Manchester_01.jpg",
+        "width": 4160,
+        "height": 2340
+      },
+      "crop": {
+        "left": 0.0563,
+        "top": 0,
+        "width": 0.9,
+        "height": 1
+      },
+      "redact": [
+        {
+          "left": 0.6813,
+          "top": 0.6167,
+          "width": 0.1406,
+          "height": 0.1556
+        },
+        {
+          "left": 0.4281,
+          "top": 0.1111,
+          "width": 0.1094,
+          "height": 0.1722
+        }
+      ],
+      "focal": {
+        "x": 46,
+        "y": 48
+      },
+      "credit": {
+        "title": "2023 Audi R8 Coupe V10 Performance RWD at Audi Manchester 01",
+        "author": "MoCars",
+        "licenseName": "CC0",
+        "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:2023_Audi_R8_Coupe_V10_Performance_RWD_at_Audi_Manchester_01.jpg"
+      }
+    },
+    {
+      "slug": "mercedes-amg-gt-c190",
+      "id": "main",
+      "alt": "Yellow Mercedes-AMG GT S (C190), front three-quarter view on a display floor",
+      "source": {
+        "file": "File:Mercedes-AMG GT S (C190) front.JPG",
+        "url": "https://upload.wikimedia.org/wikipedia/commons/4/40/Mercedes-AMG_GT_S_%28C190%29_front.JPG",
+        "width": 2560,
+        "height": 1920
+      },
+      "crop": {
+        "left": 0,
+        "top": 0.0083,
+        "width": 1,
+        "height": 0.8892
+      },
+      "redact": [
+        {
+          "left": 0.0063,
+          "top": 0.0167,
+          "width": 0.0438,
+          "height": 0.05
+        }
+      ],
+      "focal": {
+        "x": 50,
+        "y": 49
+      },
+      "credit": {
+        "title": "Mercedes-AMG GT S (C190) front",
+        "author": "Tokumeigakarinoaoshima",
+        "licenseName": "CC0",
+        "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Mercedes-AMG_GT_S_(C190)_front.JPG"
+      }
+    },
+    {
+      "slug": "nissan-gt-r-r35",
+      "id": "main",
+      "alt": "Grey-blue Nissan GT-R NISMO (R35) with carbon bonnet and red trim, on a black display stage",
+      "source": {
+        "file": "File:Nissan 4BA-R35 GT-R NISMO Special edition (Ent No.30302) (24021013210).jpg",
+        "url": "https://upload.wikimedia.org/wikipedia/commons/e/e5/Nissan_4BA-R35_GT-R_NISMO_Special_edition_%28Ent_No.30302%29_%2824021013210%29.jpg",
+        "width": 4608,
+        "height": 3072
+      },
+      "crop": {
+        "left": 0.025,
+        "top": 0.0656,
+        "width": 0.95,
+        "height": 0.8903
+      },
+      "redact": [],
+      "focal": {
+        "x": 53,
+        "y": 55
+      },
+      "credit": {
+        "title": "Nissan 4BA-R35 GT-R NISMO Special edition (Ent No.30302) (24021013210)",
+        "author": "先従隗始",
+        "licenseName": "CC0",
+        "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Nissan_4BA-R35_GT-R_NISMO_Special_edition_(Ent_No.30302)_(24021013210).jpg"
+      }
+    },
+    {
+      "slug": "toyota-gr-supra-a90",
+      "id": "main",
+      "alt": "Yellow Toyota GR Supra (A90) seen from above and in front",
+      "source": {
+        "file": "File:Toyota GR Supra (A90) Washington DC Metro Area, USA (7).jpg",
+        "url": "https://upload.wikimedia.org/wikipedia/commons/d/db/Toyota_GR_Supra_%28A90%29_Washington_DC_Metro_Area%2C_USA_%287%29.jpg",
+        "width": 2700,
+        "height": 2160
+      },
+      "crop": {
+        "left": 0,
+        "top": 0.0586,
+        "width": 1,
+        "height": 0.8336
+      },
+      "redact": [
+        {
+          "left": 0.5813,
+          "top": 0.2422,
+          "width": 0.125,
+          "height": 0.1328
+        }
+      ],
+      "focal": {
+        "x": 52,
+        "y": 50
+      },
+      "credit": {
+        "title": "Toyota GR Supra (A90) Washington DC Metro Area, USA (7)",
+        "author": "OWS Photography",
+        "licenseName": "CC BY 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Toyota_GR_Supra_(A90)_Washington_DC_Metro_Area,_USA_(7).jpg"
+      }
+    },
+    {
+      "slug": "lamborghini-huracan-lp610",
+      "id": "main",
+      "alt": "Lime green Lamborghini Huracán LP 610-4, front three-quarter view on a black show carpet",
+      "source": {
+        "file": "File:Lamborghini Huracan LP610-4 (16280529768).jpg",
+        "url": "https://upload.wikimedia.org/wikipedia/commons/b/b9/Lamborghini_Huracan_LP610-4_%2816280529768%29.jpg",
+        "width": 5184,
+        "height": 3456
+      },
+      "crop": {
+        "left": 0,
+        "top": 0.0375,
+        "width": 1,
+        "height": 0.9372
+      },
+      "redact": [
+        {
+          "left": 0.0531,
+          "top": 0.15,
+          "width": 0.0469,
+          "height": 0.0797
+        },
+        {
+          "left": 0.1031,
+          "top": 0.15,
+          "width": 0.0438,
+          "height": 0.0609
+        },
+        {
+          "left": 0.2031,
+          "top": 0.1453,
+          "width": 0.0438,
+          "height": 0.0656
+        },
+        {
+          "left": 0.2625,
+          "top": 0.089,
+          "width": 0.0313,
+          "height": 0.0562
+        }
+      ],
+      "focal": {
+        "x": 49,
+        "y": 56
+      },
+      "credit": {
+        "title": "Lamborghini Huracan LP610-4 (16280529768)",
+        "author": "Jacob Frey 4A",
+        "licenseName": "CC BY 2.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/2.0/",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Lamborghini_Huracan_LP610-4_(16280529768).jpg"
+      }
+    },
+    {
+      "slug": "ford-mustang-gt-s550",
+      "id": "main",
+      "alt": "Black Ford Mustang GT (S550) with red brake calipers, parked on grass",
+      "source": {
+        "file": "File:Ford Mustang GT (41657274580).jpg",
+        "url": "https://upload.wikimedia.org/wikipedia/commons/8/8f/Ford_Mustang_GT_%2841657274580%29.jpg",
+        "width": 5184,
+        "height": 3888
+      },
+      "crop": {
+        "left": 0,
+        "top": 0.1667,
+        "width": 1,
+        "height": 0.8333
+      },
+      "redact": [
+        {
+          "left": 0.7219,
+          "top": 0.6542,
+          "width": 0.0906,
+          "height": 0.0792
+        }
+      ],
+      "focal": {
+        "x": 50,
+        "y": 48
+      },
+      "credit": {
+        "title": "Ford Mustang GT (41657274580)",
+        "author": "FotoSleuth",
+        "licenseName": "CC BY 2.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/2.0/",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Ford_Mustang_GT_(41657274580).jpg"
+      }
+    }
+  ]
+}

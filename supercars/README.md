@@ -24,6 +24,8 @@ npm run dev            # http://localhost:3000
 | `npm run cf:dryrun` | package the Worker without deploying and report its size |
 | `npm run headers:write` | regenerate `public/_headers` from `src/config/security-headers.ts` |
 | `npm run og` | regenerate Open Graph / template images (needs the dev server on :3111) |
+| `npm run photos:fetch` | download the original car photos listed in `photos/manifest.json` into `assets-src/` (git-ignored) |
+| `npm run photos:process` | crop, blur plates/faces, encode AVIF + WebP into `public/cars/` and regenerate `src/data/car-photos.ts` |
 
 ### End-to-end tests
 
@@ -76,7 +78,8 @@ The build settings are stored in the Cloudflare dashboard, **not** in this repos
 src/app/            routes, API routes (all via withApi), error/loading states, sitemap/robots/manifest
 src/components/     ui · layout · home · cars · configurator · poster · cart · checkout · orders · support
 src/domain/         pure types, split by concern (catalog · customer · cart · order · fulfillment · design · support)
-src/data/           demo data only — read via repositories, never imported by UI (enforced by ESLint)
+photos/             manifest of the car photographs (source, crop, credit) — the source of truth for `public/cars`
+src/data/           demo data only — read via repositories, never imported by UI (enforced by ESLint); `car-photos.ts` is generated
 src/server/         repositories · services (contracts + mocks + factory) · checkout · security
 src/lib/            validation (zod), print-spec, timeline, cart store, analytics
 src/config/         env (server-only), site, nav, security headers

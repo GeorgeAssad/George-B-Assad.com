@@ -2,7 +2,7 @@ import AxeBuilder from "@axe-core/playwright";
 import { expect } from "@playwright/test";
 import { test } from "./helpers";
 
-const PAGES = ["/", "/cars", "/cars/bmw-m3-g80", "/cars/porsche-911-gt3-rs-992", "/shop", "/products/custom-car-poster", "/create", "/cart", "/checkout", "/track", "/how-it-works", "/about", "/privacy", "/shipping"];
+const PAGES = ["/", "/cars", "/cars/bmw-m3-g80", "/cars/porsche-911-gt3-rs-992", "/cars/mercedes-amg-e63-w213", "/credits", "/shop", "/products/custom-car-poster", "/create", "/cart", "/checkout", "/track", "/how-it-works", "/about", "/privacy", "/shipping"];
 const WIDTHS = [320, 375, 390, 430, 768, 1024, 1280, 1920];
 
 test.describe("responsive layout (no horizontal scrolling at any width)", () => {
@@ -37,7 +37,7 @@ test.describe("accessibility (axe: WCAG 2.1 A/AA)", () => {
   test.beforeEach(({}, info) => {
     test.skip(info.project.name === "mobile", "scanned once at desktop width");
   });
-  const A11Y_PAGES = ["/", "/cars", "/cars/bmw-m3-g80", "/create", "/shop", "/products/framed-car-poster", "/cart", "/checkout", "/track", "/how-it-works", "/about", "/legal"];
+  const A11Y_PAGES = ["/", "/cars", "/cars/bmw-m3-g80", "/cars/nissan-gt-r-r35", "/cars/mercedes-amg-e63-w213", "/credits", "/create", "/shop", "/products/framed-car-poster", "/cart", "/checkout", "/track", "/how-it-works", "/about", "/legal"];
 
   for (const theme of ["dark", "light"] as const) {
     test(`no serious or critical violations — ${theme} theme`, async ({ page }) => {

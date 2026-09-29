@@ -80,6 +80,37 @@ export type VehicleAsset =
 
 export type VehicleTrait = "wing" | "wide-body";
 
+/* ------------------------------ Car photography ---------------------------- */
+
+/** Attribution that the photo's licence requires us to show. */
+export interface PhotoCredit {
+  readonly title: string;
+  readonly author: string;
+  /** Short licence name, e.g. "CC BY 4.0" or "CC0". */
+  readonly licenseName: string;
+  readonly licenseUrl: string;
+  /** Page the original was published on (Wikimedia Commons file page). */
+  readonly sourceUrl: string;
+}
+
+/**
+ * A processed, self-hosted photograph of the car. File names are derived, not stored:
+ * `/cars/<generationSlug>/<id>-<width>.<avif|webp>` for every width in `widths`.
+ */
+export interface CarPhoto {
+  readonly id: string;
+  readonly alt: string;
+  /** Pixel size of the largest processed file. All widths share this aspect ratio. */
+  readonly width: number;
+  readonly height: number;
+  readonly widths: readonly number[];
+  /** Focus point in percent (0–100). Drives `object-position` when the photo is cropped. */
+  readonly focal: { readonly x: number; readonly y: number };
+  /** Dominant colour shown while the image loads. */
+  readonly color: string;
+  readonly credit: PhotoCredit;
+}
+
 /** A specific generation of a model. This is the unit customers pick. */
 export interface CarGeneration {
   readonly id: string;
@@ -94,6 +125,8 @@ export interface CarGeneration {
   readonly performance: PerformanceCategory;
   readonly specs: CarSpecs;
   readonly vehicle: VehicleAsset;
+  /** Real photographs, best first. Empty when no suitably licensed photo exists yet. */
+  readonly photos: readonly CarPhoto[];
   readonly popularity: number;
   readonly featured: boolean;
 }

@@ -16,3 +16,6 @@ next-env.d.ts
 # local tooling output
 playwright-report
 test-results
+
+# original photographs (re-created by `npm run photos:fetch`)
+assets-src

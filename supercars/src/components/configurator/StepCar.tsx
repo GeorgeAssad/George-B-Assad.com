@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import type { CarEntry } from "@/domain/catalog";
+import { CarPhotoImage } from "@/components/cars/CarPhotoImage";
 import { VehicleArt } from "@/components/poster/VehicleArt";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { IconClose, IconSearch } from "@/components/ui/icons";
@@ -36,9 +37,15 @@ export function StepCar({ cars, selected, onSelect }: StepCarProps) {
             {results.map((c) => (
               <RadioCard key={c.generation.slug} name="car" value={c.generation.slug} checked={selected === c.generation.slug} onChange={() => onSelect(c.generation.slug)}>
                 <div className="flex items-center gap-3 p-3">
-                  <div className="w-28 flex-none overflow-hidden rounded-lg bg-[radial-gradient(ellipse_at_50%_105%,color-mix(in_srgb,var(--red)_16%,transparent),transparent_65%),var(--elevated)] p-1.5">
-                    <VehicleArt vehicle={c.generation.vehicle} shadow={false} />
-                  </div>
+                  {c.generation.photos[0] ? (
+                    <div className="aspect-[16/10] w-28 flex-none overflow-hidden rounded-lg bg-elevated">
+                      <CarPhotoImage slug={c.generation.slug} photo={c.generation.photos[0]} sizes="112px" alt="" />
+                    </div>
+                  ) : (
+                    <div className="w-28 flex-none overflow-hidden rounded-lg bg-[radial-gradient(ellipse_at_50%_105%,color-mix(in_srgb,var(--red)_16%,transparent),transparent_65%),var(--elevated)] p-1.5">
+                      <VehicleArt vehicle={c.generation.vehicle} shadow={false} />
+                    </div>
+                  )}
                   <div className="min-w-0 pr-7">
                     <p className="spec">{c.brand.name}</p>
                     <p className="h-display truncate text-[1.6rem]">{c.car.name} <span className="text-red-text">{c.generation.generation}</span></p>

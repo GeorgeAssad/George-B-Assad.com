@@ -1,9 +1,32 @@
 import type { CarEntry } from "@/domain/catalog";
 import { VehicleArt } from "@/components/poster/VehicleArt";
+import { CarPhotoImage } from "./CarPhotoImage";
+import { PhotoCredit } from "./PhotoCredit";
 
-/** Cinematic hero stage for a car: engineering grid, oversized outlined model name, dramatic floor glow. */
+/** Cinematic hero stage for a car: the real photograph when there is one, otherwise the drawn silhouette. */
 export function CarStage({ entry }: { entry: CarEntry }) {
   const { car, generation } = entry;
+  const photo = generation.photos[0];
+
+  if (photo) {
+    return (
+      <div className="on-dark relative isolate overflow-hidden border-b border-line bg-bg text-fg">
+        <div className="relative h-[17rem] overflow-hidden sm:h-[28rem] lg:h-[min(46rem,56vw)]">
+          <div className="kenburns absolute inset-0 -z-20">
+            <CarPhotoImage slug={generation.slug} photo={photo} priority sizes="100vw" className="photo-cinema" />
+          </div>
+          <div className="absolute inset-0 -z-10 bg-[linear-gradient(180deg,rgb(0_0_0/0.5)_0,transparent_28%,transparent_52%,var(--bg)_100%)]" aria-hidden="true" />
+          <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_60%_40%_at_50%_100%,color-mix(in_srgb,var(--red)_26%,transparent),transparent_72%)]" aria-hidden="true" />
+          <span className="spec absolute left-4 top-6 rounded-full bg-black/55 px-2.5 py-1 text-white/85 backdrop-blur sm:left-10">SC / {generation.generation}</span>
+          <span className="spec absolute right-4 top-6 rounded-full bg-black/55 px-2.5 py-1 text-white/85 backdrop-blur sm:right-10">{generation.specs.years}</span>
+        </div>
+        <div className="container-x pb-4 pt-3">
+          <PhotoCredit photo={photo} />
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="relative isolate overflow-hidden border-b border-line bg-[linear-gradient(180deg,var(--surface),var(--bg))]">
       <div className="tech-grid absolute inset-0 -z-10 opacity-60" aria-hidden="true" />

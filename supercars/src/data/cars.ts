@@ -32,7 +32,8 @@ export const cars: readonly Car[] = [
   { id: "ford-mustang", slug: "ford-mustang", brandId: "ford", name: "Mustang GT" },
 ];
 
-export const generations: readonly CarGeneration[] = [
+/** Raw catalog rows. Photos are merged in by the repository from `car-photos.ts`. */
+export const generations: readonly Omit<CarGeneration, "photos">[] = [
   {
     id: "bmw-m3-g80",
     slug: "bmw-m3-g80",

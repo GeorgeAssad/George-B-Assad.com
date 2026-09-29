@@ -27,5 +27,6 @@ export const footerNav = {
     { label: "Privacy", href: "/privacy" },
     { label: "Terms", href: "/terms" },
     { label: "Legal", href: "/legal" },
+    { label: "Photo credits", href: "/credits" },
   ],
 } as const satisfies Record<string, readonly NavLink[]>;

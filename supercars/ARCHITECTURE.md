@@ -145,8 +145,19 @@ Future real payment flow: `createCheckoutSession` returns a hosted-checkout URL;
 - **State:** cart is an external store (`useSyncExternalStore`) with zod-validated localStorage; dialogs use native `<dialog>` (focus trap, Esc, inert background); the car filters use the URL query string as the single source of truth.
 - **Configurator** (`components/configurator`): pure reducer + URL parsing in `config-state.ts` (unit-tested), six steps with a stepper, live preview, server-quoted price, `?edit=<lineId>` to edit a cart line, deep links `?car=&style=&size=&product=`.
 - **Accessibility:** semantic landmarks, skip link, visible focus ring, real radio inputs for selectable cards, labelled inputs with `aria-invalid`/`aria-describedby`, error summaries with focus management, `prefers-reduced-motion` honoured, axe (WCAG 2.1 A/AA) clean in dark and light themes.
-- **Performance:** pre-rendered pages, code-split dialogs, self-hosted variable fonts, SVG artwork (no large rasters), lazy pre-rendered style tiles, `content-visibility` on below-the-fold sections, immutable caching for fingerprinted assets.
+- **Performance:** pre-rendered pages, code-split dialogs, self-hosted variable fonts, SVG poster artwork, pre-generated AVIF/WebP car photos with explicit dimensions (only the hero photo is eager), lazy pre-rendered style tiles, `content-visibility` on below-the-fold sections, immutable caching for fingerprinted assets.
 - **Admin:** no admin UI is included. Future admin should be a separate route group/app with its own auth; it must not import from `components/*` and public components must never import admin code.
+
+### Car photography (outside the posters)
+
+Real photographs are used on the site itself (hero, car cards, car pages, configurator thumbnails, the "from the street to the wall" band, Open Graph images). **Posters keep their drawn vehicle art** until the AI design pipeline exists.
+
+- **Source of truth:** `photos/manifest.json` — per photo: Commons file + URL, crop, blur regions (licence plates, faces), focal point, alt text and the full credit (author, licence, source page).
+- **Pipeline:** `npm run photos:fetch` (originals → git-ignored `assets-src/`) then `npm run photos:process` (`sharp`): blur → crop → AVIF + WebP at 320/640/1280/1920 px, each file capped at 300 KB by stepping the quality down. It writes `public/cars/<slug>/main-<width>.<format>` and the generated `src/data/car-photos.ts`. Processed files are committed, so builds never need the network or `sharp`.
+- **Runtime:** the repository merges `carPhotos` into `CarGeneration.photos`; UI reads only that. `CarPhotoImage` renders `<picture>` (AVIF → WebP), fixed `width/height`, `object-position` from the focal point and a dominant-colour placeholder. Workers has no image optimizer, so there is no runtime resizing.
+- **Fallback:** a car with no photo (`photos: []`) keeps its drawn silhouette everywhere (currently the Mercedes-AMG E 63 S). Nothing else needs to change when a photo is added.
+- **Licence rule:** only CC0, public domain and CC BY (no NC, ND or SA). Unit tests enforce this, require a credit for every photo, check that every generated file exists and is under budget, and that `car-photos.ts` matches the manifest. Credits are shown next to the photo and on `/credits`; CC BY makes them mandatory.
+- **Photo sections are always dark** (`.on-dark`), in both themes: the photographs are graded for a dark page (`.photo-cinema`).
 
 ## 9. Environment variables
 
@@ -179,7 +190,8 @@ See [INTEGRATIONS.md](./INTEGRATIONS.md). In one line each: **payments** → `se
 - Orders are not durable (per-isolate memory + browser localStorage).
 - In-memory rate limiting (per isolate).
 - Public order lookup takes an order number only.
-- Vehicle art is generic silhouettes; catalog specs are illustrative.
+- Poster vehicle art is generic silhouettes; catalog specs are illustrative.
+- Car photos are third-party free-licensed images from Wikimedia Commons, not a photo shoot; a few show tuned cars or event crowds. Replace them with owned or licensed photography before launch (edit the manifest, re-run the pipeline).
 - Prices, shipping rates, delivery estimates and legal text are placeholders.
 - `script-src 'unsafe-inline'` (see §7).
 - Reviews and social clips are labelled demo content.
