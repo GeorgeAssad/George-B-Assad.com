@@ -48,6 +48,9 @@ export interface CarSpecs {
 export type VehicleArchetype =
   | "sport-sedan"
   | "coupe"
+  | "boxy-coupe"
+  | "sports-coupe"
+  | "muscle"
   | "fastback"
   | "wagon"
   | "gt"
@@ -75,7 +78,7 @@ export type VehicleAsset =
       readonly height: number;
     };
 
-export type VehicleTrait = "wing" | "wide-body" | "long-roof" | "low-nose" | "square-cabin";
+export type VehicleTrait = "wing" | "wide-body";
 
 /** A specific generation of a model. This is the unit customers pick. */
 export interface CarGeneration {
@@ -118,8 +121,7 @@ export type DecorationId =
   | "corner-marks"
   | "red-rule"
   | "micro-labels"
-  | "gold-rule"
-  | "ground-shadow";
+  | "gold-rule";
 
 export interface GradientStop {
   readonly offset: number;
@@ -160,6 +162,8 @@ export interface TemplateLayout {
   readonly artFrame: FractionRect;
   /** How the vehicle sits in the frame. */
   readonly artTreatment: "float" | "outline" | "blueprint" | "duotone";
+  /** Optional paint override so a template can keep the car on-palette (e.g. graphite for Luxury). */
+  readonly artPaint?: string;
   readonly title: { readonly y: number; readonly style: TextStyleSpec };
   readonly subtitle: { readonly y: number; readonly style: TextStyleSpec };
   readonly personalization: {
