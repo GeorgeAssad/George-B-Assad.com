@@ -13,6 +13,9 @@ function safeOrigin(value: string): string {
   }
 }
 
+/** The public origin ONLY when it was explicitly configured (never the localhost fallback). */
+export const configuredSiteOrigin: string | null = process.env.NEXT_PUBLIC_SITE_URL ? safeOrigin(process.env.NEXT_PUBLIC_SITE_URL) : null;
+
 export const siteConfig = {
   name: "SuperCars",
   tagline: "Turn your car into art.",

@@ -36,6 +36,18 @@ export const test = base.extend({
   page: async ({ page }, provide) => {
     const octet = () => Math.floor(Math.random() * 250) + 2;
     await page.context().setExtraHTTPHeaders({ "cf-connecting-ip": `10.${octet()}.${octet()}.${octet()}` });
+
+    // Any Content-Security-Policy violation or uncaught page error fails the test.
+    const problems: string[] = [];
+    page.on("console", (msg) => {
+      const text = msg.text();
+      if (/content security policy|refused to (load|execute|apply|connect|frame)/i.test(text)) problems.push(`CSP: ${text.slice(0, 200)}`);
+      // Browsers warn about malformed/unknown security headers (e.g. an unrecognised Permissions-Policy feature).
+      if (msg.type() === "warning" && /permissions-policy|feature-policy|header/i.test(text)) problems.push(`Header warning: ${text.slice(0, 200)}`);
+    });
+    page.on("pageerror", (err) => problems.push(`pageerror: ${err.message.slice(0, 200)}`));
+
     await provide(page);
+    if (problems.length) throw new Error(`Browser reported problems:\n${problems.join("\n")}`);
   },
 });

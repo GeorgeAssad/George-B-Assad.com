@@ -1,11 +1,17 @@
 import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
-import { contentSecurityPolicy, renderHeadersFile, securityHeaders } from "@/config/security-headers";
+import { assetCacheRules, contentSecurityPolicy, renderHeadersFile, securityHeaders } from "@/config/security-headers";
 
 describe("security headers", () => {
   it("public/_headers is in sync with the source of truth", () => {
     const file = readFileSync(new URL("../../public/_headers", import.meta.url), "utf8");
     expect(file).toBe(renderHeadersFile());
+  });
+
+  it("fingerprinted assets are cached immutably; HTML/API are not touched by asset rules", () => {
+    const rule = assetCacheRules.find((r) => r.path === "/_next/static/*");
+    expect(rule?.value).toMatch(/immutable/);
+    expect(assetCacheRules.every((r) => r.path !== "/*" && !r.path.startsWith("/api"))).toBe(true);
   });
 
   it("production CSP is locked down", () => {

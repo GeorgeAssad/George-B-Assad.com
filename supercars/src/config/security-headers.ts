@@ -41,7 +41,7 @@ export function securityHeaders(isDev: boolean): HeaderRule[] {
     { key: "X-Content-Type-Options", value: "nosniff" },
     { key: "X-Frame-Options", value: "DENY" },
     { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
-    { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=(), payment=(), usb=(), bluetooth=(), serial=(), interest-cohort=()" },
+    { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=(), payment=(), usb=(), serial=()" },
     // Browsers ignore HSTS over plain http, so it is safe to send everywhere (including localhost).
     { key: "Strict-Transport-Security", value: "max-age=31536000; includeSubDomains" },
     { key: "Cross-Origin-Opener-Policy", value: "same-origin" },
@@ -49,8 +49,16 @@ export function securityHeaders(isDev: boolean): HeaderRule[] {
   ];
 }
 
+/** Cache policy for static assets served by Workers Assets (Next fingerprints everything under /_next/static). */
+export const assetCacheRules: readonly { readonly path: string; readonly value: string }[] = [
+  { path: "/_next/static/*", value: "public, max-age=31536000, immutable" },
+  { path: "/og/*", value: "public, max-age=86400" },
+  { path: "/templates/*", value: "public, max-age=86400" },
+];
+
 /** Renders the Workers Assets `_headers` file for the production policy. */
 export function renderHeadersFile(): string {
   const lines = securityHeaders(false).map((h) => `  ${h.key}: ${h.value}`);
-  return ["# GENERATED from src/config/security-headers.ts — run `npm run headers:write`. Do not edit by hand.", "/*", ...lines, ""].join("\n");
+  const cache = assetCacheRules.flatMap((r) => [r.path, `  Cache-Control: ${r.value}`]);
+  return ["# GENERATED from src/config/security-headers.ts — run `npm run headers:write`. Do not edit by hand.", "/*", ...lines, ...cache, ""].join("\n");
 }

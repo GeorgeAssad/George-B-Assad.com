@@ -1,0 +1,74 @@
+# SuperCars storefront (prototype)
+
+A production-shaped storefront prototype for **SuperCars** — personalized automotive artwork: *pick your car → choose a style → personalize → preview → pay → we create and ship it.*
+
+Everything external is **mocked** (payments, AI design, fulfilment, support, email, analytics). No real money moves, no card data is collected, and no secrets are needed to run or deploy it. See [ARCHITECTURE.md](./ARCHITECTURE.md) for how the mocks are swapped for real services and [INTEGRATIONS.md](./INTEGRATIONS.md) for exactly where each integration plugs in.
+
+**Stack:** Next.js 16 (App Router) · React 19 · TypeScript (strict) · Tailwind CSS v4 · zod · OpenNext for Cloudflare Workers.
+
+## Run it
+
+```bash
+cd supercars
+npm ci
+npm run dev            # http://localhost:3000
+```
+
+| Command | What it does |
+| --- | --- |
+| `npm run verify` | lint + typecheck + unit tests + secret scan + code audit + production build + client-bundle scan |
+| `npm test` | unit tests (Vitest) |
+| `npm run test:e2e` | browser tests (Playwright) against `E2E_BASE_URL` (default `http://localhost:3111`) |
+| `npm run cf:build` | build for Cloudflare Workers (`.open-next/`) |
+| `npm run cf:preview` | build and run locally in `workerd`, Cloudflare's real runtime |
+| `npm run cf:dryrun` | package the Worker without deploying and report its size |
+| `npm run headers:write` | regenerate `public/_headers` from `src/config/security-headers.ts` |
+| `npm run og` | regenerate Open Graph / template images (needs the dev server on :3111) |
+
+### End-to-end tests
+
+```bash
+npm run build && PORT=3111 npm start &     # or: npm run dev -- -p 3111
+CHROMIUM_PATH=/path/to/chrome npm run test:e2e
+```
+`CHROMIUM_PATH` defaults to the Chromium preinstalled in the Claude Code cloud environment. To test the Cloudflare runtime instead: `npm run cf:preview` and `E2E_BASE_URL=http://localhost:8787 npm run test:e2e`.
+
+## Deploy to Cloudflare (Git-connected Workers Builds)
+
+This folder is a self-contained Worker project. It does **not** touch any other Worker or file in the repository.
+
+1. Cloudflare dashboard → **Workers & Pages** → **Create** → **Import a repository** → select this GitHub repository.
+2. **Project name / Worker name:** `supercars` (must match `name` in `wrangler.jsonc`, or the build fails).
+3. **Root directory:** `supercars`
+4. **Build command:** `npm ci && npm run cf:build`
+5. **Deploy command:** `npx wrangler deploy`
+6. **Build variables** (Settings → Builds → Variables and secrets; these are public, build-time values):
+   - `NEXT_PUBLIC_SITE_URL` = your final public URL (e.g. `https://supercars.<account>.workers.dev`)
+   - `NEXT_PUBLIC_APP_ENV` = `production`
+   - `NEXT_PUBLIC_ALLOW_INDEXING` = `false` (keep search engines out until launch)
+7. Optional runtime secret (recommended on any public deployment): `CHECKOUT_SIGNING_SECRET` — 32+ random characters, so demo checkout sessions cannot be forged. Set it under the Worker's **Settings → Variables and secrets** (or `npx wrangler secret put CHECKOUT_SIGNING_SECRET`). The prototype works without it.
+8. Every push to the production branch builds and deploys. Pushes to other branches produce **preview URLs**.
+
+Nothing else is required: no database, KV, R2 or API keys. `NEXT_PUBLIC_SITE_URL` also sets the allowed same-origin for API calls if the site is reached on a hostname other than the one Cloudflare reports.
+
+### Environments
+
+| | Development | Preview | Production |
+| --- | --- | --- | --- |
+| `APP_ENV` | `development` (`.dev.vars` / `.env.local`) | `preview` (non-production branch builds) | `production` (`wrangler.jsonc` `vars`) |
+| Secrets | `.dev.vars` (git-ignored) | Worker secrets (preview) | Worker secrets |
+| Providers | all `mock` | all `mock` | all `mock` until real ones exist |
+
+## Project map
+
+```
+src/app/            routes, API routes (all via withApi), error/loading states, sitemap/robots/manifest
+src/components/     ui · layout · home · cars · configurator · poster · cart · checkout · orders · support
+src/domain/         pure types, split by concern (catalog · customer · cart · order · fulfillment · design · support)
+src/data/           demo data only — read via repositories, never imported by UI (enforced by ESLint)
+src/server/         repositories · services (contracts + mocks + factory) · checkout · security
+src/lib/            validation (zod), print-spec, timeline, cart store, analytics
+src/config/         env (server-only), site, nav, security headers
+scripts/            secret + bundle scanners, code audit, OG image generator
+tests/              unit (Vitest) and e2e (Playwright)
+```

@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { describeError, log } from "./logger";
+import { configuredSiteOrigin } from "@/config/site";
 import { isSameOrigin } from "./origin";
 import { clientKey, getRateLimiter, type RateLimitPolicy } from "./rate-limit";
 import { newId } from "@/lib/ids";
@@ -96,7 +97,7 @@ export function withApi<S extends z.ZodType | undefined = undefined>(
         return json(errorBody("method_not_allowed", "Method not allowed.", requestId), 405, requestId, { Allow: options.method });
       }
 
-      if (options.method === "POST" && !isSameOrigin(request)) {
+      if (options.method === "POST" && !isSameOrigin(request, [configuredSiteOrigin])) {
         log.warn("api.cross_origin_rejected", { route: options.route, requestId });
         return json(errorBody("forbidden", "Cross-origin requests are not allowed.", requestId), 403, requestId);
       }

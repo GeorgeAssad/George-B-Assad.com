@@ -1,11 +1,16 @@
 /* CSRF-style guard for state-changing requests: the request must originate
  * from our own site. Uses Origin when present, else Sec-Fetch-Site. */
 
-export function isSameOrigin(req: Request): boolean {
+/**
+ * `extraAllowed` lets a deployment that is reachable on more than one hostname
+ * (e.g. apex and www) name its canonical origin explicitly. It is never inferred.
+ */
+export function isSameOrigin(req: Request, extraAllowed: readonly (string | null)[] = []): boolean {
   const origin = req.headers.get("origin");
   if (origin) {
     try {
-      return new URL(origin).origin === new URL(req.url).origin;
+      const o = new URL(origin).origin;
+      return o === new URL(req.url).origin || extraAllowed.some((a) => a !== null && a === o);
     } catch {
       return false;
     }
