@@ -1,4 +1,5 @@
 import { brands, cars, generations } from "@/data/cars";
+import { carPhotos } from "@/data/car-photos";
 import { posterSizes, products } from "@/data/products";
 import { templates } from "@/data/templates";
 import { shippingDestinations, shippingRules } from "@/data/shipping";
@@ -30,7 +31,7 @@ const buildEntries = (): readonly CarEntry[] => {
   for (const generation of generations) {
     const car = carById.get(generation.carId);
     const brand = car ? brandById.get(car.brandId) : undefined;
-    if (car && brand) entries.push({ brand, car, generation });
+    if (car && brand) entries.push({ brand, car, generation: { ...generation, photos: carPhotos[generation.slug] ?? [] } });
   }
   return entries;
 };

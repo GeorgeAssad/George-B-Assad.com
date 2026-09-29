@@ -2,7 +2,7 @@
   "name": "supercars",
   "version": "0.1.0",
   "private": true,
-  "description": "SuperCars \u2014 personalised automotive artwork storefront (prototype)",
+  "description": "SuperCars — personalised automotive artwork storefront (prototype)",
   "engines": {
     "node": ">=22"
   },
@@ -22,7 +22,9 @@
     "cf:build": "opennextjs-cloudflare build",
     "cf:preview": "opennextjs-cloudflare build && wrangler dev",
     "cf:dryrun": "wrangler deploy --dry-run --outdir .wrangler/dryrun",
-    "verify": "npm run lint && npm run typecheck && npm test && npm run check:secrets && npm run audit:code && npm run build && npm run check:bundle"
+    "verify": "npm run lint && npm run typecheck && npm test && npm run check:secrets && npm run audit:code && npm run build && npm run check:bundle",
+    "photos:fetch": "node scripts/fetch-photos.mjs",
+    "photos:process": "node scripts/process-photos.mjs"
   },
   "dependencies": {
     "@fontsource-variable/inter": "^5.3.0",
@@ -43,6 +45,7 @@
     "eslint": "^9.39.5",
     "eslint-config-next": "^16.3.7",
     "postcss": "^8.5.28",
+    "sharp": "^0.35.5",
     "tailwindcss": "^4.3.3",
     "typescript": "^5.9.3",
     "vitest": "^5.0.2",
