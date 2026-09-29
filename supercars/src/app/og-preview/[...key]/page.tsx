@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import { CarPhotoImage } from "@/components/cars/CarPhotoImage";
+import { StudioCar } from "@/components/cars/StudioCar";
 import { PosterPreview } from "@/components/poster/PosterPreview";
 import { VehicleArt } from "@/components/poster/VehicleArt";
 import { getRepositories } from "@/server/repositories";
@@ -42,7 +43,14 @@ export default async function OgPreview({ params }: { params: Promise<{ key: str
 
   return (
     <div id="og" style={{ position: "fixed", inset: 0, zIndex: 9999, width: 1200, height: 630, overflow: "hidden", background: "radial-gradient(ellipse 60% 70% at 78% 100%, rgba(225,6,0,0.34), transparent 70%), #050506" }}>
-      {photo ? (
+      {photo?.mode === "cutout" ? (
+        <>
+          <div className="studio-floor" style={{ position: "absolute", left: 0, right: 0, bottom: 0, height: 210 }} />
+          <div style={{ position: "absolute", right: 40, bottom: 120, width: 700 }}>
+            <StudioCar slug={carEntry.generation.slug} photo={photo} priority sizes="700px" />
+          </div>
+        </>
+      ) : photo ? (
         <>
           <div style={{ position: "absolute", top: 0, right: 0, bottom: 0, width: 860 }}>
             <CarPhotoImage slug={carEntry.generation.slug} photo={photo} priority sizes="860px" className="photo-cinema" alt="" />
