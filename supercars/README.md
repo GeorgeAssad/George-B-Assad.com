@@ -25,7 +25,8 @@ npm run dev            # http://localhost:3000
 | `npm run headers:write` | regenerate `public/_headers` from `src/config/security-headers.ts` |
 | `npm run og` | regenerate Open Graph / template images (needs the dev server on :3111) |
 | `npm run photos:fetch` | download the original car photos listed in `photos/manifest.json` into `assets-src/` (git-ignored) |
-| `npm run photos:process` | crop, blur plates/faces, encode AVIF + WebP into `public/cars/` and regenerate `src/data/car-photos.ts` |
+| `npm run photos:cutout` | remove the background from every `"mode": "cutout"` photo (Python + rembg; see "Car images") |
+| `npm run photos:process` | trim, cover plates/faces, encode AVIF + WebP (with transparency for cutouts) into `public/cars/` and regenerate `src/data/car-photos.ts` |
 
 ### End-to-end tests
 
@@ -71,6 +72,16 @@ The build settings are stored in the Cloudflare dashboard, **not** in this repos
 | `APP_ENV` | `development` (`.dev.vars` / `.env.local`) | `preview` (non-production branch builds) | `production` (`wrangler.jsonc` `vars`) |
 | Secrets | `.dev.vars` (git-ignored) | Worker secrets (preview) | Worker secrets |
 | Providers | all `mock` | all `mock` | all `mock` until real ones exist |
+
+## Car images
+
+Every car image is described in `photos/manifest.json` and turned into web files by two commands. To add or replace a car's image (your own studio shot, or an AI-generated one):
+
+1. Put the original at `assets-src/cars/<slug>/main.png` (or `.jpg` / `.webp`). `assets-src/` is git-ignored: originals stay out of the repository.
+2. Add or edit its entry in `photos/manifest.json`: `mode` `"cutout"` (the car on a transparent background; the site draws the showroom) or `"backdrop"` (the picture is shown as is, best for dark low-key studio shots); `alt`; `credit` — for your own or AI images use `{"kind":"own","title":"…","author":"SuperCars","licenseName":"SuperCars","note":"AI-generated image."}`. If the file already has a transparent background, add `"alreadyTransparent": true`. Optional: `crop`, `redact` (boxes to cover plates or faces), `focal`.
+3. `npm run photos:cutout` (only for cutouts that still have a background; one-time setup: `python3 -m venv .venv && .venv/bin/pip install "rembg[cpu]" pillow numpy scipy`, then run `.venv/bin/python scripts/cutout-photos.py`), then `npm run photos:process`. Commit `public/cars/**`, `src/data/car-photos.ts` and the manifest.
+
+Cars without an entry show their drawn silhouette. Side or three-quarter views work best; a top-down view is rejected by the pipeline.
 
 ## Project map
 

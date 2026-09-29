@@ -148,16 +148,17 @@ Future real payment flow: `createCheckoutSession` returns a hosted-checkout URL;
 - **Performance:** pre-rendered pages, code-split dialogs, self-hosted variable fonts, SVG poster artwork, pre-generated AVIF/WebP car photos with explicit dimensions (only the hero photo is eager), lazy pre-rendered style tiles, `content-visibility` on below-the-fold sections, immutable caching for fingerprinted assets.
 - **Admin:** no admin UI is included. Future admin should be a separate route group/app with its own auth; it must not import from `components/*` and public components must never import admin code.
 
-### Car photography (outside the posters)
+### Car images (outside the posters)
 
-Real photographs are used on the site itself (hero, car cards, car pages, configurator thumbnails, the "from the street to the wall" band, Open Graph images). **Posters keep their drawn vehicle art** until the AI design pipeline exists.
+Studio-style car images are used on the site itself (hero, car cards, car pages, configurator thumbnails, the "from your garage to the wall" band, share images). **Posters keep their drawn vehicle art** until the AI design pipeline exists.
 
-- **Source of truth:** `photos/manifest.json` — per photo: Commons file + URL, crop, blur regions (licence plates, faces), focal point, alt text and the full credit (author, licence, source page).
-- **Pipeline:** `npm run photos:fetch` (originals → git-ignored `assets-src/`) then `npm run photos:process` (`sharp`): blur → crop → AVIF + WebP at 320/640/1280/1920 px, each file capped at 300 KB by stepping the quality down. It writes `public/cars/<slug>/main-<width>.<format>` and the generated `src/data/car-photos.ts`. Processed files are committed, so builds never need the network or `sharp`.
-- **Runtime:** the repository merges `carPhotos` into `CarGeneration.photos`; UI reads only that. `CarPhotoImage` renders `<picture>` (AVIF → WebP), fixed `width/height`, `object-position` from the focal point and a dominant-colour placeholder. Workers has no image optimizer, so there is no runtime resizing.
-- **Fallback:** a car with no photo (`photos: []`) keeps its drawn silhouette everywhere (currently the Mercedes-AMG E 63 S). Nothing else needs to change when a photo is added.
-- **Licence rule:** only CC0, public domain and CC BY (no NC, ND or SA). Unit tests enforce this, require a credit for every photo, check that every generated file exists and is under budget, and that `car-photos.ts` matches the manifest. Credits are shown next to the photo and on `/credits`; CC BY makes them mandatory.
-- **Photo sections are always dark** (`.on-dark`), in both themes: the photographs are graded for a dark page (`.photo-cinema`).
+- **Source of truth:** `photos/manifest.json` — per image: source file, `mode`, crop, cover boxes (plates, faces), focal point, alt text and the credit. A credit is either `third-party` (author, licence, link to the original) or `own` (commissioned, licensed to us or AI-generated: a plain label such as "AI-generated image").
+- **Two modes.** `cutout`: the car on a transparent background. The site supplies the showroom (spotlight, floor, reflection, outlined model name, rim light) with CSS, so every car looks like part of one set. `backdrop`: the picture is shown as is (fits dark low-key studio shots).
+- **Pipeline:** `npm run photos:cutout` writes the framed originals (`process-photos.mjs --framed`) and removes backgrounds with `rembg` (BiRefNet model; Python, developer tool only; keeps the largest shape, fills holes, feathers and defringes the edge). `npm run photos:process` (`sharp`) trims to the car, covers plates/faces with the car's own colour, and writes AVIF + WebP with transparency at 320/640/1280/1920 px, each file capped at ~300 KB, to `public/cars/<slug>/` plus the generated `src/data/car-photos.ts`. Processed files are committed; builds need neither the network nor Python nor sharp.
+- **Runtime:** the repository merges `carPhotos` into `CarGeneration.photos`; UI reads only that. `CarPhotoImage` renders `<picture>` (AVIF → WebP) with fixed `width/height`; `StudioCar` (hero, car page, band) and `CutoutFit` (cards, thumbnails, credits) place a cutout on the stage. No runtime image service (Workers has none).
+- **Fallback:** a car with no image (`photos: []`) keeps its drawn silhouette everywhere (currently the Mercedes-AMG E 63 S and the Toyota GR Supra).
+- **Licence rule:** third-party images only under CC0, public domain or CC BY (no NC, ND, SA). Unit tests enforce this, require a credit for every image (and "background removed" for cut-out CC BY images), check that every generated file exists, is under budget and really has (or lacks) transparency, and that `car-photos.ts` matches the manifest. Credits show next to the image and on `/credits`.
+- **Image sections are always dark** (`.on-dark`) in both themes.
 
 ## 9. Environment variables
 
@@ -191,7 +192,7 @@ See [INTEGRATIONS.md](./INTEGRATIONS.md). In one line each: **payments** → `se
 - In-memory rate limiting (per isolate).
 - Public order lookup takes an order number only.
 - Poster vehicle art is generic silhouettes; catalog specs are illustrative.
-- Car photos are third-party free-licensed images from Wikimedia Commons, not a photo shoot; a few show tuned cars or event crowds. Replace them with owned or licensed photography before launch (edit the manifest, re-run the pipeline).
+- The current car images are cut-outs of free-licensed Wikimedia Commons snapshots (event and showroom photos), not studio photography; replace them with owned, licensed or generated studio images before launch (see README, "Car images").
 - Prices, shipping rates, delivery estimates and legal text are placeholders.
 - `script-src 'unsafe-inline'` (see §7).
 - Reviews and social clips are labelled demo content.
