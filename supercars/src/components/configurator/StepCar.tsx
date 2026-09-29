@@ -63,7 +63,7 @@ export function StepCar({ cars, selected, onSelect }: StepCarProps) {
         </fieldset>
       ) : (
         <div className="mt-4">
-          <EmptyState icon={<IconSearch size={24} />} title="No machine matched your search." message="Try a brand, a model like M3, or a generation code like 992." onReset={() => setQ("")} resetLabel="Clear search" secondary={{ label: "Browse the catalog", href: "/cars" }} />
+          <EmptyState icon={<IconSearch size={24} />} title="No machine matched your search." message="Try a brand, a model like M3, or a generation code like 992." onReset={() => setQ("")} resetLabel="Clear search" />
         </div>
       )}
     </div>

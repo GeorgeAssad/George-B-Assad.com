@@ -23,11 +23,11 @@ interface StepSummaryProps {
 
 export function StepSummary({ entry, template, product, size, customization, quantity, onQuantity, onEdit, quote, quoteFailed }: StepSummaryProps) {
   const rows: { label: string; value: string; step: Step }[] = [
-    { label: "Product", value: product.name, step: 3 },
+    { label: "Product", value: product.name, step: 2 },
     { label: "Vehicle", value: `${entry.generation.displayName} · ${entry.generation.specs.years}`, step: 1 },
     { label: "Style", value: template.name, step: 2 },
-    { label: "Size", value: size.label, step: 3 },
-    { label: "Personalization", value: personalizationSummary(customization), step: 4 },
+    { label: "Size", value: size.label, step: 2 },
+    { label: "Personalization", value: personalizationSummary(customization), step: 3 },
   ];
   const line = quote?.lines[0];
 

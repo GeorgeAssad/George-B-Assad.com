@@ -19,7 +19,7 @@ export function Stepper({ current, maxStep, onGo }: StepperProps) {
         <div className="absolute inset-y-0 left-0 bg-red transition-[width] duration-500 ease-out" style={{ width: `${((current) / STEPS.length) * 100}%` }} />
       </div>
 
-      <ol className="relative hidden grid-cols-6 gap-2 lg:grid">
+      <ol className="relative hidden grid-cols-4 gap-2 lg:grid">
         <span aria-hidden="true" className="absolute left-0 right-0 top-[0.95rem] h-px bg-line" />
         <span aria-hidden="true" className="absolute left-0 top-[0.95rem] h-px bg-red transition-[width] duration-500 ease-out" style={{ width: `${pct}%` }} />
         {STEPS.map((s) => {

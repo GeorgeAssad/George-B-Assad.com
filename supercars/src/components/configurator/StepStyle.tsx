@@ -16,7 +16,7 @@ export function StepStyle({ templates, entry, customization, selected, onSelect 
   return (
     <fieldset>
       <legend className="sr-only">Choose a design style</legend>
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 xl:grid-cols-5">
         {templates.map((t) => (
           <RadioCard key={t.id} name="style" value={t.id} checked={selected === t.id} onChange={() => onSelect(t.id)}>
             <div className="p-2.5">
