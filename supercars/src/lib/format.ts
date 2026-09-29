@@ -28,3 +28,8 @@ export function formatDate(iso: string, locale = "en-GB"): string {
 export function formatDateRange(from: string, to: string): string {
   return `${formatDate(from)} – ${formatDate(to)}`;
 }
+
+/** One-line summary of what is printed on the poster besides the name. */
+export function personalizationSummary(c: { name: string; text?: string | undefined; year?: string | undefined; location?: string | undefined }): string {
+  return [c.name, c.text, c.year, c.location].filter(Boolean).join(" · ");
+}

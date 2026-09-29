@@ -57,6 +57,7 @@ export async function quoteCart(items: readonly CartItem[], repos: Repositories 
       sku: variant.sku,
       vehicleName: entry.generation.displayName,
       generationLabel: `${entry.generation.specs.years}`,
+      specs: entry.generation.specs,
       vehicle: entry.generation.vehicle,
       template,
       sizeLabel: sizes.find((s) => s.id === item.sizeId)?.label ?? item.sizeId,

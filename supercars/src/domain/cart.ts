@@ -1,5 +1,5 @@
 import type { Money } from "./money";
-import type { DesignTemplate, ProductKind, SizeId, TemplateId, VehicleAsset } from "./catalog";
+import type { CarSpecs, DesignTemplate, ProductKind, SizeId, TemplateId, VehicleAsset } from "./catalog";
 
 /* CART DOMAIN — the browser's view. It holds REFERENCES ONLY (ids + the
  * customer's personalization). Prices are never stored or trusted client-side;
@@ -37,6 +37,7 @@ export interface QuotedLine {
   readonly sku: string;
   readonly vehicleName: string;
   readonly generationLabel: string;
+  readonly specs: Pick<CarSpecs, "years" | "powerKw" | "torqueNm" | "seats" | "drivetrain">;
   readonly vehicle: VehicleAsset;
   readonly template: DesignTemplate;
   readonly sizeLabel: string;

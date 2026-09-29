@@ -95,7 +95,7 @@ export const generations: readonly CarGeneration[] = [
     specs: { years: "2022–present", powerKw: 386, torqueNm: 465, seats: 2, drivetrain: "RWD", engine: "4.0 L naturally-aspirated flat-6", source: "catalog-prototype" },
     vehicle: { kind: "svg-archetype", archetype: "fastback", palette: { body: "#e8e6df", accent: "#e10600" }, traits: ["wing", "wide-body"] },
     popularity: 96,
-    featured: true,
+    featured: false,
   },
   {
     id: "audi-rs6-c8",
