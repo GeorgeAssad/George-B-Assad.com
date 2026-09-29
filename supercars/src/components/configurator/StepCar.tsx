@@ -3,6 +3,7 @@
 import { useState } from "react";
 import type { CarEntry } from "@/domain/catalog";
 import { CarPhotoImage } from "@/components/cars/CarPhotoImage";
+import { CutoutFit } from "@/components/cars/CutoutFit";
 import { VehicleArt } from "@/components/poster/VehicleArt";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { IconClose, IconSearch } from "@/components/ui/icons";
@@ -37,7 +38,11 @@ export function StepCar({ cars, selected, onSelect }: StepCarProps) {
             {results.map((c) => (
               <RadioCard key={c.generation.slug} name="car" value={c.generation.slug} checked={selected === c.generation.slug} onChange={() => onSelect(c.generation.slug)}>
                 <div className="flex items-center gap-3 p-3">
-                  {c.generation.photos[0] ? (
+                  {c.generation.photos[0]?.mode === "cutout" ? (
+                    <div className="on-dark studio-stage relative aspect-[16/10] w-28 flex-none overflow-hidden rounded-lg">
+                      <CutoutFit slug={c.generation.slug} photo={c.generation.photos[0]} sizes="112px" className="absolute inset-x-[3%] bottom-[8%] top-[8%]" />
+                    </div>
+                  ) : c.generation.photos[0] ? (
                     <div className="aspect-[16/10] w-28 flex-none overflow-hidden rounded-lg bg-elevated">
                       <CarPhotoImage slug={c.generation.slug} photo={c.generation.photos[0]} sizes="112px" alt="" />
                     </div>

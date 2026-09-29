@@ -2,11 +2,35 @@ import type { CarEntry } from "@/domain/catalog";
 import { VehicleArt } from "@/components/poster/VehicleArt";
 import { CarPhotoImage } from "./CarPhotoImage";
 import { PhotoCredit } from "./PhotoCredit";
+import { StudioCar } from "./StudioCar";
 
 /** Cinematic hero stage for a car: the real photograph when there is one, otherwise the drawn silhouette. */
 export function CarStage({ entry }: { entry: CarEntry }) {
   const { car, generation } = entry;
   const photo = generation.photos[0];
+
+
+  if (photo?.mode === "cutout") {
+    return (
+      <div className="on-dark studio-stage relative isolate overflow-hidden border-b border-line bg-bg text-fg">
+        <span aria-hidden="true" className="pointer-events-none absolute inset-x-0 top-[5%] -z-10 select-none text-center font-display text-[clamp(7rem,30vw,26rem)] font-bold uppercase leading-none tracking-tight text-transparent [-webkit-text-stroke:1px_var(--line-strong)]">
+          {car.name.replace(/\s.*/, "")}
+        </span>
+        <div className="studio-floor absolute inset-x-0 bottom-0 -z-10 h-[40%]" aria-hidden="true" />
+        <div className="tech-grid absolute inset-0 -z-10 opacity-25 [mask-image:linear-gradient(180deg,transparent,#000_45%,transparent)]" aria-hidden="true" />
+        <div className="container-x relative flex min-h-[19rem] items-end justify-center pb-16 pt-16 sm:min-h-[30rem] sm:pb-24 lg:min-h-[38rem] lg:pb-28">
+          <span className="spec absolute left-4 top-6 rounded-full bg-black/55 px-2.5 py-1 text-white/85 backdrop-blur sm:left-10">SC / {generation.generation}</span>
+          <span className="spec absolute right-4 top-6 rounded-full bg-black/55 px-2.5 py-1 text-white/85 backdrop-blur sm:right-10">{generation.specs.years}</span>
+          <div className="drive-in w-full max-w-[62rem]" style={{ ["--d" as string]: "80ms" }}>
+            <StudioCar slug={generation.slug} photo={photo} priority sizes="(min-width:1024px) 62rem, 100vw" />
+          </div>
+        </div>
+        <div className="container-x pb-4">
+          <PhotoCredit photo={photo} />
+        </div>
+      </div>
+    );
+  }
 
   if (photo) {
     return (

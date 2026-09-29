@@ -1,6 +1,7 @@
 import type { CarEntry, DesignTemplate } from "@/domain/catalog";
 import { CarPhotoImage } from "@/components/cars/CarPhotoImage";
 import { PhotoCredit } from "@/components/cars/PhotoCredit";
+import { StudioCar } from "@/components/cars/StudioCar";
 import { PosterPreview } from "@/components/poster/PosterPreview";
 import { ProductFrame } from "@/components/poster/ProductFrame";
 import { Button } from "@/components/ui/Button";
@@ -15,10 +16,26 @@ export function PhotoToPoster({ entry, template }: { entry: CarEntry; template: 
   return (
     <section aria-labelledby="idea-title" className="cv-auto container-x py-24 sm:py-32">
       <Reveal>
-        <SectionHeading id="idea-title" eyebrow="From car to art" title="From the street to the wall." lead="Start with the machine you love. We turn it into a piece worth hanging." />
+        <SectionHeading id="idea-title" eyebrow="From car to art" title="From your garage to the wall." lead="Start with the machine you love. We turn it into a piece worth hanging." />
       </Reveal>
       <div className="mt-12 grid grid-cols-1 gap-4 lg:grid-cols-[1.35fr_1fr]">
         <Reveal className="h-full">
+          {photo.mode === "cutout" ? (
+            <figure className="on-dark studio-stage card relative isolate flex h-full min-h-[20rem] flex-col justify-between overflow-hidden bg-bg">
+              <span aria-hidden="true" className="pointer-events-none absolute inset-x-0 top-[6%] -z-10 select-none text-center font-display text-[clamp(6rem,20vw,13rem)] font-bold uppercase leading-none tracking-tight text-transparent [-webkit-text-stroke:1px_var(--line-strong)]">
+                {entry.car.name.replace(/\s.*/, "")}
+              </span>
+              <div className="studio-floor absolute inset-x-0 bottom-0 -z-10 h-[45%]" aria-hidden="true" />
+              <div className="flex flex-1 items-center justify-center px-6 pb-3 pt-14 sm:px-12">
+                <StudioCar slug={entry.generation.slug} photo={photo} sizes="(min-width:1024px) 46vw, 88vw" className="w-full max-w-[34rem]" />
+              </div>
+              <figcaption className="p-5 pt-8 sm:p-7 sm:pt-8">
+                <p className="spec text-white/80">01 — The car</p>
+                <p className="h-display mt-1 text-4xl text-white sm:text-5xl">{entry.generation.displayName}</p>
+                <PhotoCredit photo={photo} className="mt-2 text-white/70" />
+              </figcaption>
+            </figure>
+          ) : (
           <figure className="on-dark card relative isolate flex h-full min-h-[18rem] flex-col justify-end overflow-hidden bg-bg">
             <div className="absolute inset-0 -z-10">
               <CarPhotoImage slug={entry.generation.slug} photo={photo} sizes="(min-width:1024px) 56vw, 92vw" className="photo-cinema" />
@@ -30,6 +47,7 @@ export function PhotoToPoster({ entry, template }: { entry: CarEntry; template: 
               <PhotoCredit photo={photo} className="mt-2 text-white/70" />
             </figcaption>
           </figure>
+          )}
         </Reveal>
         <Reveal delay={120} className="h-full">
           <div className="card flex h-full flex-col overflow-hidden">

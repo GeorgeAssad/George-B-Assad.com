@@ -3,6 +3,7 @@ import type { CarEntry, DesignTemplate } from "@/domain/catalog";
 import { Button } from "@/components/ui/Button";
 import { IconArrow, IconPackage, IconPalette, IconShield } from "@/components/ui/icons";
 import { CarPhotoImage } from "@/components/cars/CarPhotoImage";
+import { StudioCar } from "@/components/cars/StudioCar";
 import { PosterPreview } from "@/components/poster/PosterPreview";
 import { VehicleArt } from "@/components/poster/VehicleArt";
 import { HeroParallax } from "./HeroParallax";
@@ -38,8 +39,47 @@ function HeroCopy({ onPhoto }: { onPhoto: boolean }) {
   );
 }
 
+
+/** Transparent car on the site's own showroom stage: spotlight, floor, reflection, outlined model name. */
+function HeroStudio({ main }: { main: CarEntry }) {
+  const photo = main.generation.photos[0];
+  if (!photo) return null;
+  const word = main.car.name.replace(/\s.*/, "");
+  return (
+    <section aria-labelledby="hero-title" className="on-dark studio-stage relative isolate flex flex-col overflow-hidden border-b border-line bg-bg text-fg">
+      <span aria-hidden="true" className="pointer-events-none absolute inset-x-0 top-[7%] -z-10 select-none text-center font-display text-[clamp(8rem,32vw,28rem)] font-bold uppercase leading-none tracking-tight text-transparent [-webkit-text-stroke:1px_var(--line-strong)]">
+        {word}
+      </span>
+      <div className="studio-floor absolute inset-x-0 bottom-0 -z-10 h-[36%]" aria-hidden="true" />
+      <div className="tech-grid absolute inset-0 -z-10 opacity-30 [mask-image:linear-gradient(180deg,transparent,#000_40%,transparent)]" aria-hidden="true" />
+
+      {/* The car: above the copy on phones, bleeding in from the right and overlapping the headline on desktop. */}
+      <div className="pointer-events-none relative z-20 order-1 px-3 pt-6 sm:px-10 lg:absolute lg:bottom-[13%] lg:right-[1%] lg:order-none lg:w-[60%] lg:p-0">
+        <HeroParallax>
+          <div className="hero-layer" style={{ ["--depth" as string]: "1.2" }}>
+            <div className="drive-in">
+              <StudioCar slug={main.generation.slug} photo={photo} priority sizes="(min-width:1024px) 60vw, 100vw" />
+            </div>
+          </div>
+        </HeroParallax>
+      </div>
+
+      <div className="container-x relative z-10 order-2 flex flex-col justify-center pb-16 pt-10 sm:pb-20 lg:min-h-[calc(100svh-4.5rem)] lg:py-20">
+        <div className="max-w-2xl lg:max-w-[38rem]"><HeroCopy onPhoto /></div>
+      </div>
+
+      <div className="container-x pointer-events-none absolute inset-x-0 bottom-3 z-30 flex justify-end">
+        <p className="spec pointer-events-auto rounded-full bg-black/55 px-3 py-1.5 backdrop-blur">
+          <Link href="/credits" className="hover:text-fg">{main.generation.displayName} · photo credit</Link>
+        </p>
+      </div>
+    </section>
+  );
+}
+
 export function Hero({ main, second, racing, blueprint }: HeroProps) {
   const photo = main.generation.photos[0];
+  if (photo?.mode === "cutout") return <HeroStudio main={main} />;
 
   if (photo) {
     return (

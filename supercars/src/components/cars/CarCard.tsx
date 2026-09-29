@@ -3,6 +3,7 @@ import type { CarEntry } from "@/domain/catalog";
 import { VehicleArt } from "@/components/poster/VehicleArt";
 import { IconArrow } from "@/components/ui/icons";
 import { CarPhotoImage } from "./CarPhotoImage";
+import { CutoutFit } from "./CutoutFit";
 
 interface CarCardProps {
   readonly entry: CarEntry;
@@ -17,7 +18,18 @@ export function CarCard({ entry, index = 0, priority = false }: CarCardProps) {
   return (
     <Link href={`/cars/${generation.slug}`} className="group card card-lift block overflow-hidden" aria-label={`${generation.displayName}, ${generation.specs.years}. Create this car`}>
       <div className="relative aspect-[16/10] overflow-hidden bg-[radial-gradient(ellipse_at_50%_105%,color-mix(in_srgb,var(--red)_18%,transparent),transparent_62%),linear-gradient(180deg,var(--elevated),var(--surface))]">
-        {photo ? (
+        {photo?.mode === "cutout" ? (
+          <div className="on-dark studio-stage absolute inset-0">
+            <span aria-hidden="true" className="pointer-events-none absolute inset-x-0 top-[3%] select-none text-center font-display text-[clamp(4.5rem,15vw,7rem)] font-bold uppercase leading-none tracking-tight text-transparent [-webkit-text-stroke:1px_var(--line-strong)]">
+              {car.name.replace(/\s.*/, "")}
+            </span>
+            <div className="studio-floor absolute inset-x-0 bottom-0 h-[42%]" aria-hidden="true" />
+            <div className="absolute inset-x-[10%] bottom-[7%] h-[7%] rounded-[50%] bg-[radial-gradient(ellipse_at_center,rgb(0_0_0/0.85),transparent_68%)] blur-[6px]" aria-hidden="true" />
+            <CutoutFit slug={generation.slug} photo={photo} priority={priority} sizes="(min-width:1024px) 30vw, (min-width:640px) 46vw, 92vw" className="studio-lift absolute inset-x-[4%] bottom-[9%] top-[13%]" />
+            <span className="spec absolute left-3 top-3 rounded-full bg-black/55 px-2.5 py-1 text-white/85 backdrop-blur">SC / {code}</span>
+            <span className="spec absolute right-3 top-3 rounded-full bg-black/55 px-2.5 py-1 text-white/85 backdrop-blur">{generation.bodyType}</span>
+          </div>
+        ) : photo ? (
           <>
             <div className="zoom-img absolute inset-0">
               <CarPhotoImage slug={generation.slug} photo={photo} priority={priority} sizes="(min-width:1024px) 30vw, (min-width:640px) 46vw, 92vw" className="photo-cinema" alt="" />
