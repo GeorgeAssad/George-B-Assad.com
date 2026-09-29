@@ -52,6 +52,8 @@ export function securityHeaders(isDev: boolean): HeaderRule[] {
 /** Cache policy for static assets served by Workers Assets (Next fingerprints everything under /_next/static). */
 export const assetCacheRules: readonly { readonly path: string; readonly value: string }[] = [
   { path: "/_next/static/*", value: "public, max-age=31536000, immutable" },
+  // Car photographs keep stable file names (not fingerprinted), so a week rather than "immutable".
+  { path: "/cars/*", value: "public, max-age=604800, stale-while-revalidate=86400" },
   { path: "/og/*", value: "public, max-age=86400" },
   { path: "/templates/*", value: "public, max-age=86400" },
 ];
