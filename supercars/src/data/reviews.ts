@@ -1,14 +1,7 @@
+import type { DemoReview } from "@/domain/content";
+
 /* DEMO REVIEWS — clearly placeholder content, NOT real customer feedback.
  * Every entry carries `isDemo: true` and the UI must label the section as demo. */
-
-export interface DemoReview {
-  readonly id: string;
-  readonly author: string;
-  readonly car: string;
-  readonly style: string;
-  readonly quote: string;
-  readonly isDemo: true;
-}
 
 export const demoReviews: readonly DemoReview[] = [
   {

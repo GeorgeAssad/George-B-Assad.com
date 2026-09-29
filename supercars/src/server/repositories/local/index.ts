@@ -1,6 +1,7 @@
 import { brands, cars, generations } from "@/data/cars";
 import { posterSizes, products } from "@/data/products";
 import { templates } from "@/data/templates";
+import { shippingDestinations, shippingRules } from "@/data/shipping";
 import { demoReviews } from "@/data/reviews";
 import { mediaItems } from "@/data/media";
 import { sampleOrders } from "@/data/orders";
@@ -49,6 +50,8 @@ const productRepository: ProductRepository = {
   getVariant: async (productId, sizeId) =>
     products.find((p) => p.id === productId)?.variants.find((v) => v.sizeId === sizeId) ?? null,
   listSizes: async () => posterSizes,
+  listShippingDestinations: async () => shippingDestinations,
+  getShippingRules: async () => shippingRules,
 };
 
 const templateRepository: TemplateRepository = {

@@ -1,4 +1,4 @@
-import type { Page } from "@playwright/test";
+import { test as base, type Page } from "@playwright/test";
 
 const SHOTS = process.env.E2E_SHOTS;
 
@@ -25,3 +25,17 @@ export async function expectFixedBarsInViewport(page: Page) {
   );
   if (bad.length) throw new Error(`Fixed element(s) outside the viewport: ${JSON.stringify(bad)}`);
 }
+
+
+/**
+ * Each test gets its own client identity so per-IP rate limits (which are real
+ * and intentionally strict on AI generation) don't couple tests together.
+ * `CF-Connecting-IP` is what Cloudflare's edge sets in production; locally we set it ourselves.
+ */
+export const test = base.extend({
+  page: async ({ page }, provide) => {
+    const octet = () => Math.floor(Math.random() * 250) + 2;
+    await page.context().setExtraHTTPHeaders({ "cf-connecting-ip": `10.${octet()}.${octet()}.${octet()}` });
+    await provide(page);
+  },
+});

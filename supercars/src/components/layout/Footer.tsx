@@ -2,9 +2,10 @@ import Link from "next/link";
 import { IconInstagram, IconTikTok } from "@/components/ui/icons";
 import { footerNav } from "@/config/nav";
 import { siteConfig } from "@/config/site";
+import { OpenChatLink } from "@/components/support/SupportLauncher";
 import { Logo } from "./Logo";
 
-function Column({ title, links }: { title: string; links: readonly { label: string; href: string }[] }) {
+function Column({ title, links, chat = false }: { title: string; links: readonly { label: string; href: string }[]; chat?: boolean }) {
   return (
     <div>
       <h2 className="spec">{title}</h2>
@@ -12,6 +13,7 @@ function Column({ title, links }: { title: string; links: readonly { label: stri
         {links.map((l) => (
           <li key={l.href}><Link href={l.href} className="text-sm text-muted transition-colors hover:text-fg">{l.label}</Link></li>
         ))}
+        {chat && <li><OpenChatLink className="text-sm text-muted transition-colors hover:text-fg" /></li>}
       </ul>
     </div>
   );
@@ -35,7 +37,7 @@ export function Footer() {
           <nav aria-label="Footer" className="grid grid-cols-2 gap-8 sm:grid-cols-4">
             <Column title="Shop" links={footerNav.shop} />
             <Column title="Company" links={footerNav.company} />
-            <Column title="Customer service" links={footerNav.service} />
+            <Column title="Customer service" links={footerNav.service} chat />
             <Column title="Legal" links={footerNav.legal} />
           </nav>
         </div>

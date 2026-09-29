@@ -53,5 +53,3 @@ export const products: readonly Product[] = [
     ],
   },
 ];
-
-export const DEFAULT_PRODUCT_ID = "custom-car-poster";

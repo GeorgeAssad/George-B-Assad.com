@@ -1,21 +1,24 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useSyncExternalStore } from "react";
 import { IconMoon, IconSun } from "@/components/ui/icons";
 
 type Theme = "dark" | "light";
 const STORAGE_KEY = "sc-theme";
 
-export function ThemeToggle() {
-  const [theme, setTheme] = useState<Theme>("dark");
+/** The theme lives on <html data-theme>; observe it so every toggle instance stays in sync. */
+function subscribe(listener: () => void): () => void {
+  const observer = new MutationObserver(listener);
+  observer.observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+  return () => observer.disconnect();
+}
+const getTheme = (): Theme => (document.documentElement.dataset.theme === "light" ? "light" : "dark");
 
-  useEffect(() => {
-    setTheme(document.documentElement.dataset.theme === "light" ? "light" : "dark");
-  }, []);
+export function ThemeToggle() {
+  const theme = useSyncExternalStore(subscribe, getTheme, () => "dark" as Theme);
 
   const toggle = () => {
     const next: Theme = theme === "dark" ? "light" : "dark";
-    setTheme(next);
     document.documentElement.dataset.theme = next;
     try {
       window.localStorage.setItem(STORAGE_KEY, next);

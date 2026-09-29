@@ -22,10 +22,16 @@ export function StepPreview({ preview, onRetry }: StepPreviewProps) {
   const pct = status === "ready" ? 100 : stages.length ? Math.round((stageIndex / stages.length) * 100) : 4;
 
   if (status === "error") {
+    const copy =
+      error === "network"
+        ? { title: "Network error", body: "We couldn't reach the design engine. Check your connection and try again — your choices are saved." }
+        : error === "rate_limited"
+          ? { title: "One moment", body: "You've generated a lot of previews in a short time. Please wait a minute and try again — your choices are saved." }
+          : { title: "Design unavailable", body: "We couldn't generate this design right now. Please try again in a moment." };
     return (
       <div className="rounded-2xl border border-red-text/50 bg-surface p-6" role="alert">
-        <h3 className="h-display text-3xl">{error === "network" ? "Network error" : "Design unavailable"}</h3>
-        <p className="mt-2 text-muted">{error === "network" ? "We couldn't reach the design engine. Check your connection and try again — your choices are saved." : "We couldn't generate this design right now. Please try again in a moment."}</p>
+        <h3 className="h-display text-3xl">{copy.title}</h3>
+        <p className="mt-2 text-muted">{copy.body}</p>
         <Button className="mt-5" variant="secondary" onClick={onRetry}>Try again</Button>
       </div>
     );

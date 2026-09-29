@@ -1,20 +1,8 @@
+import type { MediaItem } from "@/domain/content";
+
 /* DEMO SOCIAL/MEDIA ITEMS — local placeholders for the "Seen on the feed"
  * section. Shaped so a CMS or object storage can supply real clips later
  * (set `videoUrl` and `posterUrl` from storage; no component changes). */
-
-export interface MediaItem {
-  readonly id: string;
-  readonly kind: "reel" | "post";
-  readonly caption: string;
-  /** Slug of a car whose local artwork stands in for the thumbnail. */
-  readonly carSlug: string;
-  readonly templateId: "minimal" | "blueprint" | "racing" | "heritage" | "luxury";
-  /** Demo name printed on the stand-in poster. */
-  readonly posterName: string;
-  readonly videoUrl?: string;
-  readonly posterUrl?: string;
-  readonly isDemo: true;
-}
 
 export const mediaItems: readonly MediaItem[] = [
   { id: "m1", posterName: "NOAH", kind: "reel", caption: "Unboxing the 50×70 — placeholder clip", carSlug: "bmw-m3-g80", templateId: "racing", isDemo: true },

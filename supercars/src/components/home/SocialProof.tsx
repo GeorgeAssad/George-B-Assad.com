@@ -1,4 +1,4 @@
-import type { DemoReview } from "@/data/reviews";
+import type { DemoReview } from "@/domain/content";
 import { Badge } from "@/components/ui/Badge";
 import { Reveal } from "@/components/ui/Reveal";
 import { SectionHeading } from "@/components/ui/SectionHeading";

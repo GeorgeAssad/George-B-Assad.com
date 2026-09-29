@@ -5,12 +5,9 @@ import { usePathname } from "next/navigation";
 import type { ReactNode } from "react";
 import { IconCart, IconGauge, IconPackage, IconPlus, IconTruck } from "@/components/ui/icons";
 import { useCart } from "@/lib/use-cart";
+import { hasStickyBar } from "@/lib/layout-rules";
 import { openCartDrawer } from "@/lib/ui-store";
 
-/** Routes that provide their own sticky action bar, so the tab bar steps aside. */
-const HIDDEN_ON = ["/create", "/checkout"];
-/** Car detail pages show a sticky "Create this car" bar instead. */
-const CAR_DETAIL = /^\/cars\/[^/]+$/;
 
 interface TabProps { readonly href: string; readonly label: string; readonly icon: ReactNode; readonly active: boolean }
 
@@ -28,7 +25,7 @@ function Tab({ href, label, icon, active }: TabProps) {
 export function BottomNav() {
   const pathname = usePathname();
   const { count, hydrated } = useCart();
-  if (CAR_DETAIL.test(pathname) || HIDDEN_ON.some((p) => pathname === p || pathname.startsWith(`${p}/`))) return null;
+  if (hasStickyBar(pathname)) return null;
   const on = (href: string) => pathname === href || pathname.startsWith(`${href}/`);
 
   return (

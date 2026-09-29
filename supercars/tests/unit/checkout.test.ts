@@ -93,6 +93,12 @@ describe("checkout flow (demo)", () => {
     await expect(startCheckout(bad, d)).rejects.toBeInstanceOf(ApiError);
   });
 
+  it("refuses to ship to countries outside the server-side allow-list", async () => {
+    const d = deps();
+    const far = request({ shipping: { line1: "1 Demo Street", line2: undefined, city: "Nowhere", postalCode: "12345", country: "ZZ" } });
+    await expect(startCheckout(far, d)).rejects.toMatchObject({ status: 422, code: "shipping_unavailable" });
+  });
+
   it("cart hash changes with any customization change", async () => {
     const a = request().items;
     const b = request({ items: [{ ...a[0]!, customization: { name: "GEORGF", text: undefined, year: undefined, location: undefined } }] }).items;

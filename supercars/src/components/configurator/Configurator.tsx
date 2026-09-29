@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useReducer, useRef, useState } from "react";
 import type { CartItem, Customization } from "@/domain/cart";
 import type { TemplateId, SizeId } from "@/domain/catalog";
@@ -14,6 +15,7 @@ import { getSnapshot } from "@/lib/cart-store";
 import { normalizeText } from "@/lib/validation";
 import { openCartDrawer } from "@/lib/ui-store";
 import { useCart } from "@/lib/use-cart";
+import { useHydrated } from "@/lib/use-hydrated";
 import { useCartQuote } from "@/lib/use-cart-quote";
 import { ConfiguratorSkeleton } from "./ConfiguratorSkeleton";
 import { PreviewPanel } from "./PreviewPanel";
@@ -24,7 +26,7 @@ import { StepSize } from "./StepSize";
 import { StepStyle } from "./StepStyle";
 import { StepSummary } from "./StepSummary";
 import { Stepper } from "./Stepper";
-import { INITIAL_STATE, STEPS, canContinue, configReducer, initialFromParams, stateFromCartItem, toCustomization, validateCustomization, type Catalog, type Step } from "./config-state";
+import { INITIAL_STATE, canContinue, configReducer, initialFromParams, stateFromCartItem, validateCustomization, type Catalog, type ConfigState, type Step } from "./config-state";
 import { useDesignPreview } from "./use-design-preview";
 
 const HEADINGS: Record<Step, { title: string; lead: string }> = {
@@ -38,25 +40,33 @@ const HEADINGS: Record<Step, { title: string; lead: string }> = {
 
 const PRICE_PROBE_NAME = "PRICE";
 
+/**
+ * Initial state comes from the URL (deep links) or from a cart line (edit).
+ * The params come from Next's router (`useSearchParams`), NOT window.location: during a client-side
+ * navigation the destination renders before window.location updates.
+ */
+function initFromParams(catalog: Catalog, params: URLSearchParams): ConfigState {
+  const editId = params.get("edit");
+  const line = editId ? getSnapshot().items.find((i) => i.id === editId) : undefined;
+  return line ? stateFromCartItem(line) : initialFromParams(params, catalog);
+}
+
 export function Configurator({ catalog }: { catalog: Catalog }) {
-  const [state, dispatch] = useReducer(configReducer, INITIAL_STATE);
-  const [ready, setReady] = useState(false);
+  const hydrated = useHydrated();
+  return hydrated ? <ConfiguratorInner catalog={catalog} /> : <ConfiguratorSkeleton />;
+}
+
+function ConfiguratorInner({ catalog }: { catalog: Catalog }) {
+  const searchParams = useSearchParams();
+  const [state, dispatch] = useReducer(configReducer, undefined, () => initFromParams(catalog, new URLSearchParams(searchParams.toString())));
   const [showErrors, setShowErrors] = useState(false);
-  const [added, setAdded] = useState(false);
+  const [addedKey, setAddedKey] = useState<string | null>(null);
+  const router = useRouter();
   const cart = useCart();
   const toast = useToast();
   const headingRef = useRef<HTMLHeadingElement>(null);
   const topRef = useRef<HTMLDivElement>(null);
   const mounted = useRef(false);
-
-  /* ---- initial state from URL (deep links) or from a cart line (edit) ---- */
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const editId = params.get("edit");
-    const line = editId ? getSnapshot().items.find((i) => i.id === editId) : undefined;
-    dispatch({ type: "replace", state: line ? stateFromCartItem(line) : initialFromParams(params, catalog) });
-    setReady(true);
-  }, [catalog]);
 
   /* ---- derived data ---- */
   const entry = catalog.cars.find((c) => c.generation.slug === state.carSlug) ?? null;
@@ -89,7 +99,7 @@ export function Configurator({ catalog }: { catalog: Catalog }) {
     () => (entry ? [{ id: "probe", productId: state.productId, sizeId: state.sizeId, carSlug: entry.generation.slug, templateId: state.templateId, customization: { name: PRICE_PROBE_NAME }, quantity: state.quantity }] : []),
     [entry, state.productId, state.sizeId, state.templateId, state.quantity],
   );
-  const quote = useCartQuote(probe, ready && entry !== null);
+  const quote = useCartQuote(probe, entry !== null);
   const line = quote.quote?.lines[0];
 
   /* ---- effects ---- */
@@ -109,7 +119,6 @@ export function Configurator({ catalog }: { catalog: Catalog }) {
   }, [state.step]);
 
   useEffect(() => {
-    if (!ready) return;
     const p = new URLSearchParams();
     if (state.carSlug) p.set("car", state.carSlug);
     if (state.carSlug) p.set("style", state.templateId);
@@ -118,12 +127,11 @@ export function Configurator({ catalog }: { catalog: Catalog }) {
     if (state.editingId) p.set("edit", state.editingId);
     const qs = p.toString();
     window.history.replaceState(null, "", qs ? `?${qs}` : window.location.pathname);
-  }, [ready, state.carSlug, state.templateId, state.sizeId, state.productId, state.editingId]);
+  }, [state.carSlug, state.templateId, state.sizeId, state.productId, state.editingId]);
 
-  // Any change after adding to the cart starts a fresh "unsaved" state.
-  useEffect(() => setAdded(false), [state.carSlug, state.templateId, state.sizeId, state.productId, state.name, state.text, state.year, state.location, state.quantity]);
-
-  if (!ready) return <ConfiguratorSkeleton />;
+  // "Added" holds only while the configuration is unchanged since it was added.
+  const configKey = JSON.stringify([state.carSlug, state.templateId, state.sizeId, state.productId, state.name, state.text, state.year, state.location, state.quantity]);
+  const added = addedKey === configKey;
 
   const go = (step: Step) => dispatch({ type: "goto", step });
   const heading = HEADINGS[state.step];
@@ -148,7 +156,7 @@ export function Configurator({ catalog }: { catalog: Catalog }) {
     else cart.add(item);
     track("add_to_cart", { carSlug: item.carSlug, templateId: item.templateId, sizeId: item.sizeId, quantity: item.quantity });
     toast({ title: editing ? "Cart updated" : "Added to cart", description: `${entry.generation.displayName} · ${template.name} · ${size.label}`, tone: "success" });
-    setAdded(true);
+    setAddedKey(configKey);
     openCartDrawer();
   };
 
@@ -215,7 +223,7 @@ export function Configurator({ catalog }: { catalog: Catalog }) {
                 ) : entry ? <Skeleton className="ml-auto h-9 w-24 lg:ml-0" /> : <p className="text-sm text-muted">Choose a car to see the price</p>}
               </div>
               {added && state.step === 6 ? (
-                <Button size="lg" onClick={() => (editing ? (window.location.href = "/cart") : openCartDrawer())}><IconCheck size={18} /> View cart</Button>
+                <Button size="lg" onClick={() => (editing ? router.push("/cart") : openCartDrawer())}><IconCheck size={18} /> View cart</Button>
               ) : (
                 <Button size="lg" onClick={onNext} disabled={primaryDisabled} aria-disabled={primaryDisabled}>
                   {primaryLabel} {state.step !== 6 && <IconArrow size={18} />}

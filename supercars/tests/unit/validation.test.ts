@@ -69,7 +69,7 @@ describe("checkoutRequestSchema (strict)", () => {
   });
   it("validates email, country and postal code", () => {
     const bad = validCheckout(); bad.customer.email = "nope";
-    const country = validCheckout(); country.shipping.country = "ZZ";
+    const country = validCheckout(); country.shipping.country = "zz1";
     const postal = validCheckout(); postal.shipping.postalCode = "<>";
     expect([bad, country, postal].map((b) => checkoutRequestSchema.safeParse(b).success)).toEqual([false, false, false]);
   });

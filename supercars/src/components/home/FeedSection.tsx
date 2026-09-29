@@ -1,4 +1,4 @@
-import type { MediaItem } from "@/data/media";
+import type { MediaItem } from "@/domain/content";
 import type { CarEntry, DesignTemplate } from "@/domain/catalog";
 import { PosterPreview } from "@/components/poster/PosterPreview";
 import { Badge } from "@/components/ui/Badge";

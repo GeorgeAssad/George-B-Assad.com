@@ -12,7 +12,7 @@ import { Price } from "@/components/ui/Price";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { StickyCta } from "@/components/ui/StickyCta";
 import { IconArrow } from "@/components/ui/icons";
-import { DEFAULT_PRODUCT_ID } from "@/data/products";
+import { DEFAULT_PRODUCT_ID } from "@/config/catalog";
 import { slugSchema } from "@/lib/validation";
 import { getRepositories } from "@/server/repositories";
 

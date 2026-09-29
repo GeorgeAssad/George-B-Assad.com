@@ -35,6 +35,14 @@ export async function hashCart(items: readonly CartItem[], country: string): Pro
   return sha256Hex(JSON.stringify({ canonical, country }));
 }
 
+/** The server decides where we ship. The client-side <select> is a convenience, not a control. */
+async function assertShippable(country: string, repos: Repositories): Promise<void> {
+  const destinations = await repos.products.listShippingDestinations();
+  if (!destinations.some((d) => d.code === country)) {
+    throw new ApiError(422, "shipping_unavailable", "We can't ship to that country yet.");
+  }
+}
+
 async function priceOrThrow(items: readonly CartItem[], repos: Repositories) {
   const quote = await quoteCart(items, repos);
   if (quote.rejected.length > 0 || quote.lines.length === 0) {
@@ -52,6 +60,7 @@ export interface StartCheckoutResult {
 }
 
 export async function startCheckout(req: CheckoutRequest, deps: CheckoutDeps = defaultDeps()): Promise<StartCheckoutResult> {
+  await assertShippable(req.shipping.country, deps.repos);
   const quote = await priceOrThrow(req.items, deps.repos);
   const orderId = deps.newOrderId();
   const session = await deps.services.payment.createCheckoutSession({
@@ -75,6 +84,7 @@ export async function confirmCheckout(input: { sessionId: string; checkout: Chec
   if (verification.status !== "paid") throw new ApiError(402, "payment_not_completed", "Payment was not completed.");
 
   const { checkout } = input;
+  await assertShippable(checkout.shipping.country, deps.repos);
   const quote = await priceOrThrow(checkout.items, deps.repos);
   const expectedHash = await hashCart(checkout.items, checkout.shipping.country);
   if (expectedHash !== verification.cartHash || quote.totals.total.amount !== verification.amount.amount) {

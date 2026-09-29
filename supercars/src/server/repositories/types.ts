@@ -1,12 +1,20 @@
 import type { Brand, CarEntry, DesignTemplate, PosterSize, Product, ProductVariant, SizeId, TemplateId } from "@/domain/catalog";
-import type { Customer, CustomerInput } from "@/domain/customer";
+import type { Customer, CustomerInput, ShippingDestination } from "@/domain/customer";
+import type { Money } from "@/domain/money";
 import type { Order } from "@/domain/order";
-import type { DemoReview } from "@/data/reviews";
-import type { MediaItem } from "@/data/media";
+import type { DemoReview, MediaItem } from "@/domain/content";
 
 /* REPOSITORY BOUNDARIES — the only way server code reads or writes data.
  * Today: local demo data. Later: PostgreSQL / Supabase / D1 behind the same
  * interfaces. Pages and services depend on these types, never on `data/*`. */
+
+/** Placeholder shipping policy. Real rates come from the fulfilment provider. */
+export interface ShippingRules {
+  readonly flatRate: Money;
+  readonly freeOver: Money;
+  readonly minBusinessDays: number;
+  readonly maxBusinessDays: number;
+}
 
 export interface CarRepository {
   listBrands(): Promise<readonly Brand[]>;
@@ -20,6 +28,8 @@ export interface ProductRepository {
   getProductById(id: string): Promise<Product | null>;
   getVariant(productId: string, sizeId: SizeId): Promise<ProductVariant | null>;
   listSizes(): Promise<readonly PosterSize[]>;
+  listShippingDestinations(): Promise<readonly ShippingDestination[]>;
+  getShippingRules(): Promise<ShippingRules>;
 }
 
 export interface TemplateRepository {

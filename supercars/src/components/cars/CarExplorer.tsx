@@ -6,6 +6,7 @@ import { EmptyState } from "@/components/ui/EmptyState";
 import { IconClose, IconSearch } from "@/components/ui/icons";
 import { track } from "@/lib/analytics";
 import { EMPTY_FILTERS, computeFacets, filterCars, filtersFromParams, filtersToParams, hasActiveFilters, type CarFilters } from "@/lib/car-search";
+import { replaceSearch, useUrlSearch } from "@/lib/url-search-store";
 import { CarCard } from "./CarCard";
 import { FilterChip } from "./FilterChip";
 
@@ -21,23 +22,11 @@ function Group({ label, children }: { label: string; children: React.ReactNode }
 }
 
 export function CarExplorer({ entries, brands }: { entries: readonly CarEntry[]; brands: readonly Brand[] }) {
-  const [filters, setFilters] = useState<CarFilters>(EMPTY_FILTERS);
+  // The URL query string is the single source of truth for filters (shareable, back-button friendly).
+  const search = useUrlSearch();
+  const filters = useMemo(() => filtersFromParams(new URLSearchParams(search)), [search]);
   const [refineOpen, setRefineOpen] = useState(false);
-  const [hydrated, setHydrated] = useState(false);
-
-  // Read initial filters from the URL after mount (keeps the page statically renderable).
-  useEffect(() => {
-    setFilters(filtersFromParams(new URLSearchParams(window.location.search)));
-    setHydrated(true);
-  }, []);
-
-  // Mirror filters into the URL without adding history entries. Only after the
-  // initial read has been applied, so the incoming query is never overwritten.
-  useEffect(() => {
-    if (!hydrated) return;
-    const qs = filtersToParams(filters).toString();
-    window.history.replaceState(null, "", qs ? `?${qs}` : window.location.pathname);
-  }, [filters, hydrated]);
+  const setFilters = (next: CarFilters) => replaceSearch(filtersToParams(next).toString());
 
   const results = useMemo(() => filterCars(entries, filters), [entries, filters]);
   const facets = useMemo(() => computeFacets(entries, brands, filters), [entries, brands, filters]);
@@ -49,7 +38,7 @@ export function CarExplorer({ entries, brands }: { entries: readonly CarEntry[];
     return () => window.clearTimeout(t);
   }, [filters.q, results.length]);
 
-  const set = (patch: Partial<CarFilters>) => setFilters((f) => ({ ...f, ...patch }));
+  const set = (patch: Partial<CarFilters>) => setFilters({ ...filters, ...patch });
   const toggle = <T,>(list: readonly T[], v: T): T[] => (list.includes(v) ? list.filter((x) => x !== v) : [...list, v]);
   const active = hasActiveFilters(filters);
   const refineCount = filters.body.length + filters.performance.length;

@@ -1,6 +1,5 @@
 import { z } from "zod";
 import { ORDER_ID_PATTERN } from "./ids";
-import { shippingDestinations } from "@/data/shipping";
 
 /* SHARED VALIDATION. The browser uses these for UX only; the server re-runs
  * them and is authoritative. Every object schema is STRICT: unknown keys such
@@ -78,8 +77,6 @@ export const orderIdSchema = z
   .transform((v) => v.trim().toUpperCase())
   .pipe(z.string().regex(ORDER_ID_PATTERN, "Enter an order number like SC-100234"));
 
-const countryCodes = shippingDestinations.map((d) => d.code) as [string, ...string[]];
-
 export const customerInputSchema = z.strictObject({
   name: text(LIMITS.customerName).pipe(
     z.string().min(2, "Enter your full name").max(LIMITS.customerName).regex(PERSON_CHARS, "Name contains unsupported characters"),
@@ -114,7 +111,8 @@ export const addressSchema = z.strictObject({
     .string()
     .trim()
     .regex(/^[A-Za-z0-9][A-Za-z0-9 -]{1,10}[A-Za-z0-9]$/, "Enter a valid postal code"),
-  country: z.enum(countryCodes, { error: "Choose a shipping country" }),
+  // Format only. Which countries we ship to is decided by the server (see checkout-service), not the client.
+  country: z.string().regex(/^[A-Z]{2}$/, "Choose a shipping country"),
 });
 
 export const checkoutRequestSchema = z.strictObject({

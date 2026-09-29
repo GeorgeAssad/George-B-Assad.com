@@ -1,6 +1,6 @@
 import type { CartItem, Customization } from "@/domain/cart";
 import type { CarEntry, DesignTemplate, PosterSize, Product, SizeId, TemplateId } from "@/domain/catalog";
-import { DEFAULT_PRODUCT_ID } from "@/data/products";
+import { DEFAULT_PRODUCT_ID } from "@/config/catalog";
 import { customizationSchema } from "@/lib/validation";
 
 /* Pure configurator state. No React, no I/O — so URL parsing, edit-mode

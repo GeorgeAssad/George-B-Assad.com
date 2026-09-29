@@ -33,7 +33,7 @@ export const rateLimitPolicies = {
   checkout: { name: "checkout", windows: [{ limit: 6, windowMs: 10 * MIN }, { limit: 30, windowMs: DAY }] },
   lookup: { name: "lookup", windows: [{ limit: 15, windowMs: 5 * MIN }] },
   support: { name: "support", windows: [{ limit: 20, windowMs: 5 * MIN }, { limit: 200, windowMs: DAY }] },
-  designGenerate: { name: "design-generate", windows: [{ limit: 4, windowMs: MIN }, { limit: 20, windowMs: HOUR }, { limit: 60, windowMs: DAY }] },
+  designGenerate: { name: "design-generate", windows: [{ limit: 8, windowMs: MIN }, { limit: 60, windowMs: HOUR }, { limit: 200, windowMs: DAY }] },
   designProcess: { name: "design-process", windows: [{ limit: 10, windowMs: MIN }, { limit: 60, windowMs: HOUR }] },
 } as const satisfies Record<string, RateLimitPolicy>;
 

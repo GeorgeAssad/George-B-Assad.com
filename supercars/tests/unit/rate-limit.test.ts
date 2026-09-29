@@ -26,8 +26,8 @@ describe("InMemoryRateLimiter", () => {
     const rl = new InMemoryRateLimiter();
     const p = rateLimitPolicies.designGenerate;
     let allowed = 0;
-    for (let i = 0; i < 10; i++) if ((await rl.check("x", p, i)).allowed) allowed++;
-    expect(allowed).toBe(4); // per-minute cap
+    for (let i = 0; i < 12; i++) if ((await rl.check("x", p, i)).allowed) allowed++;
+    expect(allowed).toBe(8); // per-minute cap
   });
   it("does not let blocked attempts extend the block", async () => {
     const rl = new InMemoryRateLimiter();

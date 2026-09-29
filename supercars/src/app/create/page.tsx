@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { Configurator } from "@/components/configurator/Configurator";
+import { ConfiguratorSkeleton } from "@/components/configurator/ConfiguratorSkeleton";
 import { getRepositories } from "@/server/repositories";
 
 export const metadata: Metadata = {
@@ -12,5 +14,9 @@ export const metadata: Metadata = {
 export default async function CreatePage() {
   const repos = getRepositories();
   const [cars, templates, products, sizes] = await Promise.all([repos.cars.listEntries(), repos.templates.list(), repos.products.listProducts(), repos.products.listSizes()]);
-  return <Configurator catalog={{ cars, templates, products, sizes }} />;
+  return (
+    <Suspense fallback={<ConfiguratorSkeleton />}>
+      <Configurator catalog={{ cars, templates, products, sizes }} />
+    </Suspense>
+  );
 }

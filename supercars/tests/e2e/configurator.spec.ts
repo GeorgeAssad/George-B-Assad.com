@@ -1,5 +1,5 @@
-import { expect, test } from "@playwright/test";
-import { expectFixedBarsInViewport, expectNoHorizontalScroll, shot } from "./helpers";
+import { expect } from "@playwright/test";
+import { expectFixedBarsInViewport, expectNoHorizontalScroll, shot, test } from "./helpers";
 
 test("configurator: search → style → size → personalize → preview → add to cart", async ({ page }, info) => {
   const p = info.project.name;
