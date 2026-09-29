@@ -9,6 +9,8 @@ import { openCartDrawer } from "@/lib/ui-store";
 
 /** Routes that provide their own sticky action bar, so the tab bar steps aside. */
 const HIDDEN_ON = ["/create", "/checkout"];
+/** Car detail pages show a sticky "Create this car" bar instead. */
+const CAR_DETAIL = /^\/cars\/[^/]+$/;
 
 interface TabProps { readonly href: string; readonly label: string; readonly icon: ReactNode; readonly active: boolean }
 
@@ -26,7 +28,7 @@ function Tab({ href, label, icon, active }: TabProps) {
 export function BottomNav() {
   const pathname = usePathname();
   const { count, hydrated } = useCart();
-  if (HIDDEN_ON.some((p) => pathname === p || pathname.startsWith(`${p}/`))) return null;
+  if (CAR_DETAIL.test(pathname) || HIDDEN_ON.some((p) => pathname === p || pathname.startsWith(`${p}/`))) return null;
   const on = (href: string) => pathname === href || pathname.startsWith(`${href}/`);
 
   return (

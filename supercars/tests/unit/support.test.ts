@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { mockSupportAgent } from "@/server/services/mock/support";
-import { toPublicOrderView } from "@/server/checkout/public-order";
+import { toPublicOrderView } from "@/lib/public-order";
 import { sampleOrders } from "@/data/orders";
 
 describe("mock support agent", () => {

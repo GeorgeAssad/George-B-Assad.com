@@ -2,7 +2,7 @@ import { getRepositories } from "@/server/repositories";
 import { formatPrice, formatDateRange } from "@/lib/format";
 import { newId } from "@/lib/ids";
 import { shippingRules } from "@/data/shipping";
-import { toPublicOrderView } from "@/server/checkout/public-order";
+import { toPublicOrderView } from "@/lib/public-order";
 import type { SupportAnswer } from "@/domain/support";
 import type { SupportProvider } from "../contracts";
 
