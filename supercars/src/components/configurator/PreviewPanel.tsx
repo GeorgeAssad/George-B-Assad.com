@@ -17,7 +17,7 @@ interface PreviewPanelProps {
 export function PreviewPanel({ entry, template, customization, sizeId, kind, generating = false, className = "" }: PreviewPanelProps) {
   if (!entry) {
     return (
-      <div className={`flex aspect-[5/7] items-center justify-center rounded-lg border border-dashed border-line-strong bg-surface p-8 text-center ${className}`}>
+      <div className={`flex aspect-[5/7] items-center justify-center rounded-sm border border-dashed border-line-strong bg-white/[0.03] p-8 text-center ${className}`}>
         <div>
           <p className="h-display text-3xl">Your poster</p>
           <p className="mt-2 text-sm text-muted">Choose a car and it appears here, updating live as you design.</p>

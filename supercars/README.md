@@ -73,21 +73,28 @@ The build settings are stored in the Cloudflare dashboard, **not** in this repos
 | Secrets | `.dev.vars` (git-ignored) | Worker secrets (preview) | Worker secrets |
 | Providers | all `mock` | all `mock` | all `mock` until real ones exist |
 
-## Pages (order-first)
+## Pages
 
-The store exists to take an order, so it has as few pages as possible and one way to do each thing.
+Every page exists and has one job. Nothing is said twice: navigation lives only in the header, and a page never carries a second generic "Create your poster" button.
 
 | Page | Job |
 | --- | --- |
-| `/` | One screen: what we sell + the 12 car tiles. A tile starts a poster for that car. |
+| `/` | Scene one (one screen): what we sell, a big car under the spotlight and the 12 car tiles; a tile starts a poster for that car. Scene two: the four steps and the five styles as a fan of posters, one line of facts. |
+| `/cars` | The garage: search and brand filters (state in the URL) over showroom tiles; a tile opens the car's page. |
+| `/cars/<slug>` | The car full-screen with its facts, price and **Create this car**; below it the car in each of the five styles (each print opens the designer with car and style chosen). |
+| `/shop` | Print and framed poster hanging on a gallery wall, with sizes, prices and one contextual button each. |
+| `/how-it-works`, `/about` | The four steps as a storyboard with delivery facts and FAQ; the studio in three principles. |
 | `/create` | The designer: **car → design (style, finish, size) → personalize → review and add to cart**. |
-| `/cars/<slug>` | One-screen landing page per car (for ads and links): the car, three facts, price, one button. |
 | `/checkout`, `/order/success/<id>`, `/track` | Pay (demo), confirmation, order tracking. |
 | `/shipping`, `/privacy`, `/terms`, `/legal`, `/credits` | Required information, linked from a one-line footer. |
 
-Old URLs still work: `/shop`, `/cars` and `/products/*` go to `/create`; `/how-it-works` and `/about` go to `/`; `/returns` goes to `/shipping`; `/cart` goes to `/checkout` (the cart is the drawer opened from the header). The redirects are in `next.config.ts`.
+Old URLs still work: `/products/*` goes to `/shop` (`/products/<slug>/customize` to `/create?product=<slug>`); `/returns` goes to `/shipping`; `/cart` goes to `/checkout` (the cart is the drawer opened from the header). The redirects are in `next.config.ts`.
 
-Rules that `tests/e2e/funnel.spec.ts` enforces: the home page, car pages, `/track` and the checkout entry fit one screen without scrolling (390×844, 768×1024, 1440×900); a page never shows two "create your poster" controls; the header is only logo, Track order and cart (a Create button appears only on pages that have no start button of their own); there is no bottom tab bar and no floating chat button (the chat link is in the footer).
+Rules that `tests/e2e/funnel.spec.ts` and `tests/unit/site-structure.test.ts` enforce:
+
+- **Navigation only in the header** — Cars, Shop, How it works, About, Track order and the cart; on phones the same five links sit in one menu. The footer is legal links, chat and the theme switch. No bottom tab bar, no floating chat button.
+- **One generic Create button per page**, in the header (none on `/create`, the checkout and order confirmation). Contextual starts that name their job are fine: a car tile, "Create this car", a style on a car page, "Design a framed poster".
+- **Short pages.** Measured at 390×844, 768×1024 and 1440×900: Home at most 2 screens, every other page under 2, `/track` one screen; on the first screen of Home all 12 car tiles are visible and on a car page the Create button is.
 
 ## Car images
 

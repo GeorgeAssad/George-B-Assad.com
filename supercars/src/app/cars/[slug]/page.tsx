@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { CarStage } from "@/components/cars/CarStage";
+import { StyleStrip } from "@/components/cars/StyleStrip";
 import { Button } from "@/components/ui/Button";
 import { Price } from "@/components/ui/Price";
 import { IconArrow } from "@/components/ui/icons";
@@ -35,47 +36,51 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-/** One screen: the car, its name, three facts, the price and one button. */
+/** First screen: the car, its name, three facts, the price and one button. Below it, one strip: the car in each style. */
 export default async function CarPage({ params }: Props) {
   const { slug } = await params;
   const entry = await load(slug);
   if (!entry) notFound();
 
-  const product = await getRepositories().products.getProductById(DEFAULT_PRODUCT_ID);
+  const repos = getRepositories();
+  const [product, templates, sizes] = await Promise.all([repos.products.getProductById(DEFAULT_PRODUCT_ID), repos.templates.list(), repos.products.listSizes()]);
   const { brand, car, generation } = entry;
   const cheapest = product?.variants.reduce((a, b) => (a.price.amount <= b.price.amount ? a : b));
   const { specs } = generation;
 
   return (
     <article className="flex flex-1 flex-col">
-      <CarStage entry={entry} />
+      <div className="flex min-h-[calc(100svh-4rem)] flex-col lg:min-h-[calc(100svh-4.5rem)]">
+        <CarStage entry={entry} />
 
-      <div className="container-x flex flex-col gap-4 py-4 sm:py-5 lg:flex-row lg:items-center lg:justify-between lg:gap-8">
-        <div className="min-w-0">
-          <h1 className="h-display text-[clamp(2rem,5vw,3.5rem)] leading-none">
-            {brand.name} {car.name} <span className="text-red-text">{generation.generation}</span>
-          </h1>
-          <p className="mt-1.5 text-muted">{generation.tagline}</p>
-        </div>
+        <div className="container-x flex flex-col gap-4 py-4 sm:py-5 lg:flex-row lg:items-center lg:justify-between lg:gap-8">
+          <div className="min-w-0">
+            <h1 className="h-display text-[clamp(2rem,5vw,3.5rem)] leading-none">
+              {brand.name} {car.name} <span className="text-red-text">{generation.generation}</span>
+            </h1>
+            <p className="mt-1.5 text-muted">{generation.tagline}</p>
+          </div>
 
-        <dl className="flex gap-6 sm:gap-8">
-          {[
-            ["Years", specs.years],
-            ["Power", `${specs.powerKw} kW`],
-            ["Drive", specs.drivetrain],
-          ].map(([label, value]) => (
-            <div key={label}>
-              <dt className="spec">{label}</dt>
-              <dd className="mt-0.5 font-semibold tabular-nums">{value}</dd>
-            </div>
-          ))}
-        </dl>
+          <dl className="flex gap-6 sm:gap-8">
+            {[
+              ["Years", specs.years],
+              ["Power", `${specs.powerKw} kW`],
+              ["Drive", specs.drivetrain],
+            ].map(([label, value]) => (
+              <div key={label}>
+                <dt className="spec">{label}</dt>
+                <dd className="mt-0.5 font-semibold tabular-nums">{value}</dd>
+              </div>
+            ))}
+          </dl>
 
-        <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-3 lg:justify-end">
-          {cheapest && <Price value={cheapest.price} prefix="Posters from" className="text-lg" />}
-          <Button href={`/create?car=${generation.slug}`} size="lg" className="max-sm:flex-1">Create this car <IconArrow size={18} /></Button>
+          <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-3 lg:justify-end">
+            {cheapest && <Price value={cheapest.price} prefix="Posters from" className="text-lg" />}
+            <Button href={`/create?car=${generation.slug}`} size="lg" className="max-sm:flex-1">Create this car <IconArrow size={18} /></Button>
+          </div>
         </div>
       </div>
+      <StyleStrip entry={entry} templates={templates} sizes={sizes} />
     </article>
   );
 }

@@ -10,8 +10,7 @@ async function loadAllImages(page: Page) {
 const brokenImages = (page: Page) =>
   page.evaluate(() => [...document.images].filter((i) => i.complete && i.naturalWidth === 0).map((i) => i.currentSrc || i.src));
 
-test("home: the studio hero car is a loaded, fully visible cutout (desktop and tablet)", async ({ page }, info) => {
-  test.skip(info.project.name === "mobile", "phones show the car picker only, so everything fits one screen");
+test("home: the studio hero car is a loaded, fully visible cutout", async ({ page }, info) => {
   await page.goto("/");
   const hero = page.locator("section[aria-labelledby='hero-title']");
   const img = hero.locator("picture img").first();
@@ -55,6 +54,22 @@ test("home: 12 car tiles — cutouts load, cars without an image keep their draw
   await shot(page, "photo-home-tiles", info.project.name);
 });
 
+test("cars page: every car is a tile that opens its page; cutouts load, the rest keep their drawing", async ({ page }, info) => {
+  await page.goto("/cars");
+  await loadAllImages(page);
+  expect(await brokenImages(page)).toEqual([]);
+  const tiles = page.locator("main ul a[href^='/cars/']");
+  expect(await tiles.count()).toBe(12);
+  expect(await tiles.filter({ has: page.locator("picture") }).count()).toBe(10);
+  await expect(page.getByRole("link", { name: /^Mercedes-AMG E 63 S W213/ }).locator("picture")).toHaveCount(0);
+  // Filtering by brand narrows the grid (and the URL keeps the filter).
+  await page.getByRole("button", { name: /^BMW/ }).click();
+  await expect(tiles).toHaveCount(2);
+  await expect(page).toHaveURL(/brand=/);
+  await expectNoHorizontalScroll(page);
+  await shot(page, "photo-cars", info.project.name);
+});
+
 test("car page: photo stage with a visible, working credit", async ({ page }, info) => {
   await page.goto("/cars/porsche-911-gt3-rs-992");
   const img = page.locator("article picture img").first();
@@ -74,7 +89,7 @@ for (const slug of ["mercedes-amg-e63-w213", "toyota-gr-supra-a90"]) {
   test(`car page without an image (${slug}) still shows the drawn silhouette`, async ({ page }) => {
     await page.goto(`/cars/${slug}`);
     await expect(page.getByText("Prototype silhouette · not to scale")).toBeVisible();
-    // Only the stage at the top of the page: the related-cars list below legitimately contains images.
+    // Only the stage and facts on the first screen; the style strip below is drawn posters, not photographs.
     await expect(page.locator("article > div").first().locator("picture")).toHaveCount(0);
   });
 }

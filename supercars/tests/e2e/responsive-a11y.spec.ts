@@ -2,7 +2,7 @@ import AxeBuilder from "@axe-core/playwright";
 import { expect } from "@playwright/test";
 import { test } from "./helpers";
 
-const PAGES = ["/", "/cars/bmw-m3-g80", "/cars/porsche-911-gt3-rs-992", "/cars/mercedes-amg-e63-w213", "/credits", "/create", "/create?car=bmw-m3-g80", "/checkout", "/track", "/privacy", "/shipping", "/legal"];
+const PAGES = ["/", "/cars", "/shop", "/how-it-works", "/about", "/cars/bmw-m3-g80", "/cars/porsche-911-gt3-rs-992", "/cars/mercedes-amg-e63-w213", "/credits", "/create", "/create?car=bmw-m3-g80", "/checkout", "/track", "/privacy", "/shipping", "/legal"];
 const WIDTHS = [320, 375, 390, 430, 768, 1024, 1280, 1920];
 
 test.describe("responsive layout (no horizontal scrolling at any width)", () => {
@@ -37,7 +37,7 @@ test.describe("accessibility (axe: WCAG 2.1 A/AA)", () => {
   test.beforeEach(({}, info) => {
     test.skip(info.project.name === "mobile", "scanned once at desktop width");
   });
-  const A11Y_PAGES = ["/", "/cars/bmw-m3-g80", "/cars/nissan-gt-r-r35", "/cars/mercedes-amg-e63-w213", "/credits", "/create", "/create?car=bmw-m3-g80", "/checkout", "/track", "/shipping", "/legal"];
+  const A11Y_PAGES = ["/", "/cars", "/shop", "/how-it-works", "/about", "/cars/bmw-m3-g80", "/cars/nissan-gt-r-r35", "/cars/mercedes-amg-e63-w213", "/credits", "/create", "/create?car=bmw-m3-g80", "/checkout", "/track", "/shipping", "/legal"];
 
   for (const theme of ["dark", "light"] as const) {
     test(`no serious or critical violations — ${theme} theme`, async ({ page }) => {
@@ -72,7 +72,7 @@ test.describe("keyboard, focus and motion", () => {
 
   test("interactive elements show a visible focus ring", async ({ page }) => {
     await page.goto("/");
-    await page.getByRole("banner").getByRole("link", { name: "Track order" }).focus();
+    await page.getByRole("banner").getByRole("link").first().focus(); // the logo; the next Tab lands on the next control
     await page.keyboard.press("Tab");
     const outline = await page.evaluate(() => {
       const el = document.activeElement as HTMLElement;

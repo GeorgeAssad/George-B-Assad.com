@@ -310,11 +310,18 @@ fieldset {
   border-radius: 0.75rem;
 }
 
+/* Reveal-on-scroll: only hidden when scripting is available, so no-JS shows everything. */
+@media (scripting: enabled) {
+  .reveal:not([data-inview]) { opacity: 0; transform: translateY(18px); }
+  .reveal { transition: opacity 0.8s var(--ease), transform 0.8s var(--ease); transition-delay: var(--reveal-delay, 0ms); }
+}
+
 .zoom-img { transition: transform 0.9s var(--ease); }
 @media (hover: hover) { .group:hover .zoom-img { transform: scale(1.04); } }
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
+  .reveal:not([data-inview]) { opacity: 1 !important; transform: none !important; }
   *, *::before, *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
@@ -516,3 +523,71 @@ fieldset {
 /* Hover: the car eases forward inside its tile. */
 .studio-lift { transition: transform 0.7s var(--ease); }
 @media (hover: hover) { .group:hover .studio-lift { transform: translate3d(1.5%, -3%, 0) scale(1.035); } }
+
+/* ---------------------------------------------------------------------------
+   Showroom v2: one lighting kit shared by every page that shows a car or a poster.
+   --------------------------------------------------------------------------- */
+/* Film grain (tiny inline SVG noise): keeps large dark gradients from banding and adds a photographic feel. */
+.grain::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -5;
+  pointer-events: none;
+  opacity: 0.06;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+}
+/* A cone of light falling from above the car. */
+.spotlight-cone {
+  position: absolute;
+  inset: 0;
+  z-index: -6;
+  pointer-events: none;
+  background:
+    conic-gradient(from 180deg at 50% -6%, transparent 152deg, rgb(255 255 255 / 0.085) 167deg, rgb(255 255 255 / 0.085) 193deg, transparent 208deg),
+    radial-gradient(ellipse 46% 60% at 50% -4%, rgb(255 255 255 / 0.12), transparent 70%);
+  -webkit-mask-image: linear-gradient(180deg, #000 0, #000 45%, transparent 92%);
+  mask-image: linear-gradient(180deg, #000 0, #000 45%, transparent 92%);
+}
+/* Big outlined model name behind the car. */
+.outlined-word {
+  position: absolute;
+  inset-inline: 0;
+  z-index: -4;
+  pointer-events: none;
+  user-select: none;
+  text-align: center;
+  font-family: var(--font-display);
+  font-weight: 700;
+  text-transform: uppercase;
+  line-height: 0.85;
+  letter-spacing: 0.01em;
+  color: transparent;
+  -webkit-text-stroke: 1px var(--line-strong);
+}
+.outlined-word.is-right { text-align: right; padding-inline-end: 3%; }
+/* Dark showroom wall for framed posters: soft light from above, a faint vertical panel line rhythm. */
+.wall-dark {
+  background:
+    radial-gradient(ellipse 60% 55% at 50% 0%, rgb(255 255 255 / 0.13), transparent 72%),
+    repeating-linear-gradient(90deg, transparent 0 119px, rgb(255 255 255 / 0.028) 119px 120px),
+    linear-gradient(180deg, #0f1013, #08090b);
+}
+.picture-light {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  height: 0.375rem;
+  width: 6rem;
+  translate: -50% 0;
+  border-radius: 999px;
+  background: rgb(255 255 255 / 0.75);
+  box-shadow: 0 18px 44px 16px rgb(255 255 255 / 0.16);
+}
+/* Poster fan: prints held like a hand of cards; the spread widens on hover. */
+.fan > * { transform-origin: 50% 165%; transform: rotate(var(--r)); transition: transform 0.6s var(--ease); }
+@media (hover: hover) { .fan:hover > * { transform: rotate(calc(var(--r) * 1.22)); } }
+@media (prefers-reduced-motion: reduce) { .fan > * { transition: none; } }
+/* Section rhythm shared by all pages. */
+.section-y { padding-block: clamp(2.25rem, 6vw, 4.5rem); }

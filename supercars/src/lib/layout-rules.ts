@@ -6,11 +6,9 @@ export function hasStickyBar(pathname: string): boolean {
 }
 
 /**
- * Pages that already carry their own "start your poster" action (car tiles, the car page button, the designer,
- * the confirmation page). Everywhere else the header offers exactly one "Create" button, so no page ever shows
- * the same call to action twice.
+ * The header carries the one and only generic "Create your poster" button. It steps aside where the page is
+ * already the start (the designer), the payment step, or the confirmation, so it is never shown twice or in the way.
  */
-const CAR_DETAIL = /^\/cars\/[^/]+$/;
-export function hasOwnCreateCta(pathname: string): boolean {
-  return pathname === "/" || CAR_DETAIL.test(pathname) || hasStickyBar(pathname) || pathname.startsWith("/order/");
+export function showsHeaderCreate(pathname: string): boolean {
+  return !(hasStickyBar(pathname) || pathname.startsWith("/order/"));
 }
