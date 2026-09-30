@@ -104,7 +104,14 @@ Every car image is described in `photos/manifest.json` and turned into web files
 2. Add or edit its entry in `photos/manifest.json`: `mode` `"cutout"` (the car on a transparent background; the site draws the showroom) or `"backdrop"` (the picture is shown as is, best for dark low-key studio shots); `alt`; `credit` — for your own or AI images use `{"kind":"own","title":"…","author":"SuperCars","licenseName":"SuperCars","note":"AI-generated image."}`. If the file already has a transparent background, add `"alreadyTransparent": true`. Optional: `crop`, `redact` (boxes to cover plates or faces), `focal`.
 3. `npm run photos:cutout` (only for cutouts that still have a background; one-time setup: `python3 -m venv .venv && .venv/bin/pip install "rembg[cpu]" pillow numpy scipy`, then run `.venv/bin/python scripts/cutout-photos.py`), then `npm run photos:process`. Commit `public/cars/**`, `src/data/car-photos.ts` and the manifest.
 
-Cars without an entry show their drawn silhouette. Side or three-quarter views work best; a top-down view is rejected by the pipeline.
+Cars without an entry show a light-line silhouette ("photo soon") instead of a photo. Side or three-quarter views work best; a top-down view is rejected by the pipeline.
+
+What `npm run photos:process` does to every cut-out, so a set of photos taken in different light still reads as one shoot:
+
+- **Plates, faces and stickers** listed under `redact` in the manifest are hidden by continuing the car's own surroundings into the box (a smooth diffusion of the pixels around it plus film grain), not by a flat block. Add `"sample": "dark"` to a box that sits on a grille or window so the fill stays dark. Use `--only <slug>` to re-encode one car while tuning it.
+- **Grade:** each car's median brightness is nudged toward one target (only within a small range, so white stays white and black stays black), colour gets a touch more saturation and the alpha edge is smoothed.
+
+Your own studio or AI images should come with their own lighting; set `"grade": false` in the manifest entry to skip the automatic grade for them (see `scripts/process-photos.mjs`).
 
 ## Project map
 

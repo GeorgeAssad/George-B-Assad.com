@@ -18,6 +18,8 @@ export function CutoutFit({ slug, photo, sizes, priority = false, className = ""
   const fit = "[&_picture]:flex [&_picture]:h-full [&_picture]:w-full [&_picture]:items-end [&_picture]:justify-center";
   return (
     <div className={`${fit} ${className}`}>
+      {/* Soft contact shadow under the tyres, so the car stands on the floor instead of hovering above it. */}
+      <span aria-hidden="true" className="studio-contact" />
       <CarPhotoImage slug={slug} photo={photo} sizes={sizes} priority={priority} alt={alt} className="studio-car h-full! w-auto! max-w-full object-contain object-bottom" />
       {reflection && (
         <div aria-hidden="true" className={`${fit} pointer-events-none absolute inset-x-0 top-full h-1/2 -scale-y-100 opacity-30 [mask-image:linear-gradient(to_top,rgb(0_0_0/0.7),transparent_80%)]`}>
