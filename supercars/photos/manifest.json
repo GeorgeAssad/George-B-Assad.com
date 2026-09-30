@@ -264,13 +264,15 @@
           "left": 0.6813,
           "top": 0.6167,
           "width": 0.1406,
-          "height": 0.1556
+          "height": 0.1556,
+          "sample": "dark"
         },
         {
           "left": 0.4281,
           "top": 0.1111,
           "width": 0.1094,
-          "height": 0.1722
+          "height": 0.1722,
+          "sample": "dark"
         }
       ],
       "focal": {

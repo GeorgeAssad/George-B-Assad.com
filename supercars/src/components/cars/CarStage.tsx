@@ -51,18 +51,18 @@ export function CarStage({ entry }: { entry: CarEntry }) {
   }
 
   return (
-    <div className="relative isolate flex min-h-[15rem] flex-1 flex-col overflow-hidden border-b border-line bg-[linear-gradient(180deg,var(--surface),var(--bg))]">
-      <div className="tech-grid absolute inset-0 -z-10 opacity-60" aria-hidden="true" />
-      <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_60%_46%_at_50%_92%,color-mix(in_srgb,var(--red)_30%,transparent),transparent_70%)]" aria-hidden="true" />
-      <span aria-hidden="true" className="pointer-events-none absolute inset-x-0 top-[3%] select-none text-center font-display text-[clamp(7rem,26vw,24rem)] font-bold uppercase leading-none tracking-tight text-transparent [-webkit-text-stroke:1px_var(--line-strong)]">
+    <div className="on-dark studio-stage grain relative isolate flex min-h-[15rem] flex-1 flex-col overflow-hidden border-b border-line text-fg">
+      <div className="spotlight-cone" aria-hidden="true" />
+      <span aria-hidden="true" className="outlined-word top-[3%] text-[clamp(7rem,26vw,24rem)]">
         {car.name.replace(/\s.*/, "")}
       </span>
+      <div className="studio-floor absolute inset-x-0 bottom-0 -z-[3] h-[36%]" aria-hidden="true" />
       <div className="container-x relative flex flex-1 items-end justify-center pb-6 pt-14 sm:pb-8">
         <span className="spec absolute left-4 top-4 sm:left-8">SC / {generation.generation}</span>
         <span className="spec absolute right-4 top-4 sm:right-8">{generation.specs.years}</span>
         <div className="hero-in w-full max-w-[64rem]" style={{ ["--d" as string]: "100ms" }}>
-          <VehicleArt vehicle={generation.vehicle} shadowOpacity={0.9} className="mx-auto h-[clamp(9rem,34svh,24rem)] w-auto max-w-full" />
-          <p className="spec mt-2 text-center">Prototype silhouette · not to scale</p>
+          <VehicleArt vehicle={generation.vehicle} treatment="outline" ink="rgb(255 255 255 / 0.6)" shadow={false} className="mx-auto h-[clamp(9rem,34svh,24rem)] w-auto max-w-full" />
+          <p className="spec mt-2 text-center">Prototype silhouette · not to scale · studio photo coming</p>
         </div>
       </div>
     </div>

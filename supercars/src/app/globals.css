@@ -481,6 +481,17 @@ fieldset {
 .studio-car {
   filter: drop-shadow(0 0 18px color-mix(in srgb, var(--red) 18%, transparent)) drop-shadow(0 26px 26px rgb(0 0 0 / 0.5));
 }
+/* Contact shadow inside a CutoutFit box: a dark ellipse right under the tyres (the car image is stacked above it). */
+.studio-contact {
+  position: absolute;
+  left: 5%;
+  right: 5%;
+  bottom: -1.6%;
+  height: 9%;
+  background: radial-gradient(ellipse 50% 50% at 50% 50%, rgb(0 0 0 / 0.78), rgb(0 0 0 / 0.32) 55%, transparent 100%);
+  pointer-events: none;
+}
+.studio-contact + picture { position: relative; z-index: 1; }
 .studio-shadow {
   position: absolute;
   left: 8%;

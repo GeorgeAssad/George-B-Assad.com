@@ -30,7 +30,11 @@ export function CarTile({ entry, href, detail = false, priority = false }: CarTi
         {photo?.mode === "cutout" ? (
           <CutoutFit slug={generation.slug} photo={photo} priority={priority} sizes={detail ? "(min-width:1024px) 30vw, (min-width:640px) 46vw, 92vw" : "(min-width:1280px) 14vw, (min-width:640px) 22vw, 30vw"} className="studio-lift absolute inset-x-[5%] bottom-[8%] top-[8%]" />
         ) : (
-          <VehicleArt vehicle={generation.vehicle} shadow={false} className="studio-lift absolute inset-x-[8%] bottom-[10%] w-[84%]" />
+          <>
+            {/* No photograph yet: a light-line silhouette, so it reads as "photo coming" and not as a cartoon among photos. */}
+            <VehicleArt vehicle={generation.vehicle} treatment="outline" ink="rgb(255 255 255 / 0.62)" shadow={false} className="studio-lift absolute inset-x-[10%] bottom-[12%] w-[80%]" />
+            {detail && <span className="spec absolute left-2 top-2 rounded-full bg-white/10 px-2 py-0.5 text-[0.5rem] text-white/80">Photo soon</span>}
+          </>
         )}
       </div>
       <p className={`px-1 pb-2 pt-0.5 text-center leading-tight sm:px-2 ${detail ? "sm:pb-3" : ""}`}>
