@@ -34,9 +34,9 @@ A production-shaped **prototype storefront for personalized car posters** ("Supe
 | Item | State |
 | --- | --- |
 | `main` | `64012ba` — PR #3 (order-first, studio cut-outs) and PR #4 (Showroom v2: all pages back) merged and **live** |
-| PR #5 | **Open draft**, head `4c7f8f8`, branch `claude/adoring-euler-hy534z`. "Car images polish" (section 5). **Waiting for the user's decision to publish.** |
+| PR #5 | **Open draft**, branch `claude/adoring-euler-hy534z` (image commit `4c7f8f8`, plus this file as `30db424`). "Car images polish" (section 5). **Waiting for the user's decision to publish.** Merging it also adds this file to `main`. |
 | Live site | 200 on `/`, `/shop`, car pages; shows Showroom v2 (with the pre-PR-#5 images) |
-| Local working tree | clean except this file (untracked) |
+| Local working tree | clean; everything is pushed |
 
 Branch workflow: develop on `claude/adoring-euler-hy534z`. If its PR is merged, restart the branch from the latest `origin/main` (same name, `git checkout -B claude/adoring-euler-hy534z origin/main`, force-with-lease push) and open a **new draft PR**. After pushing, always open a draft PR if none exists for the branch. Merging uses a merge commit (like #3 and #4).
 
