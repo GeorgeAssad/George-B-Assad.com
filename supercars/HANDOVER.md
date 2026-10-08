@@ -40,7 +40,7 @@ A production-shaped **prototype storefront for personalized car posters** ("Supe
 
 Branch workflow: develop on `claude/adoring-euler-hy534z`. If its PR is merged, restart the branch from the latest `origin/main` (same name, `git checkout -B claude/adoring-euler-hy534z origin/main`, force-with-lease push) and open a **new draft PR**. After pushing, always open a draft PR if none exists for the branch. Merging uses a merge commit (like #3 and #4).
 
-**Cloudflare "Workers Builds: supercars" check is always red on non-production branches/PRs.** It starts and completes in the same second, so no build runs. Cause not diagnosed (dashboard build logs are only visible to the user). It has been red on every feature PR; production builds of merged code succeed. Do not chase it in code. Pointing the user at Cloudflare → Workers → `supercars` → Settings → Builds → non-production branch builds is a reasonable suggestion, not a verified fix.
+**Cloudflare "Workers Builds: supercars" check has been red on every non-production branch/PR so far.** On most runs it started and completed in the same second (no build ran). On the latest run (commit `1ee87f0`, 2026-10-08) it ran about 23 seconds and then failed, still far shorter than a real build, so something may have changed on the Cloudflare side (a guess, not verified). **Cause not diagnosed**: build logs are only visible to the user in the Cloudflare dashboard (Workers → `supercars` → Builds → "View logs" link on the bot comment in the PR). Production builds of merged code have always succeeded, and local builds/tests of the same code pass. Do not chase it in code; ask the user to open the log and paste the first error if it matters.
 
 ## 5. PR #5 in one paragraph
 
