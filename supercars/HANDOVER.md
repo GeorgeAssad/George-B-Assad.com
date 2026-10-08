@@ -33,8 +33,8 @@ A production-shaped **prototype storefront for personalized car posters** ("Supe
 
 | Item | State |
 | --- | --- |
-| `main` | `64012ba` — PR #3 (order-first, studio cut-outs) and PR #4 (Showroom v2: all pages back) merged and **live** |
-| PR #5 | **Open draft**, branch `claude/adoring-euler-hy534z` (image commit `4c7f8f8`, plus this file as `30db424`). "Car images polish" (section 5). **Waiting for the user's decision to publish.** Merging it also adds this file to `main`. |
+| `main` | PR #3 (order-first, studio cut-outs) and PR #4 (Showroom v2: all pages back) merged and **live** (`64012ba`); PR #5 is next, see below |
+| PR #5 | Branch `claude/adoring-euler-hy534z`: "Car images polish" (section 5) plus this file. **The user approved publishing it on 2026-10-08** (answer "Publish it now" to an in-chat question). To see whether it is live: `git log origin/main` shows "Merge pull request #5" and the live car images have no grey blocks. If it is not merged yet, the approval still stands: mark it ready and merge it (section 8, item 1). |
 | Live site | 200 on `/`, `/shop`, car pages; shows Showroom v2 (with the pre-PR-#5 images) |
 | Local working tree | clean; everything is pushed |
 
@@ -83,7 +83,7 @@ tests/unit (Vitest, 109 tests) and tests/e2e (Playwright, desktop + mobile proje
 
 ## 8. Open items, in order
 
-1. **Ask the user whether to publish PR #5.** If yes: mark ready for review, merge with a merge commit, wait ~2 minutes for the Workers Build, then verify the live URL (all routes 200, car images load, screenshots from the live URL sent to the user). If they want changes, iterate on the branch first.
+1. **Confirm PR #5 is live** (see the state table). If it is not merged yet, the user's approval of 2026-10-08 covers it: mark ready for review, merge with a merge commit, wait ~2 minutes for the Workers Build, then verify the live URL (all routes 200, car images load, screenshots from the live URL sent to the user). Once it is merged, the branch name is free: restart it from the latest `origin/main` for any new work and open a new draft PR.
 2. **Get the AI images** from the user (which cars, format, with or without background) and run the drop-in workflow above. This is the real answer to "images look poor".
 3. **User-side Cloudflare items:** set build variables `NEXT_PUBLIC_SITE_URL` (the live URL), `NEXT_PUBLIC_APP_ENV=production`, `NEXT_PUBLIC_ALLOW_INDEXING=false` and retry the build; optionally set the runtime secret `CHECKOUT_SIGNING_SECRET` (32+ random characters; never put it in the repo). Without these the site still works.
 4. **Intermittent failures:** earlier (before PR #4) about 1 in 10 requests to the live site briefly returned 503 or hung, across all routes; cause unknown (my sandbox proxy, or the Cloudflare Free-plan CPU limit on a ~7.9 MiB Worker). After PR #4, all 42 requests in a 14-route check (3 each) returned the expected status (200, or 308 for the two old redirected URLs). If it returns, Cloudflare → Workers → `supercars` → Metrics/Logs is the place to look (only the user can see it).
