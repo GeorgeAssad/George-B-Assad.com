@@ -15,14 +15,13 @@ export default async function CreditsPage() {
   const rows = entries.flatMap((e) => e.generation.photos.map((photo) => ({ entry: e, photo })));
 
   return (
-    <div className="container-x py-12 sm:py-16">
+    <div className="container-x pt-[clamp(2.25rem,6vw,4.5rem)]">
       <SectionHeading
         as="h1"
-        eyebrow="SC / Credits"
         title="Photo credits."
         lead="The car images on this site are free-licensed photographs or images we made ourselves. We thank the photographers below. The poster artwork itself is drawn by us."
       />
-      <div className="mt-8 max-w-3xl space-y-3 text-sm text-muted">
+      <div className="mt-6 max-w-3xl space-y-3 text-[0.9375rem] text-muted">
         <p>Changes made: cropped, resized, compressed for the web and, where visible, licence plates and faces covered; in most images the background has been removed. Colours may be graded by the page they appear on.</p>
         <p>Photographs by others are used only under CC0, public-domain or CC&nbsp;BY licences. Vehicle names and badges appear only because the photographed cars carry them; SuperCars is not affiliated with any manufacturer.</p>
       </div>
@@ -30,12 +29,12 @@ export default async function CreditsPage() {
       {rows.length === 0 ? (
         <p className="mt-12 text-muted">No photographs are used yet.</p>
       ) : (
-        <ul className="mt-12 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <ul className="mt-9 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {rows.map(({ entry, photo }) => (
             <li key={`${entry.generation.slug}/${photo.id}`} className="card overflow-hidden">
               {photo.mode === "cutout" ? (
-                <div className="on-dark studio-stage relative aspect-[3/2] overflow-hidden">
-                  <CutoutFit slug={entry.generation.slug} photo={photo} sizes="(min-width:1024px) 30vw, (min-width:640px) 45vw, 92vw" className="absolute inset-x-[6%] bottom-[10%] top-[10%]" />
+                <div className="stage-soft aspect-[3/2]">
+                  <CutoutFit slug={entry.generation.slug} photo={photo} sizes="(min-width:1024px) 30vw, (min-width:640px) 45vw, 92vw" className="absolute inset-x-[8%] bottom-[12%] top-[12%]" />
                 </div>
               ) : (
                 <div className="aspect-[3/2] overflow-hidden bg-elevated">

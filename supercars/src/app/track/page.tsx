@@ -12,9 +12,9 @@ export const metadata: Metadata = {
 
 export default function TrackPage() {
   return (
-    <div className="container-x py-12 sm:py-16">
-      <SectionHeading as="h1" eyebrow="SC / Tracking" title="Track your order." lead="Enter your order number. No account needed." />
-      <div className="mt-10">
+    <div className="container-x pb-12 pt-[clamp(2.25rem,6vw,4.5rem)]">
+      <SectionHeading as="h1" title="Track your order." lead="Enter your order number. No account needed." />
+      <div className="mt-8">
         <Suspense fallback={<Skeleton className="h-24 max-w-2xl" />}>
           <TrackLookup />
         </Suspense>

@@ -9,12 +9,12 @@ interface PriceProps {
   readonly className?: string;
 }
 
-/** Prices are the one place red type is used. Numerals are tabular for alignment. */
+/** Prices are plain, semibold text (the accent colour is kept for actions). Numerals are tabular for alignment. */
 export function Price({ value, prefix, precise = false, className = "" }: PriceProps) {
   return (
     <span className={`tabular-nums ${className}`}>
-      {prefix && <span className="mr-1.5 text-[0.6875rem] font-semibold uppercase tracking-[0.14em] text-subtle">{prefix}</span>}
-      <span className="font-semibold text-red-text">{precise ? formatMoney(value) : formatPrice(value)}</span>
+      {prefix && <span className="mr-1.5 text-[0.8125rem] font-medium text-subtle">{prefix}</span>}
+      <span className="font-semibold">{precise ? formatMoney(value) : formatPrice(value)}</span>
     </span>
   );
 }

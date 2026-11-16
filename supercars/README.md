@@ -79,11 +79,11 @@ Every page exists and has one job. Nothing is said twice: navigation lives only 
 
 | Page | Job |
 | --- | --- |
-| `/` | Scene one (one screen): what we sell, a big car under the spotlight and the 12 car tiles; a tile starts a poster for that car. Scene two: the four steps and the five styles as a fan of posters, one line of facts. |
-| `/cars` | The garage: search and brand filters (state in the URL) over showroom tiles; a tile opens the car's page. |
-| `/cars/<slug>` | The car full-screen with its facts, price and **Create this car**; below it the car in each of the five styles (each print opens the designer with car and style chosen). |
-| `/shop` | Print and framed poster hanging on a gallery wall, with sizes, prices and one contextual button each. |
-| `/how-it-works`, `/about` | The four steps as a storyboard with delivery facts and FAQ; the studio in three principles. |
+| `/` | A hero that fits the first screen: headline, the one **Create your poster** button and the product stage (a car, its framed poster and a five-style picker that changes the poster live). Below it a row of facts, the car picker (a tile starts a poster for that car) and the four steps. |
+| `/cars` | Search and brand filters (state in the URL) over car tiles; a tile opens the car's page. |
+| `/cars/<slug>` | The car on the product stage with its facts, price and **Create this car**; below it the car in each of the five styles (each one opens the designer with car and style chosen). |
+| `/shop` | Print and framed poster as two pricing cards with sizes, prices and one contextual button each. |
+| `/how-it-works`, `/about` | The four steps with delivery facts and FAQ; the studio in three principles. |
 | `/create` | The designer: **car → design (style, finish, size) → personalize → review and add to cart**. |
 | `/checkout`, `/order/success/<id>`, `/track` | Pay (demo), confirmation, order tracking. |
 | `/shipping`, `/privacy`, `/terms`, `/legal`, `/credits` | Required information, linked from a one-line footer. |
@@ -93,15 +93,25 @@ Old URLs still work: `/products/*` goes to `/shop` (`/products/<slug>/customize`
 Rules that `tests/e2e/funnel.spec.ts` and `tests/unit/site-structure.test.ts` enforce:
 
 - **Navigation only in the header** — Cars, Shop, How it works, About, Track order and the cart; on phones the same five links sit in one menu. The footer is legal links, chat and the theme switch. No bottom tab bar, no floating chat button.
-- **One generic Create button per page**, in the header (none on `/create`, the checkout and order confirmation). Contextual starts that name their job are fine: a car tile, "Create this car", a style on a car page, "Design a framed poster".
-- **Short pages.** Measured at 390×844, 768×1024 and 1440×900: Home at most 2 screens, every other page under 2, `/track` one screen; on the first screen of Home all 12 car tiles are visible and on a car page the Create button is.
+- **One generic Create button per page**: in the hero on Home, in the header everywhere else (none on `/create`, the checkout and order confirmation). Contextual starts that name their job are fine: a car tile, "Create this car", a style ("Design this poster"), "Design a framed poster".
+- **Short pages.** Measured at 390×844, 768×1024 and 1440×900 against the budgets in `tests/e2e/funnel.spec.ts`: Home under 3 screens, every other page under 2 on a laptop or tablet and under 2.75 on a phone, `/track` one screen. Home's headline, Create button and product stage fit the first screen; on a car page the Create button does.
+
+## Design
+
+The site uses the Liquid Glass design kit (`src/styles/liquid-glass.css`, kept verbatim) with SuperCars' own values on top (`src/app/globals.css`):
+
+- **Light by default; dark follows the device**, or the visitor's choice from the switch in the footer (stored as `sc-theme`).
+- **One accent colour**, SuperCars red, used for the things you can act on. Prices and body text stay neutral.
+- **Glass only on floating chrome**: the header, the designer's action bar on a phone, toasts, drawers and the control card over the hero stage. Content sits on solid white (or dark) cards.
+- **One deliberately dark area per page at most**: the product stage (`.stage`), so the car and poster stand out on a light page.
+- Type is the system display face (San Francisco on Apple devices, the bundled Inter elsewhere). Barlow Condensed is only used inside the poster artwork.
 
 ## Car images
 
 Every car image is described in `photos/manifest.json` and turned into web files by two commands. To add or replace a car's image (your own studio shot, or an AI-generated one):
 
 1. Put the original at `assets-src/cars/<slug>/main.png` (or `.jpg` / `.webp`). `assets-src/` is git-ignored: originals stay out of the repository.
-2. Add or edit its entry in `photos/manifest.json`: `mode` `"cutout"` (the car on a transparent background; the site draws the showroom) or `"backdrop"` (the picture is shown as is, best for dark low-key studio shots); `alt`; `credit` — for your own or AI images use `{"kind":"own","title":"…","author":"SuperCars","licenseName":"SuperCars","note":"AI-generated image."}`. If the file already has a transparent background, add `"alreadyTransparent": true`. Optional: `crop`, `redact` (boxes to cover plates or faces), `focal`.
+2. Add or edit its entry in `photos/manifest.json`: `mode` `"cutout"` (the car on a transparent background; the site draws the backdrop) or `"backdrop"` (the picture is shown as is, best for dark low-key studio shots); `alt`; `credit` — for your own or AI images use `{"kind":"own","title":"…","author":"SuperCars","licenseName":"SuperCars","note":"AI-generated image."}`. If the file already has a transparent background, add `"alreadyTransparent": true`. Optional: `crop`, `redact` (boxes to cover plates or faces), `focal`.
 3. `npm run photos:cutout` (only for cutouts that still have a background; one-time setup: `python3 -m venv .venv && .venv/bin/pip install "rembg[cpu]" pillow numpy scipy`, then run `.venv/bin/python scripts/cutout-photos.py`), then `npm run photos:process`. Commit `public/cars/**`, `src/data/car-photos.ts` and the manifest.
 
 Cars without an entry show a light-line silhouette ("photo soon") instead of a photo. Side or three-quarter views work best; a top-down view is rejected by the pipeline.

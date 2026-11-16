@@ -19,10 +19,10 @@ export function CartButton({ className = "" }: { className?: string }) {
   }, [count, hydrated]);
 
   return (
-    <button type="button" onClick={openCartDrawer} className={`relative flex size-10 items-center justify-center rounded-full text-fg transition-colors hover:bg-elevated ${className}`} aria-label={hydrated && count > 0 ? `Open cart, ${count} item${count === 1 ? "" : "s"}` : "Open cart"} aria-haspopup="dialog">
+    <button type="button" onClick={openCartDrawer} className={`lg-icon-button relative ${className}`} aria-label={hydrated && count > 0 ? `Open cart, ${count} item${count === 1 ? "" : "s"}` : "Open cart"} aria-haspopup="dialog">
       <IconCart size={21} />
       {hydrated && count > 0 && (
-        <span ref={badgeRef} className="absolute -right-0.5 -top-0.5 flex min-w-[1.15rem] items-center justify-center rounded-full bg-red px-1 text-[0.625rem] font-bold leading-[1.15rem] text-on-red tabular-nums">
+        <span ref={badgeRef} className="absolute right-0.5 top-0.5 flex min-w-[1.15rem] items-center justify-center rounded-full bg-red px-1 text-[0.625rem] font-bold leading-[1.15rem] text-on-red tabular-nums">
           {count}
         </span>
       )}

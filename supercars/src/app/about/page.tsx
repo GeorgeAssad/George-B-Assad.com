@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { HeroCar } from "@/components/showroom/HeroCar";
+import { ProofRow } from "@/components/home/HomeSections";
 import { PageHero } from "@/components/showroom/PageHero";
 import { getRepositories } from "@/server/repositories";
 
@@ -18,42 +18,28 @@ const PRINCIPLES = [
 export default async function AboutPage() {
   const repos = getRepositories();
   const [cars, templates, sizes, destinations] = await Promise.all([repos.cars.listEntries(), repos.templates.list(), repos.products.listSizes(), repos.products.listShippingDestinations()]);
-  const feature = cars.find((e) => e.generation.slug === "porsche-911-992") ?? cars[0];
-  const stats: readonly (readonly [string, number])[] = [
-    ["Cars", cars.length],
-    ["Styles", templates.length],
-    ["Sizes", sizes.length],
-    ["Countries", destinations.length],
-  ];
   return (
     <>
-      <PageHero
-        eyebrow="SC / About"
-        title={<>A studio for <span className="text-red-text">car people.</span></>}
-        lead="SuperCars turns the car you love into artwork made for one owner."
-        word="Studio"
-        visual={feature && <HeroCar entry={feature} priority />}
-      />
-      <div className="container-x section-y">
-        <ul className="grid gap-3 md:grid-cols-3 md:gap-5">
-          {PRINCIPLES.map(([title, body], i) => (
-            <li key={title} className="card p-4 sm:p-6">
-              <p className="spec">0{i + 1}</p>
-              <h2 className="h-display mt-1.5 text-2xl sm:mt-2 sm:text-3xl">{title}</h2>
-              <p className="mt-1.5 text-sm text-muted sm:mt-2 sm:text-base">{body}</p>
+      <PageHero title="A studio for car people." lead="SuperCars turns the car you love into artwork made for one owner." />
+      <div className="container-x mt-8 sm:mt-10">
+        <ul className="grid gap-3 sm:gap-4 md:grid-cols-3">
+          {PRINCIPLES.map(([title, body]) => (
+            <li key={title} className="card p-5 sm:p-6">
+              <h2 className="text-[1.3125rem] font-semibold leading-snug tracking-[-0.02em]">{title}</h2>
+              <p className="mt-2 text-[0.9375rem] text-muted sm:text-[1.0625rem]">{body}</p>
             </li>
           ))}
         </ul>
-        <dl className="mt-5 grid grid-cols-4 gap-2 border-y border-line py-4 sm:mt-6 sm:gap-4 sm:py-6">
-          {stats.map(([label, value]) => (
-            <div key={label} className="text-center">
-              <dd className="h-display text-4xl text-red-text tabular-nums sm:text-6xl">{value}</dd>
-              <dt className="spec mt-1">{label}</dt>
-            </div>
-          ))}
-        </dl>
-        <p className="mt-6 max-w-3xl text-xs text-subtle">Vehicle names identify the subject of an artwork only. SuperCars is not affiliated with any manufacturer.</p>
       </div>
+      <ProofRow
+        items={[
+          [String(cars.length), "cars in the catalog"],
+          [String(templates.length), "poster styles"],
+          [String(sizes.length), "sizes"],
+          [String(destinations.length), "countries we plan to ship to"],
+        ]}
+      />
+      <p className="container-x mt-6 max-w-3xl text-[0.8125rem] text-subtle">Vehicle names identify the subject of an artwork only. SuperCars is not affiliated with any manufacturer.</p>
     </>
   );
 }

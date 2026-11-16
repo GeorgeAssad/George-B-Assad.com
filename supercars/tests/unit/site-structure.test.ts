@@ -40,9 +40,9 @@ describe("sitemap", () => {
 });
 
 describe("one place for navigation, one Create button", () => {
-  it("the header offers Create everywhere except the designer, checkout and order confirmation", () => {
-    for (const page of ["/", "/cars", "/cars/bmw-m3-g80", "/shop", "/how-it-works", "/about", "/track", "/shipping", "/privacy", "/credits"]) expect(showsHeaderCreate(page), page).toBe(true);
-    for (const page of ["/create", "/checkout", "/order/success/SC-123456"]) expect(showsHeaderCreate(page), page).toBe(false);
+  it("the header offers Create everywhere except Home (the hero has it), the designer, checkout and order confirmation", () => {
+    for (const page of ["/cars", "/cars/bmw-m3-g80", "/shop", "/how-it-works", "/about", "/track", "/shipping", "/privacy", "/credits"]) expect(showsHeaderCreate(page), page).toBe(true);
+    for (const page of ["/", "/create", "/checkout", "/order/success/SC-123456"]) expect(showsHeaderCreate(page), page).toBe(false);
   });
 
   it("only the designer and checkout render their own sticky bar", () => {

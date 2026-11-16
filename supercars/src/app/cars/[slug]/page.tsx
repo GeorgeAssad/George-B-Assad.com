@@ -3,9 +3,9 @@ import { notFound } from "next/navigation";
 import { CarStage } from "@/components/cars/CarStage";
 import { StyleStrip } from "@/components/cars/StyleStrip";
 import { Button } from "@/components/ui/Button";
-import { Price } from "@/components/ui/Price";
 import { IconArrow } from "@/components/ui/icons";
 import { DEFAULT_PRODUCT_ID } from "@/config/catalog";
+import { formatPrice } from "@/lib/format";
 import { slugSchema } from "@/lib/validation";
 import { getRepositories } from "@/server/repositories";
 
@@ -36,7 +36,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-/** First screen: the car, its name, three facts, the price and one button. Below it, one strip: the car in each style. */
+/** Split hero: what the car is and the one way to start on the left, the car in the studio on the right. Then the five styles. */
 export default async function CarPage({ params }: Props) {
   const { slug } = await params;
   const entry = await load(slug);
@@ -49,19 +49,13 @@ export default async function CarPage({ params }: Props) {
   const { specs } = generation;
 
   return (
-    <article className="flex flex-1 flex-col">
-      <div className="flex min-h-[calc(100svh-4rem)] flex-col lg:min-h-[calc(100svh-4.5rem)]">
-        <CarStage entry={entry} />
-
-        <div className="container-x flex flex-col gap-4 py-4 sm:py-5 lg:flex-row lg:items-center lg:justify-between lg:gap-8">
-          <div className="min-w-0">
-            <h1 className="h-display text-[clamp(2rem,5vw,3.5rem)] leading-none">
-              {brand.name} {car.name} <span className="text-red-text">{generation.generation}</span>
-            </h1>
-            <p className="mt-1.5 text-muted">{generation.tagline}</p>
-          </div>
-
-          <dl className="flex gap-6 sm:gap-8">
+    <article>
+      <div className="container-x grid items-center gap-7 pt-6 sm:pt-10 lg:grid-cols-[0.92fr_1.08fr] lg:gap-12 lg:pt-14">
+        <div className="max-lg:order-2">
+          <p className="eyebrow mb-3">{brand.name}</p>
+          <h1 className="h-display h-page">{car.name} <span className="text-muted">{generation.generation}</span></h1>
+          <p className="lead mt-4">{generation.tagline}</p>
+          <dl className="mt-6 flex gap-8 border-y-[0.5px] border-line py-4 sm:gap-10">
             {[
               ["Years", specs.years],
               ["Power", `${specs.powerKw} kW`],
@@ -69,16 +63,16 @@ export default async function CarPage({ params }: Props) {
             ].map(([label, value]) => (
               <div key={label}>
                 <dt className="spec">{label}</dt>
-                <dd className="mt-0.5 font-semibold tabular-nums">{value}</dd>
+                <dd className="mt-0.5 text-[1.0625rem] font-semibold tabular-nums">{value}</dd>
               </div>
             ))}
           </dl>
-
-          <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-3 lg:justify-end">
-            {cheapest && <Price value={cheapest.price} prefix="Posters from" className="text-lg" />}
-            <Button href={`/create?car=${generation.slug}`} size="lg" className="max-sm:flex-1">Create this car <IconArrow size={18} /></Button>
+          <div className="mt-6 flex flex-wrap items-center gap-x-5 gap-y-3">
+            <Button href={`/create?car=${generation.slug}`} size="lg" className="max-sm:w-full">Create this car <IconArrow size={18} /></Button>
+            {cheapest && <p className="text-[0.9375rem] text-muted">Posters from <span className="font-semibold text-fg tabular-nums">{formatPrice(cheapest.price)}</span></p>}
           </div>
         </div>
+        <CarStage entry={entry} />
       </div>
       <StyleStrip entry={entry} templates={templates} sizes={sizes} />
     </article>

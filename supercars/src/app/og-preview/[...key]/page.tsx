@@ -45,29 +45,29 @@ export default async function OgPreview({ params }: { params: Promise<{ key: str
     <div id="og" style={{ position: "fixed", inset: 0, zIndex: 9999, width: 1200, height: 630, overflow: "hidden", background: "radial-gradient(ellipse 60% 70% at 78% 100%, rgba(225,6,0,0.34), transparent 70%), #050506" }}>
       {photo?.mode === "cutout" ? (
         <>
-          <div className="studio-floor" style={{ position: "absolute", left: 0, right: 0, bottom: 0, height: 210 }} />
-          <div style={{ position: "absolute", right: 40, bottom: 120, width: 700 }}>
-            <StudioCar slug={carEntry.generation.slug} photo={photo} priority sizes="700px" />
+          <div className="stage-floor" style={{ height: 210 }} />
+          <div style={{ position: "absolute", right: 24, bottom: 120, width: 620 }}>
+            <StudioCar slug={carEntry.generation.slug} photo={photo} priority sizes="620px" />
           </div>
         </>
       ) : photo ? (
         <>
           <div style={{ position: "absolute", top: 0, right: 0, bottom: 0, width: 860 }}>
-            <CarPhotoImage slug={carEntry.generation.slug} photo={photo} priority sizes="860px" className="photo-cinema" alt="" />
+            <CarPhotoImage slug={carEntry.generation.slug} photo={photo} priority sizes="860px" alt="" />
           </div>
           <div style={{ position: "absolute", inset: 0, background: "linear-gradient(90deg, #050506 0, #050506 26%, rgba(5,5,6,0.78) 40%, rgba(5,5,6,0.1) 66%, transparent 100%), linear-gradient(0deg, rgba(5,5,6,0.85) 0, transparent 34%)" }} />
         </>
       ) : (
-        <div className="tech-grid" style={{ position: "absolute", inset: 0, opacity: 0.6 }} />
+        <div className="stage-floor" style={{ height: 210 }} />
       )}
-      <div style={{ position: "absolute", left: 72, top: 64, right: photo ? 640 : 560 }}>
-        <p className="eyebrow">{copy.eyebrow}</p>
-        <h1 className="h-display" style={{ marginTop: 22, fontSize: copy.title.length > 16 ? 104 : 128, lineHeight: 0.9 }}>{copy.title}</h1>
-        <p style={{ marginTop: 26, fontSize: 26, color: "#b4b6bd", maxWidth: 520 }}>{copy.sub}</p>
+      <div style={{ position: "absolute", left: 72, top: 64, right: photo ? 664 : 560 }}>
+        <p style={{ margin: 0, fontSize: 22, fontWeight: 600, color: "#ff5a4f" }}>{copy.eyebrow}</p>
+        <h1 className="h-display" style={{ marginTop: 18, color: "#f5f5f7", fontSize: copy.title.length > 16 ? 68 : 80, lineHeight: 1.02 }}>{copy.title}</h1>
+        <p style={{ marginTop: 26, fontSize: 26, lineHeight: 1.35, color: "#b4b6bd" }}>{copy.sub}</p>
       </div>
       <div style={{ position: "absolute", left: 72, bottom: 56, display: "flex", alignItems: "center", gap: 14 }}>
-        <span className="logo-mark" aria-hidden="true"><span>SC</span></span>
-        <span style={{ fontFamily: "var(--font-display)", fontWeight: 700, fontSize: 30, letterSpacing: "0.14em", textTransform: "uppercase" }}>Super<span style={{ color: "#ff4d40" }}>Cars</span></span>
+        <span className="logo-mark" aria-hidden="true" style={{ width: 40, height: 40, fontSize: 16, borderRadius: 11 }}>SC</span>
+        <span style={{ fontWeight: 650, fontSize: 30, letterSpacing: "-0.02em", color: "#f5f5f7" }}>SuperCars</span>
       </div>
       {photo && photo.credit.licenseName.startsWith("CC BY") && (
         <p style={{ position: "absolute", left: 72, bottom: 22, margin: 0, fontSize: 14, color: "rgba(255,255,255,0.62)" }}>

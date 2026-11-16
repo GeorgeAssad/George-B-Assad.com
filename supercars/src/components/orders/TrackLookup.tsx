@@ -108,19 +108,19 @@ function TrackLookupInner() {
               placeholder="SC-100234"
               aria-invalid={fieldError ? true : undefined}
               aria-describedby={fieldError ? "track-err" : "track-hint"}
-              className="field h-14 pl-12"
+              className="field h-[3.125rem] rounded-full pl-12"
             />
           </div>
           <Button type="submit" size="lg" disabled={state.kind === "loading"}>{state.kind === "loading" ? "Looking up…" : "Track order"}</Button>
         </div>
-        {fieldError ? <p id="track-err" role="alert" className="mt-2 text-sm font-medium text-red-text">{fieldError}</p> : <p id="track-hint" className="mt-2 text-xs text-subtle">You&apos;ll find it in your confirmation. No account needed.</p>}
+        {fieldError ? <p id="track-err" role="alert" className="mt-2 text-sm font-medium text-red-text">{fieldError}</p> : <p id="track-hint" className="mt-2 text-[0.8125rem] text-subtle">You&apos;ll find it in your confirmation. No account needed.</p>}
       </form>
 
       <p className="mt-5 text-sm text-muted">
         Try a demo order:{" "}
         {SAMPLES.map((s, i) => (
           <span key={s}>
-            <button type="button" onClick={() => { setValue(s); search(s); }} className="rounded-full border border-line-strong px-3 py-1 text-xs font-semibold tracking-wide hover:border-fg">{s}</button>
+            <button type="button" onClick={() => { setValue(s); search(s); }} className="tap inline-flex min-h-9 items-center rounded-full bg-fill px-3 text-[0.8125rem] font-semibold text-fg hover:bg-[var(--lg-fill-strong)]">{s}</button>
             {i < SAMPLES.length - 1 && " "}
           </span>
         ))}
@@ -133,7 +133,7 @@ function TrackLookupInner() {
           <EmptyState icon={<IconPackage size={24} />} title="No order found." message={`We couldn't find an order numbered ${state.id}. Check the number in your confirmation, or try one of the demo orders above.`} secondary={{ label: "Create a poster", href: "/create" }} />
         )}
         {state.kind === "error" && (
-          <div role="alert" className="rounded-2xl border border-red-text/50 bg-surface p-6">
+          <div role="alert" className="card p-6 shadow-[inset_0_0_0_1.5px_var(--lg-negative)]">
             <p className="font-semibold">Couldn&apos;t track that order</p>
             <p className="mt-1 text-sm text-muted">{state.message}</p>
             <Button variant="secondary" size="sm" className="mt-4" onClick={() => search(value)}>Try again</Button>
