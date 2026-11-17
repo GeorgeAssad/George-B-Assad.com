@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { AskForCar } from "@/components/sell/AskForCar";
 import { CarExplorer } from "@/components/cars/CarExplorer";
 import { PageHero } from "@/components/showroom/PageHero";
 import { getRepositories } from "@/server/repositories";
@@ -17,6 +18,7 @@ export default async function CarsPage() {
       <PageHero title="Find your car." lead="Pick the exact model and generation. Every poster is made around it." />
       <div className="container-x mt-7 sm:mt-9">
         <CarExplorer entries={entries} brands={brands} />
+        <AskForCar className="mt-6" />
         <p className="mt-8 max-w-3xl text-[0.8125rem] text-subtle">Catalog specifications are illustrative prototype data, not verified manufacturer figures. Vehicle names identify the subject of an artwork; SuperCars is not affiliated with any manufacturer.</p>
       </div>
     </>

@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from "react";
 import type { CartItem, CartQuote } from "@/domain/cart";
+import { offersKey } from "./promotions";
+import { useOffers } from "./use-offers";
 
 export type QuoteState =
   | { readonly status: "idle" | "loading"; readonly quote: CartQuote | null }
@@ -9,7 +11,7 @@ export type QuoteState =
   | { readonly status: "error"; readonly quote: CartQuote | null };
 
 const ZERO = { amount: 0, currency: "EUR" } as const;
-const EMPTY_QUOTE: CartQuote = { lines: [], totals: { subtotal: ZERO, shipping: ZERO, total: ZERO, shippingNote: "" }, rejected: [] };
+const EMPTY_QUOTE: CartQuote = { lines: [], totals: { subtotal: ZERO, discount: ZERO, shipping: ZERO, total: ZERO, offer: null, freeShipping: null, shippingNote: "" }, rejected: [] };
 
 interface Settled { readonly key: string; readonly result: { status: "ready"; quote: CartQuote } | { status: "error" } }
 
@@ -22,7 +24,9 @@ export function useCartQuote(items: readonly CartItem[], enabled = true): QuoteS
   const [settled, setSettled] = useState<Settled | null>(null);
   const [attempt, setAttempt] = useState(0);
   const [lastQuote, setLastQuote] = useState<CartQuote | null>(null);
-  const key = `${attempt}:${JSON.stringify(items)}`;
+  // Re-price when an offer starts or ends while the page is open.
+  const offers = offersKey(useOffers());
+  const key = `${attempt}:${offers}:${JSON.stringify(items)}`;
   const empty = items.length === 0;
 
   useEffect(() => {

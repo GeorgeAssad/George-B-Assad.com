@@ -13,17 +13,29 @@ describe("quoteCart (authoritative pricing)", () => {
     const q = await quoteCart([item()]);
     expect(q.lines[0]?.unitPrice).toEqual(money(7900));
     expect(q.totals.subtotal).toEqual(money(7900));
-    expect(q.totals.shipping).toEqual(money(790)); // €79 is below the €100 free-shipping threshold
+    expect(q.totals.shipping).toEqual(money(790));
     expect(q.totals.total).toEqual(money(7900 + 790));
+    expect(q.totals.discount).toEqual(money(0));
+    expect(q.totals.offer).toBeNull();
   });
 
-  it("charges flat shipping below the free threshold and none above", async () => {
+  it("charges the flat rate on every order while no offer runs (free shipping is an offer, not a rule)", async () => {
     const small = await quoteCart([item({ sizeId: "30x40" })]);
     expect(small.totals.shipping).toEqual(money(790));
     expect(small.totals.total).toEqual(money(3900 + 790));
     const big = await quoteCart([item({ quantity: 2 })]);
     expect(big.totals.subtotal).toEqual(money(15800));
-    expect(big.totals.shipping).toEqual(money(0));
+    expect(big.totals.shipping).toEqual(money(790));
+    expect(big.totals.freeShipping).toBeNull();
+    expect(big.totals.shippingNote).toBe("");
+  });
+
+  it("tells a print what the framed poster of the same size costs (server-priced upgrade)", async () => {
+    const q = await quoteCart([item({ sizeId: "30x40" }), item({ id: "l2", productId: "framed-car-poster", sizeId: "30x40" })]);
+    expect(q.lines[0]?.upgrade).toEqual({ productId: "framed-car-poster", unitPrice: money(7900), difference: money(4000) });
+    expect(q.lines[1]?.upgrade).toBeUndefined();
+    const lux = await quoteCart([item({ sizeId: "40x60", templateId: "luxury" })]);
+    expect(lux.lines[0]?.upgrade).toEqual({ productId: "framed-car-poster", unitPrice: money(10900 + 1000), difference: money(5000) });
   });
 
   it("adds the template surcharge server-side (luxury)", async () => {

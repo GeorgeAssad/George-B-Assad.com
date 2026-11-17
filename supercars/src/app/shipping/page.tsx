@@ -12,7 +12,8 @@ export default async function ShippingPage() {
     <LegalPage title="Shipping & returns." intro="Final shipping and returns information will be confirmed with our fulfilment partner before launch. Nothing here is a binding policy; the figures are the placeholder values used by the demo checkout.">
       <LegalSection title="Demo rates and timing">
         <ul className="list-disc space-y-1 pl-5">
-          <li>Flat shipping: <strong>{formatPrice(rules.flatRate)}</strong>, free on orders over <strong>{formatPrice(rules.freeOver)}</strong></li>
+          <li>Flat shipping: <strong>{formatPrice(rules.flatRate)}</strong> per order</li>
+          <li>During a free-shipping offer, orders above the amount shown in the banner at the top of the page ship free</li>
           <li>Estimated total time including production: <strong>{rules.minBusinessDays}–{rules.maxBusinessDays} business days</strong></li>
           <li>Tracking details appear on your order page (Track order, at the top of every page) once shipped</li>
         </ul>

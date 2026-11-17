@@ -10,7 +10,9 @@ import { OrderSummary } from "@/components/orders/OrderSummary";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { EmptyState } from "@/components/ui/EmptyState";
-import { IconCart, IconCheck, IconLock } from "@/components/ui/icons";
+import { IconCart, IconCheck, IconGift, IconLock, IconPackage, IconShield } from "@/components/ui/icons";
+import { DeliveryEstimate } from "@/components/offers/DeliveryEstimate";
+import { FreeShippingProgress } from "@/components/offers/FreeShippingProgress";
 import { Price } from "@/components/ui/Price";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { track } from "@/lib/analytics";
@@ -19,14 +21,14 @@ import { ORDER_ID_PATTERN } from "@/lib/ids";
 import { saveLocalOrder } from "@/lib/order-store";
 import { useCart } from "@/lib/use-cart";
 import { useCartQuote } from "@/lib/use-cart-quote";
-import { addressSchema, customerInputSchema } from "@/lib/validation";
+import { addressSchema, customerInputSchema, giftSchema, LIMITS } from "@/lib/validation";
 import { FormField } from "./FormField";
 
-interface Values { name: string; email: string; phone: string; line1: string; line2: string; city: string; postalCode: string; country: string }
+interface Values { name: string; email: string; phone: string; line1: string; line2: string; city: string; postalCode: string; country: string; giftNote: string }
 type Errors = Partial<Record<keyof Values, string>>;
 type Phase = { kind: "idle" } | { kind: "processing"; step: number } | { kind: "error"; message: string };
 
-const EMPTY: Values = { name: "", email: "", phone: "", line1: "", line2: "", city: "", postalCode: "", country: "" };
+const EMPTY: Values = { name: "", email: "", phone: "", line1: "", line2: "", city: "", postalCode: "", country: "", giftNote: "" };
 const PROCESSING = ["Creating a demo payment session", "Confirming the demo payment", "Creating your order"];
 const ERROR_COPY: Record<string, string> = {
   cart_changed: "Your cart changed while checking out. Please review it and try again.",
@@ -39,8 +41,12 @@ const ERROR_COPY: Record<string, string> = {
 const pause = (ms: number) => new Promise<void>((r) => window.setTimeout(r, ms));
 
 /** Client-side validation is UX only — the server re-validates everything and is authoritative. */
-function validate(v: Values): Errors {
+function validate(v: Values, gift: boolean): Errors {
   const errors: Errors = {};
+  if (gift) {
+    const note = giftSchema.safeParse({ note: v.giftNote });
+    if (!note.success) errors.giftNote = note.error.issues[0]?.message ?? "Check the gift note";
+  }
   const customer = customerInputSchema.safeParse({ name: v.name, email: v.email, phone: v.phone });
   if (!customer.success) for (const i of customer.error.issues) errors[i.path[0] as keyof Values] ??= i.message;
   const address = addressSchema.safeParse({ line1: v.line1, line2: v.line2, city: v.city, postalCode: v.postalCode, country: v.country });
@@ -48,11 +54,12 @@ function validate(v: Values): Errors {
   return errors;
 }
 
-export function CheckoutForm({ destinations }: { destinations: readonly ShippingDestination[] }) {
+export function CheckoutForm({ destinations, delivery }: { destinations: readonly ShippingDestination[]; delivery: { minDays: number; maxDays: number } }) {
   const router = useRouter();
   const { items, hydrated, clear } = useCart();
   const q = useCartQuote(items, hydrated);
   const [values, setValues] = useState<Values>(EMPTY);
+  const [gift, setGift] = useState(false);
   const [errors, setErrors] = useState<Errors>({});
   const [phase, setPhase] = useState<Phase>({ kind: "idle" });
   const [done, setDone] = useState(false);
@@ -83,7 +90,7 @@ export function CheckoutForm({ destinations }: { destinations: readonly Shipping
   const submit = async (e: FormEvent) => {
     e.preventDefault();
     if (phase.kind === "processing") return;
-    const found = validate(values);
+    const found = validate(values, gift);
     setErrors(found);
     if (Object.keys(found).length > 0) {
       window.setTimeout(() => summaryRef.current?.focus(), 0);
@@ -94,6 +101,7 @@ export function CheckoutForm({ destinations }: { destinations: readonly Shipping
       items,
       customer: { name: values.name, email: values.email, ...(values.phone ? { phone: values.phone } : {}) },
       shipping: { line1: values.line1, ...(values.line2 ? { line2: values.line2 } : {}), city: values.city, postalCode: values.postalCode, country: values.country },
+      ...(gift ? { gift: values.giftNote.trim() ? { note: values.giftNote } : {} } : {}),
     };
 
     const post = async (url: string, body: unknown) => {
@@ -169,6 +177,27 @@ export function CheckoutForm({ destinations }: { destinations: readonly Shipping
         </fieldset>
         </div>
 
+        <div className="card p-5 sm:p-6">
+          <fieldset disabled={processing}>
+            <legend className="sr-only">Gift</legend>
+            <label className="flex cursor-pointer items-start gap-3.5">
+              <input type="checkbox" checked={gift} onChange={(e) => setGift(e.target.checked)} className="peer sr-only" />
+              <span aria-hidden="true" className="mt-0.5 flex h-[1.875rem] w-[3.125rem] flex-none items-center rounded-full bg-[var(--lg-fill-strong)] p-0.5 transition-colors peer-checked:bg-positive peer-focus-visible:outline peer-focus-visible:outline-[3px] peer-focus-visible:outline-offset-2 peer-focus-visible:outline-[color-mix(in_srgb,var(--lg-tint)_60%,transparent)] [&>span]:transition-transform peer-checked:[&>span]:translate-x-5"><span className="size-[1.625rem] rounded-full bg-white shadow-[0_1px_3px_rgb(0_0_0/0.3)]" /></span>
+              <span className="min-w-0">
+                <span className="flex items-center gap-2 text-[1.0625rem] font-semibold"><IconGift size={18} className="text-tint-ink" /> This order is a gift</span>
+                <span className="mt-0.5 block text-[0.875rem] text-muted">We leave the prices off the packing slip and can add a short note.</span>
+              </span>
+            </label>
+            {gift && (
+              <div className="mt-4">
+                <FormField id="co-giftNote" label="Gift note (optional)" error={errors.giftNote} hint={`Printed on a card in the box. ${values.giftNote.length}/${LIMITS.giftNote}`}>
+                  {(a) => <textarea {...a} name="giftNote" rows={3} maxLength={LIMITS.giftNote} value={values.giftNote} onChange={set("giftNote")} className="field min-h-24 resize-y" placeholder="Happy birthday! Your car, finally on the wall." />}
+                </FormField>
+              </div>
+            )}
+          </fieldset>
+        </div>
+
         <section aria-labelledby="co-pay-title">
           <div className="card p-5 sm:p-6">
             <div className="flex flex-wrap items-center justify-between gap-3">
@@ -187,6 +216,11 @@ export function CheckoutForm({ destinations }: { destinations: readonly Shipping
             <Button type="submit" size="lg" className="mt-6 w-full" disabled={processing || !total} aria-disabled={processing || !total}>
               {processing ? "Processing…" : <>Demo payment{total ? ` · ${formatMoney(total)}` : ""}</>}
             </Button>
+            <ul className="mt-4 grid gap-2 text-[0.875rem] text-muted sm:grid-cols-3">
+              <li className="flex items-center gap-2"><IconPackage size={16} className="flex-none text-subtle" /><DeliveryEstimate minDays={delivery.minDays} maxDays={delivery.maxDays} compact /></li>
+              <li className="flex items-center gap-2"><IconShield size={16} className="flex-none text-subtle" /> Checked before it prints</li>
+              <li className="flex items-center gap-2"><IconLock size={16} className="flex-none text-subtle" /> No card data collected</li>
+            </ul>
             <p className="mt-3 text-center text-[0.8125rem] text-subtle">By continuing you agree this is a demonstration. <Link href="/terms" className="underline underline-offset-4">Terms (placeholder)</Link></p>
           </div>
         </section>
@@ -208,6 +242,7 @@ export function CheckoutForm({ destinations }: { destinations: readonly Shipping
           ))}
           {!q.quote && <li className="py-2"><Skeleton className="h-16" /></li>}
         </ul>
+        {q.quote && <FreeShippingProgress totals={q.quote.totals} className="mt-5" />}
         <div className="mt-5 border-t border-line pt-5">{q.quote ? <OrderSummary totals={q.quote.totals} /> : <Skeleton className="h-28" />}</div>
         {q.status === "error" && <p className="mt-3 text-sm text-muted" role="alert">Couldn&apos;t load prices. <button type="button" className="underline" onClick={q.retry}>Retry</button></p>}
       </aside>

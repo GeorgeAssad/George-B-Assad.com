@@ -27,12 +27,13 @@ export interface CheckoutDeps {
 const defaultDeps = (): CheckoutDeps => ({ repos: getRepositories(), services: getServices(), now: () => new Date(), newOrderId: generateOrderId });
 
 /** Hash of exactly what was priced, so a session cannot be reused for a different cart. */
-export async function hashCart(items: readonly CartItem[], country: string): Promise<string> {
+export async function hashCart(items: readonly CartItem[], country: string, gift?: CheckoutRequest["gift"]): Promise<string> {
   const canonical = items.map((i) => ({
     p: i.productId, s: i.sizeId, c: i.carSlug, t: i.templateId, q: i.quantity,
     n: i.customization.name, x: i.customization.text ?? "", y: i.customization.year ?? "", l: i.customization.location ?? "",
   }));
-  return sha256Hex(JSON.stringify({ canonical, country }));
+  // The gift choice is part of what was confirmed, so it is bound too (only when present, so older sessions still verify).
+  return sha256Hex(JSON.stringify(gift ? { canonical, country, gift: { note: gift.note ?? "" } } : { canonical, country }));
 }
 
 /** The server decides where we ship. The client-side <select> is a convenience, not a control. */
@@ -43,8 +44,8 @@ async function assertShippable(country: string, repos: Repositories): Promise<vo
   }
 }
 
-async function priceOrThrow(items: readonly CartItem[], repos: Repositories) {
-  const quote = await quoteCart(items, repos);
+async function priceOrThrow(items: readonly CartItem[], repos: Repositories, at: number) {
+  const quote = await quoteCart(items, repos, at);
   if (quote.rejected.length > 0 || quote.lines.length === 0) {
     throw new ApiError(422, "items_unavailable", "Some items in your cart are no longer available.");
   }
@@ -61,13 +62,15 @@ export interface StartCheckoutResult {
 
 export async function startCheckout(req: CheckoutRequest, deps: CheckoutDeps = defaultDeps()): Promise<StartCheckoutResult> {
   await assertShippable(req.shipping.country, deps.repos);
-  const quote = await priceOrThrow(req.items, deps.repos);
+  const pricedAt = deps.now();
+  const quote = await priceOrThrow(req.items, deps.repos, pricedAt.getTime());
   const orderId = deps.newOrderId();
   const session = await deps.services.payment.createCheckoutSession({
     orderId,
     amount: quote.totals.total,
-    cartHash: await hashCart(req.items, req.shipping.country),
+    cartHash: await hashCart(req.items, req.shipping.country, req.gift),
     description: `SuperCars order ${orderId}`,
+    pricedAt: pricedAt.toISOString(),
   });
   return { sessionId: session.sessionId, orderId, expiresAt: session.expiresAt, totals: quote.totals, demo: session.demo };
 }
@@ -85,8 +88,10 @@ export async function confirmCheckout(input: { sessionId: string; checkout: Chec
 
   const { checkout } = input;
   await assertShippable(checkout.shipping.country, deps.repos);
-  const quote = await priceOrThrow(checkout.items, deps.repos);
-  const expectedHash = await hashCart(checkout.items, checkout.shipping.country);
+  // Price as of the moment checkout started: an offer that ends while the customer pays is still honoured
+  // (the signed session expires after 30 minutes, which bounds how long).
+  const quote = await priceOrThrow(checkout.items, deps.repos, Date.parse(verification.pricedAt));
+  const expectedHash = await hashCart(checkout.items, checkout.shipping.country, checkout.gift);
   if (expectedHash !== verification.cartHash || quote.totals.total.amount !== verification.amount.amount) {
     throw new ApiError(409, "cart_changed", "Your cart changed since checkout started. Please review it and try again.");
   }
@@ -118,6 +123,7 @@ export async function confirmCheckout(input: { sessionId: string; checkout: Chec
       const spec = printSpecFor(i.sizeId);
       return { sku: i.sku, quantity: i.quantity, widthMm: spec.widthMm, heightMm: spec.heightMm };
     }),
+    ...(checkout.gift ? { packingSlip: { gift: true as const, ...(checkout.gift.note ? { note: checkout.gift.note } : {}) } } : {}),
   });
 
   const order: Order = {
@@ -127,8 +133,11 @@ export async function confirmCheckout(input: { sessionId: string; checkout: Chec
     shippingAddress: checkout.shipping,
     items,
     subtotal: quote.totals.subtotal,
+    discount: quote.totals.discount,
+    ...(quote.totals.offer ? { offer: { id: quote.totals.offer.id, label: quote.totals.offer.label, percent: quote.totals.offer.percent } } : {}),
     shipping: quote.totals.shipping,
     total: quote.totals.total,
+    ...(checkout.gift ? { gift: checkout.gift.note ? { note: checkout.gift.note } : {} } : {}),
     payment: {
       id: verification.paymentId,
       provider: deps.services.payment.id,

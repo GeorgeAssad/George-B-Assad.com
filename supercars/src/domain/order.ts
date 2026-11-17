@@ -55,8 +55,14 @@ export interface Order {
   readonly shippingAddress: Address;
   readonly items: readonly OrderItem[];
   readonly subtotal: Money;
+  /** Offer discount applied at checkout (zero when none). */
+  readonly discount: Money;
+  /** The offer that was applied, if any (snapshot). */
+  readonly offer?: { readonly id: string; readonly label: string; readonly percent: number };
   readonly shipping: Money;
   readonly total: Money;
+  /** Set when the customer marked the order as a gift. The note is private (never in the public view). */
+  readonly gift?: { readonly note?: string };
   readonly payment: Payment;
   readonly shipment?: Shipment;
   readonly createdAt: string;
@@ -78,6 +84,8 @@ export interface PublicOrderView {
   readonly shipTo: { readonly city: string; readonly country: string };
   readonly timeline: readonly TimelineEntry[];
   readonly shipment?: Pick<Shipment, "carrier" | "trackingNumber" | "status">;
+  /** True for gift orders (the note itself is not shown publicly). */
+  readonly gift: boolean;
   readonly mode: "demo" | "live";
 }
 

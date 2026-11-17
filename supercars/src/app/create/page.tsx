@@ -13,10 +13,10 @@ export const metadata: Metadata = {
 
 export default async function CreatePage() {
   const repos = getRepositories();
-  const [cars, templates, products, sizes] = await Promise.all([repos.cars.listEntries(), repos.templates.list(), repos.products.listProducts(), repos.products.listSizes()]);
+  const [cars, templates, products, sizes, rules] = await Promise.all([repos.cars.listEntries(), repos.templates.list(), repos.products.listProducts(), repos.products.listSizes(), repos.products.getShippingRules()]);
   return (
     <Suspense fallback={<ConfiguratorSkeleton />}>
-      <Configurator catalog={{ cars, templates, products, sizes }} />
+      <Configurator catalog={{ cars, templates, products, sizes, delivery: { minDays: rules.minBusinessDays, maxDays: rules.maxBusinessDays } }} />
     </Suspense>
   );
 }

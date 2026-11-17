@@ -12,6 +12,7 @@ import { Skeleton } from "@/components/ui/Skeleton";
 import { useToast } from "@/components/ui/Toast";
 import { IconArrow, IconArrowLeft, IconCheck } from "@/components/ui/icons";
 import { track } from "@/lib/analytics";
+import { formatMoney } from "@/lib/format";
 import { getSnapshot } from "@/lib/cart-store";
 import { normalizeText } from "@/lib/validation";
 import { openCartDrawer } from "@/lib/ui-store";
@@ -100,6 +101,10 @@ function ConfiguratorInner({ catalog }: { catalog: Catalog }) {
   );
   const quote = useCartQuote(probe, entry !== null);
   const line = quote.quote?.lines[0];
+  // While an offer runs, show what the customer will pay for the poster (the server's discounted goods total).
+  const offerTotals = quote.quote?.totals;
+  const goods = line && offerTotals && offerTotals.discount.amount > 0 ? { ...offerTotals.subtotal, amount: offerTotals.subtotal.amount - offerTotals.discount.amount } : null;
+  const offerLabel = goods && offerTotals?.offer ? `${offerTotals.offer.label} · −${offerTotals.offer.percent}%` : null;
 
   /* ---- effects ---- */
   useEffect(() => {
@@ -178,7 +183,7 @@ function ConfiguratorInner({ catalog }: { catalog: Catalog }) {
             <p className="truncate text-sm font-semibold">{entry.generation.displayName}</p>
             <p className="truncate text-[0.8125rem] text-muted">{template.name} · {size.label}</p>
           </div>
-          {line ? <Price value={line.lineTotal} className="text-base" /> : <Skeleton className="h-5 w-14" />}
+          {line ? <Price value={goods ?? line.lineTotal} className={`text-base ${goods ? "[&>span]:text-red-text" : ""}`} /> : <Skeleton className="h-5 w-14" />}
         </div>
       )}
 
@@ -211,7 +216,7 @@ function ConfiguratorInner({ catalog }: { catalog: Catalog }) {
                   <div className="mx-auto mb-6 max-w-[15rem] lg:hidden"><PreviewPanel entry={entry} template={template} customization={display} sizeId={state.sizeId} kind={product.kind} generating={preview.status === "running"} /></div>
                   <PreviewStatus preview={preview} onRetry={() => void preview.run()} />
                   <div className="mt-6">
-                    <StepSummary entry={entry} template={template} product={product} size={size} customization={check.value} quantity={state.quantity} onQuantity={(q) => dispatch({ type: "setQuantity", quantity: q })} onEdit={go} quote={quote.quote} quoteFailed={quote.status === "error"} />
+                    <StepSummary entry={entry} template={template} product={product} size={size} customization={check.value} quantity={state.quantity} onQuantity={(q) => dispatch({ type: "setQuantity", quantity: q })} onEdit={go} quote={quote.quote} quoteFailed={quote.status === "error"} onUpgrade={(id) => { dispatch({ type: "selectProduct", id }); track("upgrade_framed", { carSlug: entry.generation.slug }); }} delivery={catalog.delivery} />
                   </div>
                 </>
               )}
@@ -228,7 +233,7 @@ function ConfiguratorInner({ catalog }: { catalog: Catalog }) {
               )}
               <div className="min-w-0 flex-1 pl-2 lg:pl-1">
                 {line ? (
-                  <><p className="spec leading-tight">{state.quantity > 1 ? `Total ×${state.quantity}` : "Price"}</p><Price value={line.lineTotal} precise className="text-lg leading-tight tracking-[-0.02em]" /></>
+                  <><p className="spec leading-tight">{offerLabel ?? (state.quantity > 1 ? `Total ×${state.quantity}` : "Price")}</p><Price value={goods ?? line.lineTotal} precise className={`text-lg leading-tight tracking-[-0.02em] ${goods ? "[&>span]:text-red-text" : ""}`} />{goods && <s aria-hidden="true" className="ml-1.5 text-[0.8125rem] text-subtle">{formatMoney(line.lineTotal)}</s>}</>
                 ) : entry ? <Skeleton className="h-9 w-24" /> : <p className="text-sm text-muted">Choose a car to see the price</p>}
               </div>
               {added && state.step === 4 ? (

@@ -21,6 +21,7 @@ export function toPublicOrderView(order: Order): PublicOrderView {
     ...(order.shipment
       ? { shipment: { carrier: order.shipment.carrier, ...(order.shipment.trackingNumber ? { trackingNumber: order.shipment.trackingNumber } : {}), status: order.shipment.status } }
       : {}),
+    gift: Boolean(order.gift),
     mode: order.mode,
   };
 }

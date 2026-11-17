@@ -4,8 +4,8 @@ import Link from "next/link";
 import type { QuotedLine } from "@/domain/cart";
 import { PosterPreview } from "@/components/poster/PosterPreview";
 import { Price } from "@/components/ui/Price";
-import { IconEdit, IconTrash } from "@/components/ui/icons";
-import { personalizationSummary } from "@/lib/format";
+import { IconEdit, IconFrame, IconTrash } from "@/components/ui/icons";
+import { formatPrice, personalizationSummary } from "@/lib/format";
 import { QuantityStepper } from "./QuantityStepper";
 
 interface CartLineItemProps {
@@ -14,9 +14,11 @@ interface CartLineItemProps {
   readonly onQuantity: (id: string, quantity: number) => void;
   readonly onRemove: (id: string) => void;
   readonly onNavigate?: () => void;
+  /** Switch a print to the framed poster of the same size (offered when the server priced an upgrade). */
+  readonly onUpgrade?: (line: QuotedLine) => void;
 }
 
-export function CartLineItem({ line, compact = false, onQuantity, onRemove, onNavigate }: CartLineItemProps) {
+export function CartLineItem({ line, compact = false, onQuantity, onRemove, onNavigate, onUpgrade }: CartLineItemProps) {
   const { item } = line;
   const label = `${line.vehicleName} ${line.productName.toLowerCase()}`;
   return (
@@ -36,6 +38,13 @@ export function CartLineItem({ line, compact = false, onQuantity, onRemove, onNa
           <div className="flex gap-2"><dt className="sr-only">Style</dt><dd>{line.template.name} style · {line.sizeLabel}</dd></div>
           <div className="flex gap-2"><dt className="sr-only">Personalization</dt><dd className="truncate">{personalizationSummary(item.customization)}</dd></div>
         </dl>
+        {line.upgrade && onUpgrade && (
+          <button type="button" onClick={() => onUpgrade(line)} className="mt-3 flex w-full items-center gap-2.5 rounded-[var(--lg-radius-sm)] bg-tint-soft px-3 py-2.5 text-left text-[0.875rem] text-fg transition-colors hover:bg-[color-mix(in_srgb,var(--lg-tint)_14%,transparent)]" aria-label={`Make the ${line.vehicleName} poster framed for ${formatPrice(line.upgrade.difference)} more`}>
+            <IconFrame size={18} className="flex-none text-tint-ink" />
+            <span className="min-w-0 flex-1"><strong className="font-semibold">Make it framed</strong><span className="block text-[0.8125rem] text-muted">Ready to hang, same artwork</span></span>
+            <span className="flex-none font-semibold tabular-nums text-tint-ink">+{formatPrice(line.upgrade.difference)}</span>
+          </button>
+        )}
         <div className="mt-3 flex flex-wrap items-center justify-between gap-3">
           <QuantityStepper value={item.quantity} onChange={(q) => onQuantity(item.id, q)} label={label} />
           <div className="flex items-center gap-1">

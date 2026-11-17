@@ -79,10 +79,10 @@ Every page exists and has one job. Nothing is said twice: navigation lives only 
 
 | Page | Job |
 | --- | --- |
-| `/` | A hero that fits the first screen: headline, the one **Create your poster** button and the product stage (a car, its framed poster and a five-style picker that changes the poster live). Below it a row of facts, the car picker (a tile starts a poster for that car) and the four steps. |
-| `/cars` | Search and brand filters (state in the URL) over car tiles; a tile opens the car's page. |
-| `/cars/<slug>` | The car on the product stage with its facts, price and **Create this car**; below it the car in each of the five styles (each one opens the designer with car and style chosen). |
-| `/shop` | Print and framed poster as two pricing cards with sizes, prices and one contextual button each. |
+| `/` | Sells in order: a hero that fits the first screen (headline, the one **Create your poster** button, the product stage with a five-style picker), four benefits, the car picker (+ "Can't find your car? Ask us"), the five styles on a wall (two marked "Our pick"), a gift section, the four steps, **example reviews** (labelled) and questions. |
+| `/cars` | Search and brand filters (state in the URL) over car tiles; a tile opens the car's page; "Can't find your car? Ask us" at the end. |
+| `/cars/<slug>` | The product page: breadcrumb, facts, price ("from", with the running offer), **Create this car**, a delivery estimate from today's date, trust points; then the five styles, a sizes-and-prices table (print and framed), example reviews, questions and "More cars like this". On phones the Create button follows you once it scrolls away. |
+| `/shop` | Print and framed poster as two pricing cards (with offer prices), trust points, a size guide drawn to scale above a sofa, example reviews and questions. |
 | `/how-it-works`, `/about` | The four steps with delivery facts and FAQ; the studio in three principles. |
 | `/create` | The designer: **car → design (style, finish, size) → personalize → review and add to cart**. |
 | `/checkout`, `/order/success/<id>`, `/track` | Pay (demo), confirmation, order tracking. |
@@ -93,8 +93,31 @@ Old URLs still work: `/products/*` goes to `/shop` (`/products/<slug>/customize`
 Rules that `tests/e2e/funnel.spec.ts` and `tests/unit/site-structure.test.ts` enforce:
 
 - **Navigation only in the header** — Cars, Shop, How it works, About, Track order and the cart; on phones the same five links sit in one menu. The footer is legal links, chat and the theme switch. No bottom tab bar, no floating chat button.
-- **One generic Create button per page**: in the hero on Home, in the header everywhere else (none on `/create`, the checkout and order confirmation). Contextual starts that name their job are fine: a car tile, "Create this car", a style ("Design this poster"), "Design a framed poster".
-- **Short pages.** Measured at 390×844, 768×1024 and 1440×900 against the budgets in `tests/e2e/funnel.spec.ts`: Home under 3 screens, every other page under 2 on a laptop or tablet and under 2.75 on a phone, `/track` one screen. Home's headline, Create button and product stage fit the first screen; on a car page the Create button does.
+- **One visible generic Create button**: on Home it is the hero's, and the header's appears only after the hero's has scrolled away; everywhere else it is in the header (none on `/create`, the checkout and order confirmation). Contextual starts that name their job are fine: a car tile, "Create this car", a style, "Design a framed gift". A breadcrumb trail is the one place a header page is linked again.
+- **Page lengths are budgeted** per page at 390×844, 768×1024 and 1440×900 in `tests/e2e/funnel.spec.ts`. Home, car pages and the Shop are deliberately longer selling pages (the owner's choice); the others stay short and `/track` is one screen. Home's headline, Create button and product stage always fit the first screen; so does a car page's Create button.
+
+## Offers (discounts and free shipping)
+
+Offers are switched on by **adding one line to `src/config/promotions.ts`**, with a start and an end time. They turn themselves on and off at those times; only adding, changing or removing a line needs a deploy (merge to `main`). While no offer runs there is no banner, no countdown and no crossed-out price, and **shipping is the flat €7.90**.
+
+```ts
+// 15% off every poster for three hours, with a countdown banner:
+{ id: "flash-15", kind: "percent-off", percent: 15, startsAt: "2026-11-28T18:00:00+01:00", endsAt: "2026-11-28T21:00:00+01:00", label: "Flash sale" },
+// Free shipping on orders of €80 or more for a weekend (minSubtotal in whole euros; 0 = every order):
+{ id: "free-ship-80", kind: "free-shipping", minSubtotal: 80, startsAt: "2026-11-29T00:00:00+01:00", endsAt: "2026-12-01T00:00:00+01:00" },
+```
+
+- Times need a UTC offset (`+01:00`, `+02:00`, `Z`). A broken line fails the build with a message naming it, so the live site keeps running the last good version.
+- If two discounts overlap the bigger one applies; the lower free-shipping amount applies. Free shipping is measured on the goods total after the discount.
+- **The server applies every offer** (`src/server/checkout/pricing.ts`); the pages only display it. A customer who started checkout during an offer keeps that price for the 30-minute checkout session, even if the offer ends meanwhile.
+- What customers see: a red announcement bar with a live countdown, offer prices with the old price crossed out (car pages, Shop, designer), a discount line and a free-shipping progress bar in the cart and at checkout.
+- Testing: `NEXT_PUBLIC_PROMOTIONS` (a JSON array of the same shape) adds offers at build time for preview builds and `tests/e2e/offers.spec.ts` (run with `E2E_OFFERS=1` against such a build).
+
+## Gifts, upgrades and example reviews
+
+- **Gift orders:** at checkout, "This order is a gift" adds an optional note (200 characters, same safe-text rules as the poster) and marks the packing slip "no prices". The confirmation page shows the note; public tracking only says "Gift order".
+- **Upgrade to framed:** every print in the cart, and the designer's review step, offers the framed poster of the same size; the price difference comes from the server's quote.
+- **Example reviews** (`src/content/example-reviews.ts`) are placeholder text, always under the heading "Example reviews" with a note saying so; no average rating, no counts and no review markup. Replace them with real, verified reviews before launch. Shared FAQ answers live in `src/content/faq.ts`.
 
 ## Design
 

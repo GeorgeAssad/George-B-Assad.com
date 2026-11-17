@@ -113,6 +113,8 @@ Browser                              Server
 Guarantees, each covered by a unit test and/or a live probe:
 
 - **No client price exists.** Every request schema is `.strict()`: a `price`, `total`, `paymentStatus`, `userId`, … field is rejected with 422, not ignored. Prices come from `data/products.ts` (later: the database) via `server/checkout/pricing.ts`.
+- **Offers are server-side too.** `server/checkout/pricing.ts` applies the offer schedule (`config/promotions.ts`, evaluated by `lib/promotions.ts`) at a given time: a percent-off discount on the goods and free shipping above an amount. The checkout session carries the time it was priced (`pricedAt`, signed with the rest of the session), and confirmation re-prices at that time, so an offer that ends mid-checkout is honoured for the session's 30-minute life and never longer. The browser only *displays* offers (`lib/use-offers.ts` switches them on and off at the exact start and end times).
+- **Gift orders** (`gift.note`) are validated like poster text, bound into the cart hash, stored on the order, passed to fulfilment as a no-prices packing slip, and kept out of the public tracking view.
 - **A session is bound to the exact cart.** The signed session embeds a hash of the priced cart + destination country; confirming a different cart returns 409 `cart_changed`.
 - **Sessions cannot be forged or replayed after expiry** (HMAC-SHA-256, 30 min TTL). The fallback signing key is a clearly labelled *public demo constant*: forging a demo session can only create a demo order. Set `CHECKOUT_SIGNING_SECRET` to remove even that.
 - **Order owner, payment status, fulfilment status, shipping amount** are all set on the server. `mode` is `"demo"` whenever the mock payment provider is active.

@@ -9,7 +9,7 @@ import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { Price } from "@/components/ui/Price";
-import { IconArrow, IconPackage } from "@/components/ui/icons";
+import { IconArrow, IconGift, IconPackage } from "@/components/ui/icons";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { formatDateRange, formatMoney, personalizationSummary } from "@/lib/format";
 import { getLocalOrder } from "@/lib/order-store";
@@ -142,7 +142,7 @@ export function OrderSuccess({ orderId, cars, templates }: OrderSuccessProps) {
             })}
           </ul>
           <div className="mt-2 border-t border-line pt-5">
-            <OrderSummary totals={{ subtotal: order.subtotal, shipping: order.shipping, total: order.total, shippingNote: "" }} />
+            <OrderSummary totals={{ subtotal: order.subtotal, discount: order.discount, shipping: order.shipping, total: order.total, offer: order.offer ? { ...order.offer, endsAt: "" } : null, freeShipping: null, shippingNote: "" }} />
           </div>
         </section>
 
@@ -157,6 +157,13 @@ export function OrderSuccess({ orderId, cars, templates }: OrderSuccessProps) {
               {order.shippingAddress.country}
             </address>
           </div>
+          {order.gift && (
+            <div className="border-t border-line pt-6">
+              <p className="spec flex items-center gap-1.5"><IconGift size={14} /> Gift order</p>
+              <p className="mt-1.5 text-[0.9375rem]">No prices on the packing slip.</p>
+              {order.gift.note && <blockquote className="mt-2 rounded-[var(--lg-radius-sm)] bg-fill px-3.5 py-2.5 text-[0.9375rem] italic">“{order.gift.note}”</blockquote>}
+            </div>
+          )}
           <div className="border-t border-line pt-6">
             <p className="spec">Estimated delivery</p>
             <p className="mt-1.5 text-lg font-medium">{formatDateRange(order.estimatedDelivery.from, order.estimatedDelivery.to)}</p>

@@ -23,6 +23,7 @@ export function TrackingResult({ order, animate = false }: { order: PublicOrderV
         </div>
         <div className="flex flex-wrap items-center gap-2">
           <Badge tone="red">{STATUS_LABEL[order.status]}</Badge>
+          {order.gift && <Badge tone="neutral">Gift order</Badge>}
           {order.mode === "demo" && <Badge tone="demo">Demo order</Badge>}
         </div>
       </div>

@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import { Faq } from "@/components/sell/Faq";
+import { HOW_FAQ } from "@/content/faq";
 import type { ReactNode } from "react";
 import { CutoutFit } from "@/components/cars/CutoutFit";
 import { ProofRow } from "@/components/home/HomeSections";
@@ -14,12 +16,6 @@ export const metadata: Metadata = {
   alternates: { canonical: "/how-it-works" },
 };
 
-const FAQ = [
-  ["Is this a real store?", "Not yet. This is a prototype: checkout is a demonstration, no payment is taken, and nothing is shipped."],
-  ["Is the artwork AI-generated?", "In the prototype the artwork is composed locally from generic silhouettes and templates. The production design engine will replace that step."],
-  ["What will the print quality be?", "Print files are prepared at exact physical dimensions with bleed and a fixed resolution — not just a large image. Final paper and printer specifications will be published before launch."],
-  ["Can I track my order without an account?", "Yes. Enter your order number on the tracking page. No account is needed."],
-] as const;
 
 function Step({ n, title, body, children, visualClass = "stage-soft" }: { n: number; title: string; body: string; children: ReactNode; visualClass?: string }) {
   return (
@@ -78,24 +74,12 @@ export default async function HowItWorksPage() {
         items={[
           [formatPrice(cheapest.price), "posters start at"],
           [String(sizes.length), `sizes, ${sizes.map((s) => s.label.replace(/ cm$/, "").replace(/ /g, "")).join(", ")} cm`],
-          [formatPrice(rules.flatRate), `shipping, free over ${formatPrice(rules.freeOver)}`],
+          [formatPrice(rules.flatRate), "shipping, tracked to your door"],
           [`${rules.minBusinessDays}–${rules.maxBusinessDays}`, "business days to your door"],
         ]}
       />
 
-      <section aria-labelledby="faq-title" className="container-x section-t grid gap-5 lg:grid-cols-[0.6fr_1.4fr] lg:gap-12">
-        <h2 id="faq-title" className="h-display h-section">Questions</h2>
-        <div className="card divide-y-[0.5px] divide-line px-5 sm:px-6">
-          {FAQ.map(([q, a]) => (
-            <details key={q} className="group py-4">
-              <summary className="flex min-h-7 cursor-pointer list-none items-center justify-between gap-4 rounded font-semibold [&::-webkit-details-marker]:hidden">
-                {q}<span aria-hidden="true" className="text-xl font-normal text-subtle transition-transform group-open:rotate-45">+</span>
-              </summary>
-              <p className="mt-2 max-w-2xl text-[0.9375rem] text-muted">{a}</p>
-            </details>
-          ))}
-        </div>
-      </section>
+      <Faq items={HOW_FAQ} />
     </>
   );
 }

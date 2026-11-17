@@ -35,6 +35,8 @@ export interface CreateFulfillmentOrderInput {
   readonly orderId: string;
   readonly recipient: { readonly name: string; readonly address: Address };
   readonly items: readonly FulfillmentLineItem[];
+  /** Gift orders: the packing slip shows no prices and carries the note. */
+  readonly packingSlip?: { readonly gift: true; readonly note?: string };
 }
 
 export interface FulfillmentOrder {

@@ -46,6 +46,9 @@ test("golden path: cart → checkout → demo payment → confirmation → track
   await page.getByLabel(/^City/).fill("Berlin");
   await page.getByLabel(/^Postal code/).fill("10115");
   await page.getByLabel(/^Country/).selectOption("DE");
+  // A gift: the note travels with the order and the packing slip has no prices.
+  await page.getByText("This order is a gift").click();
+  await page.getByLabel(/^Gift note/).fill("Happy birthday, Dad!");
   await expectFixedBarsInViewport(page);
   await page.getByRole("button", { name: /Demo payment/ }).click();
 
@@ -58,6 +61,8 @@ test("golden path: cart → checkout → demo payment → confirmation → track
   await expect(page.getByText("1 Demo Street")).toBeVisible();
   await expect(page.getByText(/Demo payment · €86\.90/)).toBeVisible();
   await expect(page.getByRole("list", { name: "Order progress" })).toContainText("Design");
+  await expect(page.getByText("Gift order")).toBeVisible();
+  await expect(page.getByText("“Happy birthday, Dad!”")).toBeVisible();
   await shot(page, "co-3-success", p);
   await expectNoHorizontalScroll(page);
 
@@ -77,6 +82,8 @@ test("golden path: cart → checkout → demo payment → confirmation → track
   await expect(page.getByRole("article", { name: `Order ${orderId}` })).toBeVisible();
   await expect(page.getByText("Berlin, DE")).toBeVisible();
   await expect(page.getByText("george@example.com")).toHaveCount(0); // privacy: no contact details on public lookup
+  await expect(page.getByText("Happy birthday, Dad!")).toHaveCount(0); // the gift note is private too
+  await expect(page.getByRole("article").getByText("Gift order")).toBeVisible();
   await shot(page, "co-4-track", p);
 });
 
@@ -108,6 +115,12 @@ test("cart: quantity, edit customization, remove, empty state", async ({ page })
 
   await cart.getByRole("button", { name: /Increase quantity/ }).click();
   await expect(cart.getByText("€158.00").first()).toBeVisible();
+
+  // Upgrade to framed: one tap, priced by the server (50 × 70 cm: €79 → €139).
+  await cart.getByRole("button", { name: /framed for €60 more/ }).click();
+  await expect(cart.getByText("Framed Car Poster")).toBeVisible();
+  await expect(cart.getByText("€278.00").first()).toBeVisible();
+  await expect(cart.getByRole("button", { name: /framed for/ })).toHaveCount(0);
 
   await cart.getByRole("link", { name: /Edit customization/ }).click();
   await expect(page.getByRole("heading", { name: "Make it yours." })).toBeVisible();

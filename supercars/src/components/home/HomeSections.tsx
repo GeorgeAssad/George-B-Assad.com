@@ -1,6 +1,7 @@
 import type { CarEntry } from "@/domain/catalog";
 import { CarTile } from "@/components/cars/CarTile";
 import { Reveal } from "@/components/ui/Reveal";
+import { AskForCar } from "@/components/sell/AskForCar";
 import { IconGauge, IconPackage, IconPalette } from "@/components/ui/icons";
 
 /** Real numbers, rendered final, directly under the hero. */
@@ -36,6 +37,7 @@ export function CarPicker({ cars }: { cars: readonly CarEntry[] }) {
           ))}
         </ul>
       </Reveal>
+      <div className="container-x mt-4 sm:mt-5"><AskForCar /></div>
     </section>
   );
 }

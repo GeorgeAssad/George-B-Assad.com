@@ -48,14 +48,14 @@ export const mockSupportAgent: SupportProvider = {
         const list = p.variants.map((v) => `${sizes.find((s) => s.id === v.sizeId)?.label ?? v.sizeId} ${formatPrice(v.price)}`).join(", ");
         return `${p.name}: ${list}`;
       });
-      return answer(`Demo prices — ${lines.join(" · ")}. The Luxury style adds a small surcharge. Shipping: ${formatPrice(shippingRules.flatRate)}, free over ${formatPrice(shippingRules.freeOver)}.`, ["What sizes are available?"]);
+      return answer(`Demo prices — ${lines.join(" · ")}. The Luxury style adds a small surcharge. Shipping: ${formatPrice(shippingRules.flatRate)}; during a free-shipping offer it is free above the amount shown in the banner.`, ["What sizes are available?"]);
     }
     if (/(size|dimension|big|large|cm)/.test(text)) {
       const sizes = await repos.products.listSizes();
       return answer(`Available sizes: ${sizes.map((s) => s.label).join(", ")}.`, ["How much does a poster cost?"]);
     }
     if (/(deliver|ship|arrive|how long|when will)/.test(text)) {
-      return answer(`Demo estimate: ${shippingRules.minBusinessDays}–${shippingRules.maxBusinessDays} business days including production. Shipping is ${formatPrice(shippingRules.flatRate)}, free over ${formatPrice(shippingRules.freeOver)}.`, ["Where is order SC-100234?"]);
+      return answer(`Demo estimate: ${shippingRules.minBusinessDays}–${shippingRules.maxBusinessDays} business days including production. Shipping is ${formatPrice(shippingRules.flatRate)}, or free during a free-shipping offer.`, ["Where is order SC-100234?"]);
     }
     if (/(return|refund|cancel)/.test(text)) {
       return answer("Our returns policy for personalised items is still being finalised. See the Returns page for the placeholder text — nothing here is a binding policy yet.", ["Talk to a human"]);
