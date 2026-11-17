@@ -2,11 +2,10 @@ import Link from "next/link";
 import { footerLinks } from "@/config/nav";
 import { siteConfig } from "@/config/site";
 import { OpenChatLink } from "@/components/support/OpenChatLink";
-import { ThemeToggle } from "./ThemeToggle";
 
 const linkClass = "inline-flex min-h-11 items-center rounded text-muted no-underline transition-colors hover:text-fg";
 
-/** Small print only: policies, contact and the theme switch. Navigation lives in the bar at the top. */
+/** Small print only: policies and contact. Navigation and the light/dark switch live in the bar at the top. */
 export function Footer() {
   return (
     <footer className="mt-auto pt-[clamp(3rem,7vw,5rem)] text-[0.8125rem] text-muted">
@@ -21,10 +20,7 @@ export function Footer() {
               <li><a href={`mailto:${siteConfig.contactEmail}`} className={linkClass}>{siteConfig.contactEmail}</a></li>
             </ul>
           </nav>
-          <div className="flex items-center gap-1">
-            <p className="text-center"><span className="sm:hidden">Prototype store · no real payments</span><span className="max-sm:hidden">Prototype store: no real payments. Not affiliated with any vehicle manufacturer.</span></p>
-            <ThemeToggle className="size-11 shrink-0" />
-          </div>
+          <p className="flex min-h-11 items-center text-center"><span className="sm:hidden">Prototype store · no real payments</span><span className="max-sm:hidden">Prototype store: no real payments. Not affiliated with any vehicle manufacturer.</span></p>
         </div>
       </div>
     </footer>
