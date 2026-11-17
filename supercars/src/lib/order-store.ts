@@ -24,7 +24,10 @@ const orderSchema = z.object({
     customization: z.object({ name: str(40), text: str(80).optional(), year: str(4).optional(), location: str(60).optional() }),
     quantity: z.number().int().min(1).max(10), unitPrice: money, lineTotal: money,
   })).max(20),
-  subtotal: money, shipping: money, total: money,
+  // Orders saved before offers existed have no discount: default it.
+  subtotal: money, discount: money.default({ amount: 0, currency: "EUR" }), shipping: money, total: money,
+  offer: z.object({ id: str(40), label: str(40), percent: z.number().int().min(1).max(90) }).optional(),
+  gift: z.object({ note: str(260).optional() }).optional(),
   payment: z.object({ id: str(80), provider: str(32), status: z.enum(["pending", "paid", "failed", "refunded"]), amount: money, sessionId: str(700), demo: z.boolean() }),
   createdAt: str(40),
   estimatedDelivery: z.object({ from: str(20), to: str(20) }),

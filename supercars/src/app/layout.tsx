@@ -7,6 +7,7 @@ import "@fontsource/barlow-condensed/700.css";
 import "./globals.css";
 import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
+import { PromoBar } from "@/components/offers/PromoBar";
 import { Providers } from "@/components/layout/Providers";
 import { allowIndexing, siteConfig } from "@/config/site";
 
@@ -40,6 +41,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body>
         <a href="#main" className="skip-link">Skip to content</a>
         <Providers>
+          <PromoBar />
           <Header />
           <main id="main" className="flex flex-1 flex-col">{children}</main>
           <Footer />

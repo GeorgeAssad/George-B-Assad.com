@@ -47,3 +47,8 @@ export const IconGauge = (p: IconProps) => (<Icon {...p}><path d="M4.5 17a8.5 8.
 export const IconInstagram = (p: IconProps) => (<Icon {...p}><rect x="4" y="4" width="16" height="16" rx="4.5" /><circle cx="12" cy="12" r="3.6" /><circle cx="16.6" cy="7.4" r=".8" fill="currentColor" /></Icon>);
 export const IconTikTok = (p: IconProps) => (<Icon {...p}><path d="M14 4v10.2a3.2 3.2 0 1 1-3.2-3.2M14 4c.3 2.2 1.8 3.7 4 3.9" /></Icon>);
 export const IconHelp = (p: IconProps) => (<Icon {...p}><circle cx="12" cy="12" r="8.5" /><path d="M9.6 9.6a2.5 2.5 0 1 1 3.4 2.3c-.7.3-1 .8-1 1.6M12 16.6v.1" /></Icon>);
+export const IconFrame = (p: IconProps) => (<Icon {...p}><rect x="4" y="3.5" width="16" height="17" rx="1.2" /><rect x="7.5" y="7" width="9" height="10" rx=".6" /></Icon>);
+export const IconGift = (p: IconProps) => (<Icon {...p}><rect x="4" y="9" width="16" height="11" rx="1.4" /><path d="M3 9h18M12 9v11M12 9c-1.6 0-4.5-.6-4.5-2.6 0-1.3 1-2.1 2.1-1.9C11.4 4.8 12 7.2 12 9Zm0 0c1.6 0 4.5-.6 4.5-2.6 0-1.3-1-2.1-2.1-1.9C12.6 4.8 12 7.2 12 9Z" /></Icon>);
+export const IconStar = (p: IconProps) => (<Icon {...p}><path d="m12 3.8 2.5 5.1 5.6.8-4.1 4 1 5.6-5-2.7-5 2.7 1-5.6-4.1-4 5.6-.8Z" /></Icon>);
+export const IconUser = (p: IconProps) => (<Icon {...p}><circle cx="12" cy="8.5" r="3.5" /><path d="M5 19.5c1.2-3.3 4-5 7-5s5.8 1.7 7 5" /></Icon>);
+export const IconClock = (p: IconProps) => (<Icon {...p}><circle cx="12" cy="12" r="8.5" /><path d="M12 7.5V12l3 2" /></Icon>);

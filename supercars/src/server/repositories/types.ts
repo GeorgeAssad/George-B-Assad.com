@@ -11,7 +11,6 @@ import type { DemoReview, MediaItem } from "@/domain/content";
 /** Placeholder shipping policy. Real rates come from the fulfilment provider. */
 export interface ShippingRules {
   readonly flatRate: Money;
-  readonly freeOver: Money;
   readonly minBusinessDays: number;
   readonly maxBusinessDays: number;
 }

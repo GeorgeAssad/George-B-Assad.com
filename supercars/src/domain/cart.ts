@@ -43,13 +43,39 @@ export interface QuotedLine {
   readonly sizeLabel: string;
   readonly unitPrice: Money;
   readonly lineTotal: Money;
+  /** For a print: what the same poster costs framed (server-priced), so the cart can offer the upgrade. */
+  readonly upgrade?: { readonly productId: string; readonly unitPrice: Money; readonly difference: Money };
+}
+
+/** The discount offer applied to a quote (see lib/promotions). */
+export interface AppliedOffer {
+  readonly id: string;
+  readonly label: string;
+  readonly percent: number;
+  /** ISO time the offer ends (for the countdown). */
+  readonly endsAt: string;
+}
+
+/** A free-shipping offer that is running, and how far the cart is from it. */
+export interface FreeShippingStatus {
+  readonly id: string;
+  readonly label: string;
+  readonly minSubtotal: Money;
+  /** What is still missing to qualify (zero when it qualifies). */
+  readonly remaining: Money;
+  readonly endsAt: string;
 }
 
 export interface CartTotals {
+  /** Sum of the lines, before any discount. */
   readonly subtotal: Money;
+  /** Discount from a running offer (zero when none). */
+  readonly discount: Money;
   readonly shipping: Money;
   readonly total: Money;
-  /** Placeholder rule text, e.g. "Free shipping over €100". */
+  readonly offer: AppliedOffer | null;
+  readonly freeShipping: FreeShippingStatus | null;
+  /** One line about shipping, e.g. "Free shipping on orders over €80 until 29 Nov". Empty when there is nothing to say. */
   readonly shippingNote: string;
 }
 

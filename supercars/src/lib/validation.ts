@@ -26,6 +26,7 @@ export const LIMITS = {
   quantity: 10,
   cartLines: 20,
   supportMessage: 500,
+  giftNote: 200,
 } as const;
 
 const POSTER_CHARS = /^[\p{L}\p{M}\p{N} .,'’&/#!:+\-–·]*$/u;
@@ -115,10 +116,20 @@ export const addressSchema = z.strictObject({
   country: z.string().regex(/^[A-Z]{2}$/, "Choose a shipping country"),
 });
 
+/** A gift order: an optional note printed on a card, and a packing slip without prices. */
+export const giftSchema = z.strictObject({
+  note: text(LIMITS.giftNote)
+    .pipe(z.string().max(LIMITS.giftNote, `Gift note must be at most ${LIMITS.giftNote} characters`).regex(/^[\p{L}\p{M}\p{N} .,'’&/#!?:;+()\-–·"“”]*$/u, "Gift note contains characters we can't print"))
+    .optional()
+    .transform((v) => v || undefined),
+});
+
 export const checkoutRequestSchema = z.strictObject({
   items: cartItemsSchema,
   customer: customerInputSchema,
   shipping: addressSchema,
+  /** Present only when the customer ticked "This order is a gift". */
+  gift: giftSchema.optional(),
 });
 
 export const confirmRequestSchema = z.strictObject({

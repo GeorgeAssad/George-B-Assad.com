@@ -1,6 +1,6 @@
 "use client";
 
-import type { CartItem, CartQuote } from "@/domain/cart";
+import type { CartItem, CartQuote, QuotedLine } from "@/domain/cart";
 import { Button } from "@/components/ui/Button";
 import { LoadingRegion, Skeleton } from "@/components/ui/Skeleton";
 import { CartLineItem } from "./CartLineItem";
@@ -14,6 +14,7 @@ interface CartLinesProps {
   readonly onRemove: (id: string) => void;
   readonly onRetry: () => void;
   readonly onNavigate?: () => void;
+  readonly onUpgrade?: (line: QuotedLine) => void;
 }
 
 export function CartLinesSkeleton({ rows = 2 }: { rows?: number }) {
@@ -37,7 +38,7 @@ export function CartLinesSkeleton({ rows = 2 }: { rows?: number }) {
 }
 
 /** Priced lines plus any lines the server could not price (reported, never silently dropped). */
-export function CartLines({ items, status, quote, compact, onQuantity, onRemove, onRetry, onNavigate }: CartLinesProps) {
+export function CartLines({ items, status, quote, compact, onQuantity, onRemove, onRetry, onNavigate, onUpgrade }: CartLinesProps) {
   if (!quote && (status === "loading" || status === "idle")) return <CartLinesSkeleton rows={Math.min(items.length, 3) || 1} />;
 
   if (!quote && status === "error") {
@@ -57,7 +58,7 @@ export function CartLines({ items, status, quote, compact, onQuantity, onRemove,
     <div aria-busy={status === "loading"}>
       <ul>
         {(quote?.lines ?? []).map((line) => (
-          <CartLineItem key={line.item.id} line={line} compact={compact ?? false} onQuantity={onQuantity} onRemove={onRemove} {...(onNavigate ? { onNavigate } : {})} />
+          <CartLineItem key={line.item.id} line={line} compact={compact ?? false} onQuantity={onQuantity} onRemove={onRemove} {...(onNavigate ? { onNavigate } : {})} {...(onUpgrade ? { onUpgrade } : {})} />
         ))}
       </ul>
       {rejected.length > 0 && (

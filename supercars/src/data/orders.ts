@@ -22,7 +22,7 @@ export const sampleOrders: readonly Order[] = [
         quantity: 1, unitPrice: money(7900), lineTotal: money(7900),
       },
     ],
-    subtotal: money(7900), shipping: money(0), total: money(7900),
+    subtotal: money(7900), discount: money(0), shipping: money(0), total: money(7900),
     payment: { id: "pay_demo_100234", provider: "mock", status: "paid", amount: money(7900), sessionId: "cs_demo_seed_1", demo: true },
     shipment: {
       id: "shp_demo_1", carrier: "Demo Carrier", trackingNumber: "DEMO-TRK-100234", status: "in_transit",
@@ -49,7 +49,7 @@ export const sampleOrders: readonly Order[] = [
         quantity: 1, unitPrice: money(10900), lineTotal: money(10900),
       },
     ],
-    subtotal: money(10900), shipping: money(0), total: money(10900),
+    subtotal: money(10900), discount: money(0), shipping: money(0), total: money(10900),
     payment: { id: "pay_demo_100235", provider: "mock", status: "paid", amount: money(10900), sessionId: "cs_demo_seed_2", demo: true },
     createdAt: "2026-09-27T16:20:00.000Z",
     estimatedDelivery: { from: "2026-10-06", to: "2026-10-09" },
@@ -69,7 +69,7 @@ export const sampleOrders: readonly Order[] = [
         quantity: 2, unitPrice: money(3900), lineTotal: money(7800),
       },
     ],
-    subtotal: money(7800), shipping: money(790), total: money(8590),
+    subtotal: money(7800), discount: money(0), shipping: money(790), total: money(8590),
     payment: { id: "pay_demo_100236", provider: "mock", status: "paid", amount: money(8590), sessionId: "cs_demo_seed_3", demo: true },
     shipment: {
       id: "shp_demo_3", carrier: "Demo Carrier", trackingNumber: "DEMO-TRK-100236", status: "delivered",

@@ -72,7 +72,7 @@ describe("checkout flow (demo)", () => {
     }
     // Session signed with a different key is not accepted.
     const other = createMockPaymentProvider("a-completely-different-signing-key-1234567890");
-    const foreign = await other.createCheckoutSession({ orderId: "SC-FORGE1", amount: { amount: 1, currency: "EUR" }, cartHash: "x", description: "x" });
+    const foreign = await other.createCheckoutSession({ orderId: "SC-FORGE1", amount: { amount: 1, currency: "EUR" }, cartHash: "x", pricedAt: new Date().toISOString(), description: "x" });
     await expect(confirmCheckout({ sessionId: foreign.sessionId, checkout: req }, d)).rejects.toMatchObject({ status: 400 });
   });
 

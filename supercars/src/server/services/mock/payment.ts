@@ -20,6 +20,8 @@ interface SessionPayload {
   c: CurrencyCode;
   h: string;
   e: number;
+  /** Pricing time (ms since epoch). */
+  t: number;
 }
 
 export function createMockPaymentProvider(signingKey: string = DEMO_ONLY_SIGNING_KEY, now: () => number = Date.now): PaymentProvider {
@@ -31,7 +33,7 @@ export function createMockPaymentProvider(signingKey: string = DEMO_ONLY_SIGNING
 
     async createCheckoutSession(input: CreateCheckoutSessionInput): Promise<CheckoutSession> {
       const expires = now() + SESSION_TTL_MS;
-      const payload: SessionPayload = { o: input.orderId, a: input.amount.amount, c: input.amount.currency, h: input.cartHash, e: expires };
+      const payload: SessionPayload = { o: input.orderId, a: input.amount.amount, c: input.amount.currency, h: input.cartHash, e: expires, t: Date.parse(input.pricedAt) };
       const body = toBase64Url(encoder.encode(JSON.stringify(payload)));
       const signature = await hmacSign(signingKey, body);
       return { sessionId: `${SESSION_PREFIX}${body}.${signature}`, status: "open", expiresAt: new Date(expires).toISOString(), demo: true };
@@ -56,6 +58,8 @@ export function createMockPaymentProvider(signingKey: string = DEMO_ONLY_SIGNING
         orderId: payload.o,
         amount: money(payload.a, payload.c),
         cartHash: payload.h,
+        // Sessions from before pricing times existed carry none: price them now.
+        pricedAt: new Date(typeof payload.t === "number" && Number.isFinite(payload.t) ? payload.t : now()).toISOString(),
       };
     },
 

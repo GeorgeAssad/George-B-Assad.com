@@ -27,8 +27,8 @@ export const shippingDestinations: readonly ShippingDestination[] = [
 ];
 
 export const shippingRules = {
+  /** Every order pays this, unless a free-shipping offer is running (src/config/promotions.ts). */
   flatRate: money(790),
-  freeOver: money(10000),
   /** Estimated production + transit, in business days (placeholder). */
   minBusinessDays: 7,
   maxBusinessDays: 10,

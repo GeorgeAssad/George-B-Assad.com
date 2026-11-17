@@ -106,6 +106,8 @@ export interface Catalog {
   readonly templates: readonly DesignTemplate[];
   readonly products: readonly Product[];
   readonly sizes: readonly PosterSize[];
+  /** Delivery estimate range in business days (shipping rules). */
+  readonly delivery: { readonly minDays: number; readonly maxDays: number };
 }
 
 const SIZE_IDS: readonly SizeId[] = ["30x40", "40x60", "50x70"];

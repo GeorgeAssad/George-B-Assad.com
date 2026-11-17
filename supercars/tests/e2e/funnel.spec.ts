@@ -30,11 +30,13 @@ const visible = (page: Page, selector: string) =>
   );
 
 /* Screens of content (page height ÷ viewport height), measured on the current design plus a small margin.
- * Home carries the hero, the proof row, the car picker and the four steps; nothing else comes close to three screens. */
+ * The owner chose longer selling pages for Home, car pages and the Shop (benefits, styles, gift, sizes, example
+ * reviews, questions); every section leads to an order. The rest stay short. A budget catches a page that grows
+ * by accident. */
 const LENGTH_BUDGETS: Record<(typeof SCREENS)[number]["name"], [string, number][]> = {
-  phone: [["/", 2.7], ["/cars", 2.75], ["/cars/porsche-911-gt3-rs-992", 1.7], ["/shop", 2.5], ["/how-it-works", 2.1], ["/about", 1.55], ["/track", 1.01]],
-  tablet: [["/", 2.75], ["/cars", 1.9], ["/cars/porsche-911-gt3-rs-992", 1.6], ["/shop", 1.4], ["/how-it-works", 1.7], ["/about", 1.1], ["/track", 1.01]],
-  laptop: [["/", 2.4], ["/cars", 2], ["/cars/porsche-911-gt3-rs-992", 1.65], ["/shop", 1.65], ["/how-it-works", 1.65], ["/about", 1.15], ["/track", 1.01]],
+  phone: [["/", 6.6], ["/cars", 2.9], ["/cars/porsche-911-gt3-rs-992", 4.4], ["/shop", 4.6], ["/how-it-works", 2.6], ["/about", 1.6], ["/track", 1.01]],
+  tablet: [["/", 5.6], ["/cars", 2.0], ["/cars/porsche-911-gt3-rs-992", 3.5], ["/shop", 3.2], ["/how-it-works", 2.0], ["/about", 1.1], ["/track", 1.01]],
+  laptop: [["/", 5.0], ["/cars", 2.1], ["/cars/porsche-911-gt3-rs-992", 3.7], ["/shop", 3.6], ["/how-it-works", 2.0], ["/about", 1.15], ["/track", 1.01]],
 };
 
 test.describe("every page is short, and the way into an order is on the first screen", () => {
@@ -96,9 +98,9 @@ test.describe("one place for navigation, one Create button", () => {
       // Contextual starts must say what they start (car, style or product in the URL).
       const vague = await page.locator("main a[href^='/create?']").evaluateAll((els) => els.filter((el) => !/[?&](car|product|style)=/.test(el.getAttribute("href") ?? "")).map((el) => el.getAttribute("href")));
       if (vague.length) offenders.push(`${path}: contextual links without car/product/style: ${vague.join(", ")}`);
-      // The header's own pages are never linked again in the page body or footer.
+      // The header's own pages are never linked again in the page body or footer (a breadcrumb trail is the one exception).
       for (const href of NAV_HREFS) {
-        const repeated = await page.locator(`main a[href='${href}'], footer a[href='${href}']`).count();
+        const repeated = await page.locator(`main a[href='${href}']:not(nav[aria-label='Breadcrumb'] a), footer a[href='${href}']`).count();
         if (repeated) offenders.push(`${path}: ${repeated} repeat(s) of ${href} outside the header`);
       }
     }
@@ -181,4 +183,34 @@ test("an order takes a handful of taps from the home page", async ({ page }) => 
   await page.getByRole("button", { name: "Add to cart" }).click(); // 4 — the preview builds itself
   await page.getByRole("dialog").getByRole("link", { name: "Checkout" }).click(); // 5
   await expect(page).toHaveURL(/\/checkout$/);
+});
+
+test("on Home the header's Create button appears only once the hero's has scrolled away", async ({ page }) => {
+  await settle(page, "/");
+  const header = page.getByRole("banner");
+  const hero = page.locator("section[aria-labelledby='hero-title']").getByRole("link", { name: "Create your poster" });
+  await expect(header.getByRole("link", { name: "Create your poster" })).toHaveCount(0);
+  await expect(hero).toBeInViewport();
+  await page.locator("#cars-title").scrollIntoViewIfNeeded();
+  await page.mouse.wheel(0, 600);
+  await expect(header.getByRole("link", { name: "Create your poster" })).toBeVisible();
+  await expect(hero).not.toBeInViewport();
+});
+
+test("a car page sells: breadcrumb, price, delivery estimate, sizes, examples, questions, similar cars", async ({ page }, info) => {
+  await settle(page, "/cars/bmw-m3-g80");
+  await expect(page.getByRole("navigation", { name: "Breadcrumb" }).getByRole("link", { name: "BMW" })).toHaveAttribute("href", "/cars?brand=bmw");
+  await expect(page.getByText(/^Order today, arrives around /)).toBeVisible();
+  await expect(page.getByRole("table", { name: "Sizes and prices" })).toContainText("€139");
+  await expect(page.getByText("Example reviews")).toBeVisible();
+  await expect(page.getByRole("heading", { name: "More cars like this." })).toBeVisible();
+  // On a phone the start button follows you once the page's own has scrolled away (never two on screen).
+  if (info.project.name === "mobile") {
+    const create = page.getByRole("link", { name: /^Create this car/ });
+    await expect(create).toHaveCount(1);
+    await page.getByRole("heading", { name: "Sizes and prices." }).scrollIntoViewIfNeeded();
+    await expect(create).toHaveCount(2);
+    await expect(create.nth(0)).not.toBeInViewport();
+    await expect(create.nth(1)).toBeInViewport();
+  }
 });

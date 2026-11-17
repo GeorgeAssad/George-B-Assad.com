@@ -1,6 +1,6 @@
 import type { CarEntry, DesignTemplate, PosterSize, Product } from "@/domain/catalog";
 import { Button } from "@/components/ui/Button";
-import { formatPrice } from "@/lib/format";
+import { OfferPrice } from "@/components/offers/OfferPrice";
 import { WallPoster } from "./WallPoster";
 
 interface PlanCardProps {
@@ -30,7 +30,7 @@ export function PlanCard({ product, sizes, entry, template, name, cta, badge, fe
         <h2 id={`p-${product.id}`} className="text-[1.3125rem] font-semibold tracking-[-0.02em]">{product.name}</h2>
         <p className="mt-1 text-[0.9375rem] text-muted">{product.tagline}</p>
       </div>
-      <p className="lg-plan-price"><small>From </small>{formatPrice(cheapest.price)}</p>
+      <p className="lg-plan-price"><small>From </small><OfferPrice value={cheapest.price} /></p>
       <ul className="ticks">
         {product.highlights.map((h) => <li key={h}>{h}</li>)}
       </ul>
@@ -38,9 +38,9 @@ export function PlanCard({ product, sizes, entry, template, name, cta, badge, fe
         {sizes.map((s) => {
           const v = product.variants.find((x) => x.sizeId === s.id);
           return v ? (
-            <div key={s.id} className="rounded-xl bg-elevated px-3 py-2.5">
-              <dt className="spec">{s.label}</dt>
-              <dd className="mt-0.5 font-semibold tabular-nums">{formatPrice(v.price)}</dd>
+            <div key={s.id} className={`rounded-xl bg-elevated px-3 py-2.5 ${s.id === "40x60" ? "shadow-[inset_0_0_0_1.5px_var(--lg-tint-fill)]" : ""}`}>
+              <dt className="spec">{s.label}{s.id === "40x60" && <span className="sr-only"> (recommended)</span>}</dt>
+              <dd className="mt-0.5"><OfferPrice value={v.price} /></dd>
             </div>
           ) : null;
         })}

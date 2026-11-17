@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import nextConfig from "../../next.config";
 import sitemap from "@/app/sitemap";
-import { hasStickyBar, showsHeaderCreate } from "@/lib/layout-rules";
+import { hasStickyBar, headerCreateMode, showsHeaderCreate } from "@/lib/layout-rules";
 import { footerLinks, primaryNav } from "@/config/nav";
 
 /* The store keeps every page but says everything once: navigation only in the header,
@@ -43,6 +43,12 @@ describe("one place for navigation, one Create button", () => {
   it("the header offers Create everywhere except Home (the hero has it), the designer, checkout and order confirmation", () => {
     for (const page of ["/cars", "/cars/bmw-m3-g80", "/shop", "/how-it-works", "/about", "/track", "/shipping", "/privacy", "/credits"]) expect(showsHeaderCreate(page), page).toBe(true);
     for (const page of ["/", "/create", "/checkout", "/order/success/SC-123456"]) expect(showsHeaderCreate(page), page).toBe(false);
+  });
+
+  it("on Home the header's Create button waits until the hero's has scrolled away; it never shows on the designer, checkout or confirmation", () => {
+    expect(headerCreateMode("/")).toBe("after-hero");
+    expect(headerCreateMode("/shop")).toBe("always");
+    for (const page of ["/create", "/checkout", "/order/success/SC-123456"]) expect(headerCreateMode(page), page).toBe("never");
   });
 
   it("only the designer and checkout render their own sticky bar", () => {

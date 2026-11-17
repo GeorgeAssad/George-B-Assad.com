@@ -36,3 +36,6 @@ export const isPreviewOrDev = siteConfig.appEnv !== "production";
 /** Search-engine indexing is OFF by default: this is a prototype with placeholder legal text.
  * Set NEXT_PUBLIC_ALLOW_INDEXING=true (build variable) only for the real launch. */
 export const allowIndexing = process.env.NEXT_PUBLIC_ALLOW_INDEXING === "true";
+
+/** Extra offers supplied at build time as a JSON array (preview builds and tests). The owner's schedule lives in config/promotions.ts. */
+export const buildTimePromotions: string = process.env.NEXT_PUBLIC_PROMOTIONS ?? "";

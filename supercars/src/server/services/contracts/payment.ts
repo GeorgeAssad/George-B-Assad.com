@@ -14,6 +14,8 @@ export interface CreateCheckoutSessionInput {
   /** Hash binding the session to the exact cart that was priced. */
   readonly cartHash: string;
   readonly description: string;
+  /** When the amount was priced (ISO). Offers running at that moment are honoured for the session's lifetime. */
+  readonly pricedAt: string;
 }
 
 export interface CheckoutSession {
@@ -31,6 +33,8 @@ export interface PaymentVerification {
   readonly orderId: string;
   readonly amount: Money;
   readonly cartHash: string;
+  /** Echo of the pricing time the session was created with. */
+  readonly pricedAt: string;
 }
 
 export interface PaymentProvider {

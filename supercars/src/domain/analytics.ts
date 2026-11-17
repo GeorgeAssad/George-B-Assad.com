@@ -7,7 +7,8 @@ export interface AnalyticsEventMap {
   size_selected: { sizeId: string };
   preview_generated: { carSlug: string; templateId: string; sizeId: string };
   add_to_cart: { carSlug: string; templateId: string; sizeId: string; quantity: number };
-  checkout_started: { itemCount: number };
+  upgrade_framed: { carSlug: string };
+  checkout_started: { itemCount: number; gift?: boolean };
   demo_purchase_completed: { orderId: string; itemCount: number };
 }
 

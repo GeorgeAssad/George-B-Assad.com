@@ -6,7 +6,7 @@ import type { CartItem } from "@/domain/cart";
 const catalog = async (): Promise<Catalog> => {
   const r = getRepositories();
   const [cars, templates, products, sizes] = await Promise.all([r.cars.listEntries(), r.templates.list(), r.products.listProducts(), r.products.listSizes()]);
-  return { cars, templates, products, sizes };
+  return { cars, templates, products, sizes, delivery: { minDays: 7, maxDays: 10 } };
 };
 
 describe("configurator state", () => {

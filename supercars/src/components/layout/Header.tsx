@@ -8,7 +8,8 @@ import { Drawer } from "@/components/ui/Drawer";
 import { IconMenu } from "@/components/ui/icons";
 import { CartButton } from "@/components/cart/CartButton";
 import { primaryNav } from "@/config/nav";
-import { showsHeaderCreate } from "@/lib/layout-rules";
+import { headerCreateMode } from "@/lib/layout-rules";
+import { useScrolledPast } from "@/lib/use-scrolled-past";
 import { Logo } from "./Logo";
 
 const isActive = (pathname: string, href: string) => pathname === href || pathname.startsWith(`${href}/`);
@@ -22,7 +23,10 @@ export function Header() {
   const [menuFor, setMenuFor] = useState<string | null>(null);
   // The menu is tied to the path it was opened on, so navigating closes it without an effect.
   const menuOpen = menuFor === pathname;
-  const showCreate = showsHeaderCreate(pathname);
+  const mode = headerCreateMode(pathname);
+  // On Home the hero has the button; the header's one fades in once the hero's has scrolled away.
+  const heroGone = useScrolledPast(mode === "after-hero" ? "[data-hero-cta]" : null);
+  const showCreate = mode === "always" || (mode === "after-hero" && heroGone);
 
   return (
     <header className="lg-nav lg-nav--floating site-nav">
@@ -43,7 +47,7 @@ export function Header() {
 
         <CartButton />
         {showCreate && (
-          <Button href="/create" size="sm" aria-label="Create your poster" className="ml-1">
+          <Button href="/create" size="sm" aria-label="Create your poster" className={`ml-1 ${mode === "after-hero" ? "page-enter" : ""}`}>
             <span className="sm:hidden">Create</span>
             <span className="max-sm:hidden">Create your poster</span>
           </Button>
