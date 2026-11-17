@@ -26,7 +26,8 @@ function getTheme(): Theme {
   return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
 }
 
-export function ThemeToggle({ className = "size-11" }: { className?: string }) {
+/** The light/dark switch in the top bar, styled like the cart button next to it. */
+export function ThemeToggle({ className = "" }: { className?: string }) {
   const theme = useSyncExternalStore(subscribe, getTheme, () => "light" as Theme);
 
   const toggle = () => {
@@ -40,8 +41,8 @@ export function ThemeToggle({ className = "size-11" }: { className?: string }) {
   };
 
   return (
-    <button type="button" onClick={toggle} className={`flex items-center justify-center rounded-full text-muted transition-colors hover:bg-fill hover:text-fg ${className}`} aria-label={theme === "dark" ? "Switch to light theme" : "Switch to dark theme"}>
-      {theme === "dark" ? <IconSun size={19} /> : <IconMoon size={19} />}
+    <button type="button" onClick={toggle} className={`lg-icon-button ${className}`} aria-label={theme === "dark" ? "Switch to light theme" : "Switch to dark theme"}>
+      {theme === "dark" ? <IconSun size={21} /> : <IconMoon size={21} />}
     </button>
   );
 }

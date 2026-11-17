@@ -93,7 +93,7 @@ Old URLs still work: `/products/*` goes to `/shop` (`/products/<slug>/customize`
 
 Rules that `tests/e2e/funnel.spec.ts` and `tests/unit/site-structure.test.ts` enforce:
 
-- **Navigation only in the header** — Cars, Shop, How it works, About, Track order and the cart; on phones the same five links sit in one menu. The footer is legal links, chat and the theme switch. No bottom tab bar, no floating chat button.
+- **Navigation only in the header** — Cars, Shop, How it works, About, Track order, the light/dark switch and the cart; on phones the same five links sit in one menu. The footer is legal links and chat. No bottom tab bar, no floating chat button.
 - **One visible generic Create button**: on Home it is the hero's, and the header's appears only after the hero's has scrolled away; everywhere else it is in the header (none on `/create`, the checkout and order confirmation). Contextual starts that name their job are fine: a car tile, "Create this car", a style, "Design a framed gift". A breadcrumb trail is the one place a header page is linked again.
 - **Page lengths are budgeted** per page at 390×844, 768×1024 and 1440×900 in `tests/e2e/funnel.spec.ts`. Home, car pages and the Shop are deliberately longer selling pages (the owner's choice); the others stay short and `/track` is one screen. Home's headline, Create button and product stage always fit the first screen; so does a car page's Create button.
 

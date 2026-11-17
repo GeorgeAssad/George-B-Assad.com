@@ -11,11 +11,12 @@ import { primaryNav } from "@/config/nav";
 import { headerCreateMode } from "@/lib/layout-rules";
 import { useScrolledPast } from "@/lib/use-scrolled-past";
 import { Logo } from "./Logo";
+import { ThemeToggle } from "./ThemeToggle";
 
 const isActive = (pathname: string, href: string) => pathname === href || pathname.startsWith(`${href}/`);
 
 /**
- * The site's single navigation: a floating glass bar with five links, the cart and ONE "Create your poster" button.
+ * The site's single navigation: a floating glass bar with five links, the light/dark switch, the cart and ONE "Create your poster" button.
  * On phones the same five links live in a menu, so nothing is offered twice on screen.
  */
 export function Header() {
@@ -30,7 +31,7 @@ export function Header() {
 
   return (
     <header className="lg-nav lg-nav--floating site-nav">
-      <div className="flex h-14 items-center gap-1 pl-4 pr-2 sm:pl-5">
+      <div className="flex h-14 items-center gap-0.5 pl-4 pr-2 sm:gap-1 sm:pl-5">
         <Logo />
 
         <nav aria-label="Primary" className="ml-5 hidden lg:block">
@@ -45,14 +46,15 @@ export function Header() {
 
         <span className="flex-1" />
 
-        <CartButton />
+        <ThemeToggle className="shrink-0" />
+        <CartButton className="shrink-0" />
         {showCreate && (
-          <Button href="/create" size="sm" aria-label="Create your poster" className={`ml-1 ${mode === "after-hero" ? "page-enter" : ""}`}>
+          <Button href="/create" size="sm" aria-label="Create your poster" className={`shrink-0 sm:ml-1 ${mode === "after-hero" ? "page-enter" : ""}`}>
             <span className="sm:hidden">Create</span>
             <span className="max-sm:hidden">Create your poster</span>
           </Button>
         )}
-        <button type="button" onClick={() => setMenuFor(pathname)} className="lg-icon-button lg:hidden" aria-label="Open menu" aria-haspopup="dialog">
+        <button type="button" onClick={() => setMenuFor(pathname)} className="lg-icon-button shrink-0 lg:hidden" aria-label="Open menu" aria-haspopup="dialog">
           <IconMenu />
         </button>
       </div>
