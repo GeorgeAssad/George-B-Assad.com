@@ -55,28 +55,28 @@ function ChatBody() {
 
   return (
     <div className="flex h-full min-h-0 flex-col">
-      <div className="flex items-start justify-between gap-4 border-b border-line px-5 py-4">
+      <div className="flex items-start justify-between gap-4 px-5 pb-3 pt-5">
         <div>
-          <h2 className="h-display text-3xl">Support</h2>
+          <h2 className="h-display text-[1.75rem]">Support</h2>
           <Badge tone="demo" className="mt-2">Demo assistant</Badge>
         </div>
-        <button type="button" onClick={closeSupportChat} className="-m-2 rounded-full p-2 text-muted hover:text-fg" aria-label="Close support chat"><IconClose /></button>
+        <button type="button" onClick={closeSupportChat} className="lg-icon-button bg-fill" aria-label="Close support chat"><IconClose size={18} /></button>
       </div>
 
       <div className="min-h-0 flex-1 space-y-3 overflow-y-auto px-5 py-4" role="log" aria-label="Conversation" aria-live="polite">
         {messages.map((m) => (
           <div key={m.id} className={`flex ${m.role === "customer" ? "justify-end" : "justify-start"}`}>
-            <p className={`max-w-[85%] whitespace-pre-wrap break-words rounded-2xl px-4 py-2.5 text-sm ${m.role === "customer" ? "rounded-br-md bg-red text-on-red" : "rounded-bl-md border border-line bg-elevated"}`}>{m.text}</p>
+            <p className={`max-w-[85%] whitespace-pre-wrap break-words rounded-[1.25rem] px-4 py-2.5 text-[0.9375rem] leading-snug ${m.role === "customer" ? "rounded-br-md bg-red text-on-red" : "rounded-bl-md bg-fill"}`}>{m.text}</p>
           </div>
         ))}
-        {busy && <div className="flex justify-start" aria-label="Assistant is typing"><p className="flex gap-1 rounded-2xl rounded-bl-md border border-line bg-elevated px-4 py-3"><span className="size-1.5 animate-pulse rounded-full bg-muted" /><span className="size-1.5 animate-pulse rounded-full bg-muted [animation-delay:150ms]" /><span className="size-1.5 animate-pulse rounded-full bg-muted [animation-delay:300ms]" /></p></div>}
+        {busy && <div className="flex justify-start" aria-label="Assistant is typing"><p className="flex gap-1 rounded-[1.25rem] rounded-bl-md bg-fill px-4 py-3.5"><span className="size-1.5 animate-pulse rounded-full bg-muted" /><span className="size-1.5 animate-pulse rounded-full bg-muted [animation-delay:150ms]" /><span className="size-1.5 animate-pulse rounded-full bg-muted [animation-delay:300ms]" /></p></div>}
         <div ref={endRef} />
       </div>
 
-      <div className="safe-bottom border-t border-line bg-surface px-5 pt-3">
+      <div className="safe-bottom border-t border-line px-5 pt-3">
         {suggestions.length > 0 && (
           <ul className="mb-3 flex flex-wrap gap-2" aria-label="Suggested questions">
-            {suggestions.map((s) => <li key={s}><button type="button" onClick={() => void send(s)} className="rounded-full border border-line-strong px-3 py-1.5 text-xs font-medium text-muted hover:border-fg hover:text-fg">{s}</button></li>)}
+            {suggestions.map((s) => <li key={s}><button type="button" onClick={() => void send(s)} className="rounded-full bg-fill px-3 py-1.5 text-[0.8125rem] font-medium text-fg hover:bg-[var(--lg-fill-strong)]">{s}</button></li>)}
           </ul>
         )}
         <form onSubmit={onSubmit} className="flex gap-2">
@@ -84,7 +84,7 @@ function ChatBody() {
           <input id={inputId} value={text} onChange={(e) => setText(e.target.value)} maxLength={LIMITS.supportMessage} autoComplete="off" placeholder="Ask about prices, sizes, delivery…" className="field h-12 flex-1 rounded-full" />
           <button type="submit" disabled={busy || !text.trim()} className="btn btn-primary !min-h-12 !px-4" aria-label="Send message"><IconArrow size={18} /></button>
         </form>
-        <p className="pb-1 pt-2 text-center text-[0.6875rem] text-subtle">Demo assistant · answers come from local demo data, not live policies.</p>
+        <p className="pb-1 pt-2 text-center text-xs text-subtle">Demo assistant · answers come from local demo data, not live policies.</p>
       </div>
     </div>
   );

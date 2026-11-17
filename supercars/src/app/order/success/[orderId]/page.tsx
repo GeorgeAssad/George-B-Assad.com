@@ -21,7 +21,7 @@ export default async function OrderSuccessPage({ params }: { params: Promise<{ o
   const repos = getRepositories();
   const [cars, templates] = await Promise.all([repos.cars.listEntries(), repos.templates.list()]);
   return (
-    <div className="container-x py-12 sm:py-20">
+    <div className="container-x pb-12 pt-[clamp(2.25rem,6vw,4.5rem)]">
       <OrderSuccess orderId={parsed.data} cars={cars} templates={templates} />
     </div>
   );

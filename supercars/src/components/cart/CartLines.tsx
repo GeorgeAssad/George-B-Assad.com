@@ -42,7 +42,7 @@ export function CartLines({ items, status, quote, compact, onQuantity, onRemove,
 
   if (!quote && status === "error") {
     return (
-      <div className="rounded-2xl border border-line p-6 text-center" role="alert">
+      <div className="card p-6 text-center" role="alert">
         <p className="font-semibold">We couldn&apos;t load your cart prices.</p>
         <p className="mt-1 text-sm text-muted">Check your connection and try again. Your items are safe.</p>
         <Button variant="secondary" size="sm" className="mt-4" onClick={onRetry}>Try again</Button>
@@ -63,7 +63,7 @@ export function CartLines({ items, status, quote, compact, onQuantity, onRemove,
       {rejected.length > 0 && (
         <ul className="mt-4 space-y-3" aria-label="Unavailable items">
           {rejected.map((item) => (
-            <li key={item.id} className="flex items-center justify-between gap-3 rounded-xl border border-red-text/40 bg-elevated px-4 py-3 text-sm" role="alert">
+            <li key={item.id} className="flex items-center justify-between gap-3 rounded-[var(--lg-radius-sm)] bg-[var(--lg-negative-soft)] px-4 py-3 text-sm" role="alert">
               <span>An item in your cart is no longer available.</span>
               <Button variant="ghost" size="sm" onClick={() => onRemove(item.id)}>Remove</Button>
             </li>

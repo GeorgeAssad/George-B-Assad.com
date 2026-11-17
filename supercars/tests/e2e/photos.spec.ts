@@ -30,19 +30,29 @@ test("home: the studio hero car is a loaded, fully visible cutout", async ({ pag
   await shot(page, "photo-home-hero", info.project.name);
 });
 
-test("home: headline stays light on the dark stage even in the light theme", async ({ page }) => {
+test("home: the page is light, and the product stage is its one deliberately dark area", async ({ page }) => {
   await page.addInitScript(() => window.localStorage.setItem("sc-theme", "light"));
   await page.goto("/");
-  const hero = page.locator("section[aria-labelledby='hero-title']");
-  await expect(hero).toHaveCSS("background-color", "rgb(5, 5, 6)");
-  await expect(page.getByRole("heading", { level: 1 })).toHaveCSS("color", "rgb(243, 243, 241)");
+  await expect(page.locator("body")).toHaveCSS("background-color", "rgb(245, 245, 247)");
+  await expect(page.getByRole("heading", { level: 1 })).toHaveCSS("color", "rgb(29, 29, 31)");
+  const stage = page.locator("section[aria-labelledby='hero-title'] .stage");
+  await expect(stage).toHaveCSS("color-scheme", "dark");
+  await expect(stage).toHaveCSS("color", "rgb(245, 245, 247)"); // light text on the dark stage
+  await expect(page.locator(".stage")).toHaveCount(1); // one dark area on the page, not several
+});
+
+test("home: the dark theme turns the whole page dark", async ({ page }) => {
+  await page.addInitScript(() => window.localStorage.setItem("sc-theme", "dark"));
+  await page.goto("/");
+  await expect(page.locator("body")).toHaveCSS("background-color", "rgb(0, 0, 0)");
+  await expect(page.getByRole("heading", { level: 1 })).toHaveCSS("color", "rgb(245, 245, 247)");
 });
 
 test("home: 12 car tiles — cutouts load, cars without an image keep their drawing", async ({ page }, info) => {
   await page.goto("/");
   await loadAllImages(page);
   expect(await brokenImages(page)).toEqual([]);
-  const tiles = page.locator("section[aria-labelledby='hero-title'] ul a[href^='/create?car=']");
+  const tiles = page.locator("section[aria-labelledby='cars-title'] ul a[href^='/create?car=']");
   expect(await tiles.count()).toBe(12);
   expect(await tiles.filter({ has: page.locator("picture") }).count()).toBe(10);
   for (const name of [/Mercedes-AMG E 63 S W213/, /GR Supra A90/]) {

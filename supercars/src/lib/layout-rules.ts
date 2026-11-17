@@ -6,9 +6,10 @@ export function hasStickyBar(pathname: string): boolean {
 }
 
 /**
- * The header carries the one and only generic "Create your poster" button. It steps aside where the page is
- * already the start (the designer), the payment step, or the confirmation, so it is never shown twice or in the way.
+ * Every page offers exactly one generic "Create your poster" button. On the home page it is the hero's primary
+ * action; on every other page it sits in the navigation bar. It steps aside where the page already is the start
+ * (the designer), the payment step, or the confirmation, so it is never shown twice or in the way.
  */
 export function showsHeaderCreate(pathname: string): boolean {
-  return !(hasStickyBar(pathname) || pathname.startsWith("/order/"));
+  return !(pathname === "/" || hasStickyBar(pathname) || pathname.startsWith("/order/"));
 }

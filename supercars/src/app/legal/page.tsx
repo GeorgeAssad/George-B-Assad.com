@@ -6,7 +6,7 @@ export const metadata: Metadata = { title: "Legal", alternates: { canonical: "/l
 
 export default function LegalNoticePage() {
   return (
-    <LegalPage eyebrow="SC / Legal" title="Legal." intro="Company and legal information will be added here before launch. We haven't invented any.">
+    <LegalPage title="Legal." intro="Company and legal information will be added here before launch. We haven't invented any.">
       <LegalSection title="Company details">
         <dl className="grid grid-cols-1 gap-x-8 gap-y-3 sm:grid-cols-[12rem_1fr]">
           {[["Company name", "[to be added]"], ["Registration number", "[to be added]"], ["Registered address", "[to be added]"], ["VAT / tax ID", "[to be added]"], ["Contact email", siteConfig.contactEmail]].map(([k, v]) => (

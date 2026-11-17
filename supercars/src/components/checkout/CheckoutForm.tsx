@@ -127,10 +127,10 @@ export function CheckoutForm({ destinations }: { destinations: readonly Shipping
   const processing = phase.kind === "processing";
 
   return (
-    <form onSubmit={submit} noValidate className="grid grid-cols-1 items-start gap-10 lg:grid-cols-[minmax(0,1fr)_26rem] lg:gap-14" aria-busy={processing}>
-      <div className="space-y-12">
+    <form onSubmit={submit} noValidate className="grid grid-cols-1 items-start gap-6 lg:grid-cols-[minmax(0,1fr)_24rem] lg:gap-8" aria-busy={processing}>
+      <div className="space-y-6">
         {errorList.length > 0 && (
-          <div ref={summaryRef} tabIndex={-1} role="alert" className="rounded-2xl border border-red-text/60 bg-surface p-5 outline-none">
+          <div ref={summaryRef} tabIndex={-1} role="alert" className="rounded-[var(--lg-radius-md)] bg-[var(--lg-negative-soft)] p-5 outline-none">
             <p className="font-semibold">Please fix {errorList.length === 1 ? "this field" : `these ${errorList.length} fields`}:</p>
             <ul className="mt-2 list-inside list-disc space-y-1 text-sm">
               {errorList.map(([k, m]) => <li key={k}><a className="underline underline-offset-4" href={`#co-${k}`}>{m}</a></li>)}
@@ -138,17 +138,20 @@ export function CheckoutForm({ destinations }: { destinations: readonly Shipping
           </div>
         )}
 
+        <div className="card p-5 sm:p-6">
         <fieldset disabled={processing} className="space-y-5">
-          <legend className="mb-5 flex items-center gap-3"><span className="spec">01</span><span className="h-display text-3xl">Customer</span></legend>
+          <legend className="mb-4 text-[1.375rem] font-semibold leading-tight tracking-[-0.02em]">Customer</legend>
           <FormField id="co-name" label="Full name" required error={errors.name}>{(a) => <input {...a} name="name" type="text" autoComplete="name" value={values.name} onChange={set("name")} className="field" maxLength={80} />}</FormField>
           <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
             <FormField id="co-email" label="Email" required error={errors.email} hint="For your order confirmation.">{(a) => <input {...a} name="email" type="email" inputMode="email" autoComplete="email" value={values.email} onChange={set("email")} className="field" maxLength={254} />}</FormField>
             <FormField id="co-phone" label="Phone (optional)" error={errors.phone} hint="Only used for delivery updates.">{(a) => <input {...a} name="phone" type="tel" inputMode="tel" autoComplete="tel" value={values.phone} onChange={set("phone")} className="field" maxLength={24} />}</FormField>
           </div>
         </fieldset>
+        </div>
 
+        <div className="card p-5 sm:p-6">
         <fieldset disabled={processing} className="space-y-5">
-          <legend className="mb-5 flex items-center gap-3"><span className="spec">02</span><span className="h-display text-3xl">Shipping</span></legend>
+          <legend className="mb-4 text-[1.375rem] font-semibold leading-tight tracking-[-0.02em]">Shipping</legend>
           <FormField id="co-line1" label="Address" required error={errors.line1}>{(a) => <input {...a} name="line1" type="text" autoComplete="address-line1" value={values.line1} onChange={set("line1")} className="field" maxLength={100} />}</FormField>
           <FormField id="co-line2" label="Apartment, suite (optional)" error={errors.line2}>{(a) => <input {...a} name="line2" type="text" autoComplete="address-line2" value={values.line2} onChange={set("line2")} className="field" maxLength={100} />}</FormField>
           <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
@@ -164,18 +167,18 @@ export function CheckoutForm({ destinations }: { destinations: readonly Shipping
             )}
           </FormField>
         </fieldset>
+        </div>
 
         <section aria-labelledby="co-pay-title">
-          <div className="mb-5 flex items-center gap-3"><span className="spec">03</span><h2 id="co-pay-title" className="h-display text-3xl">Payment</h2></div>
-          <div className="card p-6">
+          <div className="card p-5 sm:p-6">
             <div className="flex flex-wrap items-center justify-between gap-3">
-              <p className="flex items-center gap-2 font-semibold"><IconLock size={18} className="text-red-text" /> Secure checkout</p>
+              <h2 id="co-pay-title" className="flex items-center gap-2 text-[1.375rem] font-semibold leading-tight tracking-[-0.02em]"><IconLock size={18} className="text-subtle" /> Payment</h2>
               <Badge tone="demo">Demo payment</Badge>
             </div>
             <p className="mt-3 text-sm text-muted">This is a prototype store. <strong className="text-fg">No card details are collected and no money moves.</strong> The button below simulates a successful payment so you can see the whole order flow. A real payment provider will handle cards on its own hosted page.</p>
 
             {phase.kind === "error" && (
-              <div role="alert" className="mt-5 rounded-xl border border-red-text/60 p-4 text-sm">
+              <div role="alert" className="mt-5 rounded-[var(--lg-radius-sm)] bg-[var(--lg-negative-soft)] p-4 text-sm">
                 <p className="font-semibold">Checkout error</p>
                 <p className="mt-1 text-muted">{phase.message}</p>
               </div>
@@ -184,21 +187,21 @@ export function CheckoutForm({ destinations }: { destinations: readonly Shipping
             <Button type="submit" size="lg" className="mt-6 w-full" disabled={processing || !total} aria-disabled={processing || !total}>
               {processing ? "Processing…" : <>Demo payment{total ? ` · ${formatMoney(total)}` : ""}</>}
             </Button>
-            <p className="mt-3 text-center text-xs text-subtle">By continuing you agree this is a demonstration. <Link href="/terms" className="underline underline-offset-4">Terms (placeholder)</Link></p>
+            <p className="mt-3 text-center text-[0.8125rem] text-subtle">By continuing you agree this is a demonstration. <Link href="/terms" className="underline underline-offset-4">Terms (placeholder)</Link></p>
           </div>
         </section>
       </div>
 
-      <aside aria-label="Order summary" className="card p-6 lg:sticky lg:top-28">
-        <h2 className="h-display text-3xl">Order</h2>
+      <aside aria-label="Order summary" className="card p-5 sm:p-6 lg:sticky lg:top-24">
+        <h2 className="text-[1.375rem] font-semibold leading-tight tracking-[-0.02em]">Order</h2>
         <ul className="mt-4 divide-y divide-line">
           {(q.quote?.lines ?? []).map((l) => (
             <li key={l.item.id} className="flex gap-3 py-4 first:pt-0">
-              <div className="w-14 flex-none overflow-hidden rounded-[3px] ring-1 ring-line-strong"><PosterPreview template={l.template} vehicle={l.vehicle} customization={l.item.customization} vehicleName={l.vehicleName} specs={l.specs} sizeId={l.item.sizeId} /></div>
+              <div className="w-14 flex-none self-start overflow-hidden rounded-[3px] shadow-[var(--lg-edge),var(--lg-lift-1)]"><PosterPreview template={l.template} vehicle={l.vehicle} customization={l.item.customization} vehicleName={l.vehicleName} specs={l.specs} sizeId={l.item.sizeId} /></div>
               <div className="min-w-0 flex-1">
                 <p className="truncate text-sm font-semibold">{l.vehicleName}</p>
-                <p className="truncate text-xs text-muted">{l.template.name} · {l.sizeLabel} · ×{l.item.quantity}</p>
-                <p className="truncate text-xs text-subtle">{personalizationSummary(l.item.customization)}</p>
+                <p className="truncate text-[0.8125rem] text-muted">{l.template.name} · {l.sizeLabel} · ×{l.item.quantity}</p>
+                <p className="truncate text-[0.8125rem] text-subtle">{personalizationSummary(l.item.customization)}</p>
               </div>
               <Price value={l.lineTotal} precise className="text-sm" />
             </li>
@@ -210,10 +213,10 @@ export function CheckoutForm({ destinations }: { destinations: readonly Shipping
       </aside>
 
       {processing && (
-        <div className="fixed inset-0 z-[80] flex items-center justify-center bg-bg/90 backdrop-blur-sm" role="alertdialog" aria-modal="true" aria-label="Processing demo payment">
-          <div className="w-[min(92vw,26rem)] rounded-3xl border border-line-strong bg-surface p-8">
+        <div className="fixed inset-0 z-[80] flex items-center justify-center bg-black/30 backdrop-blur-md" role="alertdialog" aria-modal="true" aria-label="Processing demo payment">
+          <div className="w-[min(92vw,24rem)] rounded-[var(--lg-radius-xl)] bg-surface p-7 shadow-[var(--lg-edge),var(--lg-lift-2)]">
             <p className="spec">Demo payment</p>
-            <h2 className="h-display mt-2 text-4xl">Processing…</h2>
+            <h2 className="h-display mt-1 text-[1.75rem]">Processing…</h2>
             <ol className="mt-6 space-y-3">
               {PROCESSING.map((label, i) => {
                 const step = (phase as { step: number }).step;
@@ -221,13 +224,13 @@ export function CheckoutForm({ destinations }: { destinations: readonly Shipping
                 const active = i === step;
                 return (
                   <li key={label} className={`flex items-center gap-3 text-sm ${finished || active ? "text-fg" : "text-subtle"}`}>
-                    <span className={`flex size-6 items-center justify-center rounded-full border text-[0.65rem] ${finished ? "border-red bg-red text-on-red" : active ? "border-red [animation:pulse-ring_1.2s_ease-out_infinite]" : "border-line-strong"}`}>{finished ? <IconCheck size={13} /> : i + 1}</span>
+                    <span className={`flex size-6 flex-none items-center justify-center rounded-full text-xs font-semibold tabular-nums ${finished ? "bg-red text-on-red" : active ? "text-red-text shadow-[inset_0_0_0_1.5px_var(--lg-tint-fill)] [animation:pulse-ring_1.2s_ease-out_infinite]" : "bg-fill text-muted"}`}>{finished ? <IconCheck size={13} /> : i + 1}</span>
                     {label}
                   </li>
                 );
               })}
             </ol>
-            <p className="mt-6 text-xs text-subtle">No card data is collected. No money moves.</p>
+            <p className="mt-6 text-[0.8125rem] text-subtle">No card data is collected. No money moves.</p>
           </div>
         </div>
       )}

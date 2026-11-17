@@ -1,69 +1,82 @@
 @import "tailwindcss";
+/* Liquid Glass kit (tokens + .lg-* components), kept verbatim in its own file. It sits in the components layer
+   so Tailwind utilities can still adjust an element that carries a kit class. */
+@import "../styles/liquid-glass.css" layer(components);
 
 /* ==========================================================================
-   SUPERCARS DESIGN TOKENS
-   Dark-first (OLED black / graphite / charcoal), off-white type, one racing
-   red used sparingly: primary CTA, active states, prices, thin accent lines.
-   Light mode is an explicit user choice ([data-theme="light"]).
+   SUPERCARS × LIQUID GLASS
+   Light by default (dark follows the OS, or the visitor's explicit choice via [data-theme]).
+   One accent for the whole site: SuperCars red. Glass is used only for floating chrome
+   (navigation, sticky action bars, sheets, the control card over the hero stage);
+   content sits on solid surfaces.
+   These brand overrides are unlayered on purpose: they must win over the kit in both themes.
    ========================================================================== */
 :root {
+  /* Apple devices use San Francisco; everything else gets the bundled Inter instead of whatever the OS has. */
+  --lg-font: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter Variable", "Segoe UI Variable Text", "Segoe UI", Roboto, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --lg-font-display: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Inter Variable", "Segoe UI Variable Display", "Segoe UI", Roboto, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --lg-tint: #c80500;        /* text / links: 5.5:1 on #f5f5f7 */
+  --lg-tint-fill: #e10600;   /* filled buttons: white label 5.0:1 */
+  --lg-on-tint: #ffffff;
+  --lg-tint-soft: rgba(225, 6, 0, 0.08);
+  --lg-tint-ink: #b00400;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) { --lg-tint: #ff5a4f; --lg-tint-fill: #e10600; --lg-tint-soft: rgba(255, 90, 79, 0.16); --lg-tint-ink: #ff7a70; }
+}
+:root[data-theme="dark"] { --lg-tint: #ff5a4f; --lg-tint-fill: #e10600; --lg-tint-soft: rgba(255, 90, 79, 0.16); --lg-tint-ink: #ff7a70; }
+
+/* A deliberately dark area inside a light page (the product stage). Same values as the kit's dark theme. */
+.scope-dark {
   color-scheme: dark;
-  --bg: #050506;
-  --surface: #0b0c0e;
-  --elevated: #111215;
-  --raised: #181a1e;
-  --line: rgba(255, 255, 255, 0.09);
-  --line-strong: rgba(255, 255, 255, 0.18);
-  --fg: #f3f3f1;
-  --fg-muted: #a4a6ad;
-  --fg-subtle: #8b8d95;
-  --red: #e10600;
-  --red-hover: #ff1c12;
-  --red-text: #ff4d40; /* red as TEXT on dark: passes AA */
-  --on-red: #ffffff;
-  --glass: rgba(11, 12, 14, 0.86);
-  --shadow-lift: 0 18px 50px -18px rgba(0, 0, 0, 0.75);
-  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --lg-bg: #000000; --lg-bg-elevated: #1c1c1e; --lg-surface-grouped: #1c1c1e;
+  --lg-fill: rgba(120, 120, 128, 0.24); --lg-fill-strong: rgba(120, 120, 128, 0.36); --lg-separator: rgba(84, 84, 88, 0.6);
+  --lg-text: #f5f5f7; --lg-text-secondary: #aeaeb2; --lg-text-tertiary: #8e8e93;
+  --lg-tint: #ff5a4f; --lg-tint-fill: #e10600; --lg-tint-soft: rgba(255, 90, 79, 0.16); --lg-tint-ink: #ff7a70;
+  --lg-material-ultrathin: rgba(40, 40, 44, 0.4); --lg-material-thin: rgba(36, 36, 40, 0.55);
+  --lg-material-regular: rgba(30, 30, 34, 0.7); --lg-material-thick: rgba(28, 28, 30, 0.9);
+  --lg-rim: inset 0 1px 0.5px rgba(255, 255, 255, 0.22), inset 0 -1px 0.5px rgba(255, 255, 255, 0.06), inset 0 0 0 0.5px rgba(255, 255, 255, 0.14);
+  --lg-edge: 0 0 0 0.5px rgba(255, 255, 255, 0.08);
+  --lg-lift-1: 0 1px 2px rgba(0, 0, 0, 0.4), 0 4px 14px rgba(0, 0, 0, 0.3);
+  --lg-lift-2: 0 2px 6px rgba(0, 0, 0, 0.4), 0 16px 40px rgba(0, 0, 0, 0.5);
+  color: var(--lg-text);
 }
 
-:root[data-theme="light"] {
-  color-scheme: light;
-  --bg: #f6f5f2;
-  --surface: #ffffff;
-  --elevated: #efede8;
-  --raised: #e6e3dc;
-  --line: rgba(10, 10, 12, 0.11);
-  --line-strong: rgba(10, 10, 12, 0.22);
-  --fg: #0d0d0f;
-  --fg-muted: #4f5057;
-  --fg-subtle: #6a6b72;
-  --red: #d10500;
-  --red-hover: #b80400;
-  --red-text: #c40500;
-  --on-red: #ffffff;
-  --glass: rgba(255, 255, 255, 0.88);
-  --shadow-lift: 0 18px 44px -20px rgba(20, 20, 30, 0.35);
+/* Site tokens are aliases of the kit tokens, so every component follows the theme (and a dark scope). */
+:root, .scope-dark {
+  --bg: var(--lg-bg);
+  --surface: var(--lg-bg-elevated);
+  --elevated: color-mix(in srgb, var(--lg-text) 4%, var(--lg-bg-elevated));
+  --raised: color-mix(in srgb, var(--lg-text) 9%, var(--lg-bg-elevated));
+  --line: var(--lg-separator);
+  --line-strong: color-mix(in srgb, var(--lg-text) 26%, transparent);
+  --fg: var(--lg-text);
+  --fg-muted: var(--lg-text-secondary);
+  --fg-subtle: var(--lg-text-tertiary);
+  --red: var(--lg-tint-fill);
+  --red-hover: color-mix(in srgb, var(--lg-tint-fill) 88%, #000);
+  --red-text: var(--lg-tint);
+  --on-red: var(--lg-on-tint);
+  --glass: var(--lg-material-regular);
+  --shadow-lift: var(--lg-lift-2);
+  --ease: var(--lg-ease);
+  --font-sans: var(--lg-font);
+  --font-display: var(--lg-font-display);
+  /* The printed posters keep their own display face; the site itself never uses it. */
+  --font-poster: "Barlow Condensed", "Arial Narrow", "Helvetica Neue", sans-serif;
+  /* Soft studio backdrop behind a car on a light page. */
+  --stage-a: #ffffff;
+  --stage-b: #e9e9ee;
+  --car-shadow: rgb(0 0 0 / 0.26);
+  --wall-a: #efeeeb;
+  --wall-b: #e3e1dc;
 }
-
-/* Photo-led sections keep the dark palette in both themes: the photographs are graded for a dark page. */
-.on-dark {
-  color-scheme: dark;
-  --bg: #050506;
-  --surface: #0b0c0e;
-  --elevated: #111215;
-  --raised: #181a1e;
-  --line: rgba(255, 255, 255, 0.09);
-  --line-strong: rgba(255, 255, 255, 0.18);
-  --fg: #f3f3f1;
-  --fg-muted: #b4b6bd;
-  --fg-subtle: #9a9ca4;
-  --red: #e10600;
-  --red-hover: #ff1c12;
-  --red-text: #ff4d40;
-  --on-red: #ffffff;
-  --glass: rgba(11, 12, 14, 0.86);
-  color: var(--fg);
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) { --stage-a: #2a2a2e; --stage-b: #101012; --car-shadow: rgb(0 0 0 / 0.7); --wall-a: #2a2a2d; --wall-b: #161618; }
 }
+:root[data-theme="dark"], .scope-dark { --stage-a: #2a2a2e; --stage-b: #101012; --car-shadow: rgb(0 0 0 / 0.7); --wall-a: #2a2a2d; --wall-b: #161618; }
+:root[data-theme="light"] { color-scheme: light; }
+:root[data-theme="dark"] { color-scheme: dark; }
 
 @theme inline {
   --color-bg: var(--bg);
@@ -79,17 +92,16 @@
   --color-red-hover: var(--red-hover);
   --color-red-text: var(--red-text);
   --color-on-red: var(--on-red);
+  --color-tint-soft: var(--lg-tint-soft);
+  --color-tint-ink: var(--lg-tint-ink);
+  --color-fill: var(--lg-fill);
+  --color-positive: var(--lg-positive);
   --font-sans: var(--font-sans);
   --font-display: var(--font-display);
   --breakpoint-xs: 26.25rem;
 }
 
 /* -------------------------------------------------------------- base ---- */
-:root {
-  --font-sans: "Inter Variable", Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
-  --font-display: "Barlow Condensed", "Arial Narrow", "Helvetica Neue", sans-serif;
-}
-
 html {
   background: var(--bg);
   -webkit-text-size-adjust: 100%;
@@ -99,224 +111,295 @@ html {
 body {
   background: var(--bg);
   color: var(--fg);
-  font-family: var(--font-sans);
-  font-size: 1rem;
-  line-height: 1.6;
-  font-feature-settings: "tnum" 1, "cv11" 1;
+  font: 400 1.0625rem/1.5 var(--lg-font);
+  letter-spacing: -0.01em;
+  font-feature-settings: "cv11" 1, "ss03" 1;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   overflow-x: clip;
   min-height: 100dvh;
-  /* Header, main and footer stack to exactly one screen; pages that fit never scroll. */
   display: flex;
   flex-direction: column;
 }
 
-::selection {
-  background: var(--red);
-  color: var(--on-red);
-}
+::selection { background: var(--lg-tint-fill); color: var(--lg-on-tint); }
 
 :focus-visible {
-  outline: 2px solid var(--fg);
-  outline-offset: 3px;
-  border-radius: 4px;
+  outline: 3px solid color-mix(in srgb, var(--lg-tint) 60%, transparent);
+  outline-offset: 2px;
+  border-radius: 6px;
 }
 
-img,
-svg,
-video {
-  max-width: 100%;
-}
+img, svg, video { max-width: 100%; }
 
 /* <fieldset> defaults to min-width: min-content, which lets long content force horizontal scrolling. */
-fieldset {
-  min-width: 0;
-}
+fieldset { min-width: 0; }
 
-/* --------------------------------------------------------- utilities ---- */
+/* --------------------------------------------------------- components ---- */
 @layer components {
   .container-x {
     width: 100%;
-    max-width: 1360px;
+    max-width: 1200px;
     margin-inline: auto;
     padding-inline: 1rem;
   }
-  @media (min-width: 640px) {
-    .container-x { padding-inline: 1.5rem; }
-  }
-  @media (min-width: 1024px) {
-    .container-x { padding-inline: 2.5rem; }
-  }
+  @media (min-width: 640px) { .container-x { padding-inline: 1.5rem; } }
+  @media (min-width: 1024px) { .container-x { padding-inline: 2rem; } }
 
+  /* Display type: the system display face, tight tracking, never uppercase. */
   .h-display {
-    font-family: var(--font-display);
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.005em;
-    line-height: 0.92;
+    font-family: var(--lg-font-display);
+    font-weight: 650;
+    letter-spacing: -0.03em;
+    line-height: 1.08;
     text-wrap: balance;
   }
+  .h-hero { font-size: clamp(2.4rem, 5.2vw, 4rem); }
+  .h-page { font-size: clamp(2.1rem, 4.4vw, 3.25rem); }
+  .h-section { font-size: clamp(1.75rem, 3.4vw, 2.5rem); }
+  .lead { font-size: clamp(1.0625rem, 1.5vw, 1.3125rem); line-height: 1.42; color: var(--fg-muted); text-wrap: pretty; }
 
-  /* Tiny engineering-style label: "SC / 01". */
+  /* Small coloured label above a heading. Used sparingly (at most one per three sections). */
   .eyebrow {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.6rem;
-    font-size: 0.6875rem;
-    font-weight: 600;
-    letter-spacing: 0.22em;
-    text-transform: uppercase;
-    color: var(--fg-muted);
-    font-family: ui-monospace, "SF Mono", "Cascadia Mono", Menlo, Consolas, monospace;
-  }
-  .eyebrow::before {
-    content: "";
-    width: 1.75rem;
-    height: 2px;
-    background: var(--red);
-    flex: none;
+    display: block;
+    font: 600 0.8125rem/1.2 var(--lg-font);
+    letter-spacing: 0;
+    color: var(--lg-tint);
   }
 
+  /* Small secondary label ("Step 1", "Years", sizes). */
   .spec {
-    font-family: ui-monospace, "SF Mono", "Cascadia Mono", Menlo, Consolas, monospace;
-    font-size: 0.6875rem;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
+    font: 500 0.8125rem/1.35 var(--lg-font);
+    letter-spacing: 0;
     color: var(--fg-subtle);
-  }
-
-  .tech-grid {
-    background-image:
-      linear-gradient(var(--line) 1px, transparent 1px),
-      linear-gradient(90deg, var(--line) 1px, transparent 1px);
-    background-size: 48px 48px;
-    mask-image: radial-gradient(ellipse at 50% 40%, #000 30%, transparent 75%);
   }
 
   .card {
     background: var(--surface);
-    border: 1px solid var(--line);
-    border-radius: 1rem;
-    transition: transform 0.45s var(--ease), border-color 0.3s, box-shadow 0.45s var(--ease);
+    border-radius: var(--lg-radius-lg);
+    box-shadow: var(--lg-edge);
+    transition: transform 0.4s var(--lg-ease), box-shadow 0.4s var(--lg-ease);
   }
   @media (hover: hover) {
-    .card-lift:hover {
-      transform: translateY(-4px);
-      border-color: var(--line-strong);
-      box-shadow: var(--shadow-lift);
-    }
+    .card-lift:hover { transform: translateY(-3px); box-shadow: var(--lg-edge), var(--lg-lift-2); }
   }
 
+  /* Glass: floating chrome only (sticky bars). */
   .glass {
-    background: var(--glass);
-    backdrop-filter: blur(14px) saturate(1.2);
-    -webkit-backdrop-filter: blur(14px) saturate(1.2);
-    border: 1px solid var(--line);
+    background: var(--lg-material-regular);
+    -webkit-backdrop-filter: blur(var(--lg-blur)) saturate(var(--lg-saturate));
+    backdrop-filter: blur(var(--lg-blur)) saturate(var(--lg-saturate));
+    box-shadow: 0 0 0 0.5px var(--lg-separator);
   }
 
-  /* Buttons */
+  /* Buttons: pill, label never wraps. */
   .btn {
-    --btn-h: 3rem;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 0.6rem;
-    min-height: var(--btn-h);
-    padding: 0 1.5rem;
-    border-radius: 999px;
-    border: 1px solid transparent;
-    font-family: var(--font-sans);
-    font-size: 0.8125rem;
-    font-weight: 650;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
+    gap: 0.5rem;
+    min-height: 2.75rem;
+    padding: 0 1.25rem;
+    border: 0;
+    border-radius: var(--lg-radius-pill);
+    font: 600 0.9375rem/1 var(--lg-font);
+    letter-spacing: -0.01em;
     text-decoration: none;
     white-space: nowrap;
     cursor: pointer;
     user-select: none;
-    transition: transform 0.18s var(--ease), background 0.25s, border-color 0.25s, color 0.25s, box-shadow 0.3s;
+    color: var(--fg);
+    background: var(--lg-fill);
+    box-shadow: inset 0 0 0 1px var(--lg-separator);
+    transition: transform var(--lg-dur-fast) var(--lg-ease), background var(--lg-dur) var(--lg-ease), box-shadow var(--lg-dur) var(--lg-ease);
   }
+  @media (hover: hover) { .btn:hover { background: var(--lg-fill-strong); } }
   .btn:active { transform: scale(0.97); }
-  .btn[disabled],
-  .btn[aria-disabled="true"] { opacity: 0.45; cursor: not-allowed; transform: none; }
-  .btn-lg { --btn-h: 3.5rem; padding: 0 2rem; font-size: 0.875rem; }
-  .btn-sm { --btn-h: 2.25rem; padding: 0 1rem; font-size: 0.6875rem; }
-  .btn-primary { background: var(--red); color: var(--on-red); box-shadow: 0 10px 30px -12px var(--red); }
-  @media (hover: hover) { .btn-primary:hover { background: var(--red-hover); box-shadow: 0 14px 36px -12px var(--red); } }
-  .btn-secondary { background: transparent; color: var(--fg); border-color: var(--line-strong); }
-  @media (hover: hover) { .btn-secondary:hover { border-color: var(--fg); background: color-mix(in srgb, var(--fg) 6%, transparent); } }
-  .btn-ghost { background: transparent; color: var(--fg-muted); }
-  @media (hover: hover) { .btn-ghost:hover { color: var(--fg); } }
-  .btn-primary:focus-visible { outline-color: var(--fg); }
+  .btn[disabled], .btn[aria-disabled="true"] { opacity: 0.45; cursor: not-allowed; transform: none; }
+  .btn-lg { min-height: 3.125rem; padding: 0 1.625rem; font-size: 1.0625rem; }
+  .btn-sm { min-height: 2.25rem; padding: 0 1rem; font-size: 0.8125rem; }
+  /* Small controls keep their look but are 44px tall to a finger. */
+  .btn-sm, .tap { position: relative; }
+  .btn-sm::after, .tap::after { content: ""; position: absolute; inset: -4px 0; }
+  .btn-primary { background: var(--lg-tint-fill); color: var(--lg-on-tint); box-shadow: none; }
+  @media (hover: hover) { .btn-primary:hover { background: color-mix(in srgb, var(--lg-tint-fill) 88%, #000); } }
+  .btn-ghost { background: none; box-shadow: none; color: var(--lg-tint); padding-inline: 0.5rem; }
+  @media (hover: hover) { .btn-ghost:hover { background: none; text-decoration: underline; } }
+  /* Over imagery only. */
+  .btn-glass {
+    background: var(--lg-material-thin);
+    -webkit-backdrop-filter: blur(16px) saturate(var(--lg-saturate));
+    backdrop-filter: blur(16px) saturate(var(--lg-saturate));
+    box-shadow: var(--lg-rim), var(--lg-edge);
+  }
 
   /* Form controls */
   .field {
     width: 100%;
     min-height: 3rem;
     padding: 0.7rem 0.95rem;
-    background: var(--elevated);
-    border: 1px solid var(--line-strong);
-    border-radius: 0.75rem;
+    background: var(--surface);
+    border: 0;
+    box-shadow: inset 0 0 0 1px var(--line-strong);
+    border-radius: var(--lg-radius-sm);
     color: var(--fg);
     font: inherit;
     font-size: 1rem; /* 16px avoids iOS zoom-on-focus */
-    transition: border-color 0.2s, box-shadow 0.2s;
+    letter-spacing: -0.01em;
+    transition: box-shadow 0.2s var(--lg-ease);
   }
   .field::placeholder { color: var(--fg-subtle); }
-  .field:hover { border-color: color-mix(in srgb, var(--fg) 40%, transparent); }
-  .field:focus-visible { outline: none; border-color: var(--fg); box-shadow: 0 0 0 3px color-mix(in srgb, var(--fg) 18%, transparent); }
-  .field[aria-invalid="true"] { border-color: var(--red-text); }
+  .field:hover { box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--fg) 45%, transparent); }
+  .field:focus-visible { outline: none; box-shadow: inset 0 0 0 2px var(--lg-tint), 0 0 0 4px color-mix(in srgb, var(--lg-tint) 18%, transparent); }
+  .field[aria-invalid="true"] { box-shadow: inset 0 0 0 2px var(--lg-negative); }
+
+  /* Site navigation: the kit's floating glass bar, at the site's content width. */
+  .site-nav { width: min(1200px, calc(100% - 24px)); }
+  .nav-link {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.25rem;
+    padding: 0 0.75rem;
+    border-radius: var(--lg-radius-pill);
+    font: 500 0.8125rem/1 var(--lg-font);
+    letter-spacing: 0;
+    color: var(--fg-muted);
+    text-decoration: none;
+    transition: color var(--lg-dur) var(--lg-ease), background var(--lg-dur) var(--lg-ease);
+  }
+  @media (hover: hover) { .nav-link:hover { color: var(--fg); } }
+  .nav-link[aria-current="page"] { color: var(--fg); font-weight: 600; background: var(--lg-fill); }
+
+  /* Section rhythm */
+  .section-y { padding-block: clamp(3rem, 7vw, 5rem); }
+  .section-t { padding-top: clamp(3rem, 7vw, 5rem); }
+
+  /* Proof row: tighter than the kit default on phones (two per row). */
+  .proof { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.25rem 1rem; padding-block: 1.5rem; border-block: 0.5px solid var(--lg-separator); }
+  @media (min-width: 768px) { .proof { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1.5rem; padding-block: 2rem; } }
+  .proof strong { display: block; font: 700 clamp(1.75rem, 3.2vw, 2.5rem)/1.05 var(--lg-font-display); letter-spacing: -0.03em; font-variant-numeric: tabular-nums; }
+  .proof span { display: block; margin-top: 0.25rem; color: var(--fg-muted); font-size: 0.9375rem; line-height: 1.35; }
+
+  /* Numbered step badge / feature icon */
+  .icon-tile { display: grid; place-items: center; width: 2.75rem; height: 2.75rem; border-radius: 0.75rem; background: var(--lg-tint-fill); color: var(--lg-on-tint); flex: none; }
+  .icon-tile-soft { background: var(--lg-tint-soft); color: var(--lg-tint-ink); }
+
+  /* Tick list used in plans */
+  .ticks { display: grid; gap: 0.5rem; color: var(--fg-muted); font-size: 0.9375rem; }
+  .ticks li { display: flex; gap: 0.5rem; }
+  .ticks li::before { content: "✓"; color: var(--lg-positive); font-weight: 700; }
 }
 
+/* ------------------------------------------------------- product stage ---- */
+/* The one deliberately dark surface: a studio the car stands in and the glass floats over. */
+.stage {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  border-radius: var(--lg-radius-xl);
+  background:
+    radial-gradient(62% 52% at 50% -6%, rgb(255 255 255 / 0.2), transparent 70%),
+    radial-gradient(48% 42% at 86% 92%, rgb(225 6 0 / 0.42), transparent 72%),
+    radial-gradient(46% 40% at 10% 96%, rgb(10 132 255 / 0.26), transparent 72%),
+    linear-gradient(180deg, #202127 0%, #111216 55%, #08080a 100%);
+  background-color: #0b0b0e;
+  box-shadow: var(--lg-lift-2);
+}
+/* Floor: a faint glossy plane fading to the horizon. */
+.stage-floor {
+  position: absolute;
+  inset: auto 0 0 0;
+  height: 34%;
+  z-index: -1;
+  background: linear-gradient(180deg, transparent, rgb(255 255 255 / 0.07) 40%, rgb(255 255 255 / 0.02));
+  -webkit-mask-image: radial-gradient(ellipse 75% 100% at 50% 0, #000 35%, transparent 78%);
+  mask-image: radial-gradient(ellipse 75% 100% at 50% 0, #000 35%, transparent 78%);
+  pointer-events: none;
+}
+/* Light studio backdrop for product tiles and inner pages (follows the theme). */
+.stage-soft {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background:
+    radial-gradient(90% 70% at 50% 0%, var(--stage-a), transparent 72%),
+    linear-gradient(180deg, color-mix(in srgb, var(--stage-a) 60%, var(--stage-b)), var(--stage-b));
+}
+/* Gallery wall for posters. */
+.wall {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background:
+    radial-gradient(80% 60% at 50% 0%, color-mix(in srgb, var(--wall-a) 70%, #fff), transparent 75%),
+    linear-gradient(180deg, var(--wall-a), var(--wall-b));
+}
+/* Soft drop shadow that follows the car's own silhouette. */
+.studio-car { filter: drop-shadow(0 14px 14px var(--car-shadow)); }
+.scope-dark .studio-car, .stage .studio-car { filter: drop-shadow(0 22px 22px rgb(0 0 0 / 0.55)); }
+/* Contact shadow inside a CutoutFit box: a dark ellipse right under the tyres (the car image is stacked above it). */
+.studio-contact {
+  position: absolute;
+  left: 6%;
+  right: 6%;
+  bottom: -1.5%;
+  height: 8%;
+  background: radial-gradient(ellipse 50% 50% at 50% 50%, var(--car-shadow), transparent 100%);
+  pointer-events: none;
+}
+.studio-contact + picture { position: relative; z-index: 1; }
+/* Kept for the share-image template. */
+.studio-shadow { position: absolute; left: 8%; right: 8%; bottom: -2.2%; height: 8%; background: radial-gradient(ellipse at center, rgb(0 0 0 / 0.85), transparent 68%); filter: blur(6px); pointer-events: none; }
+.studio-reflection { position: absolute; left: 0; right: 0; top: 100%; transform: scaleY(-1); opacity: 0.26; pointer-events: none; -webkit-mask-image: linear-gradient(to top, rgb(0 0 0 / 0.9), transparent 52%); mask-image: linear-gradient(to top, rgb(0 0 0 / 0.9), transparent 52%); }
+
+/* Hover: the car eases forward inside its tile. */
+.studio-lift { transition: transform 0.6s var(--lg-ease); }
+@media (hover: hover) { .group:hover .studio-lift { transform: translate3d(0, -2%, 0) scale(1.04); } }
+
+/* Hero studio: a pure-CSS style picker. Radio inputs choose which poster (and which link) is shown; no script. */
+.studio [data-i] { display: none; }
+.studio:has(input[value="0"]:checked) [data-i="0"],
+.studio:has(input[value="1"]:checked) [data-i="1"],
+.studio:has(input[value="2"]:checked) [data-i="2"],
+.studio:has(input[value="3"]:checked) [data-i="3"],
+.studio:has(input[value="4"]:checked) [data-i="4"] { display: block; }
+.swatch { position: relative; display: block; width: 2.25rem; height: 2.25rem; border-radius: 50%; cursor: pointer; box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.28); transition: transform var(--lg-dur-fast) var(--lg-ease), box-shadow var(--lg-dur) var(--lg-ease); }
+.swatch:active { transform: scale(0.94); }
+input:checked + .swatch { box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.28), 0 0 0 2px #0b0b0e, 0 0 0 4px #fff; }
+input:focus-visible + .swatch { outline: 3px solid color-mix(in srgb, var(--lg-tint) 70%, transparent); outline-offset: 5px; }
+
 /* ------------------------------------------------------------ motion ---- */
-@keyframes page-in {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: none; }
-}
-@keyframes shimmer {
-  from { background-position: 200% 0; }
-  to { background-position: -200% 0; }
-}
-@keyframes pulse-ring {
-  0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--red) 55%, transparent); }
-  100% { box-shadow: 0 0 0 14px transparent; }
-}
-@keyframes draw {
-  to { stroke-dashoffset: 0; }
-}
-@keyframes pop {
-  0% { transform: scale(0.6); opacity: 0; }
-  60% { transform: scale(1.08); opacity: 1; }
-  100% { transform: scale(1); }
-}
-@keyframes drift {
-  from { transform: translate3d(-2%, 0, 0); }
-  to { transform: translate3d(2%, 0, 0); }
-}
-@keyframes cart-bump {
-  0%, 100% { transform: scale(1); }
-  40% { transform: scale(1.28); }
-}
+@keyframes page-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+@keyframes shimmer { from { background-position: 200% 0; } to { background-position: -200% 0; } }
+@keyframes pulse-ring { 0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--red) 55%, transparent); } 100% { box-shadow: 0 0 0 14px transparent; } }
+@keyframes draw { to { stroke-dashoffset: 0; } }
+@keyframes pop { 0% { transform: scale(0.6); opacity: 0; } 60% { transform: scale(1.08); opacity: 1; } 100% { transform: scale(1); } }
+@keyframes cart-bump { 0%, 100% { transform: scale(1); } 40% { transform: scale(1.28); } }
+@keyframes scan { 0% { transform: translateY(-100%); } 100% { transform: translateY(300%); } }
+@keyframes rise { from { opacity: 0; transform: translateY(24px) scale(0.98); } to { opacity: 1; transform: none; } }
+@keyframes drive-in { from { opacity: 0; transform: translate3d(6%, 0, 0) scale(0.98); } to { opacity: 1; transform: none; } }
 
 /* `backwards` (not `both`): a filling transform animation would make this wrapper the
    containing block for every position:fixed descendant (sticky bars, etc.). */
-.page-enter { animation: page-in 0.55s var(--ease) backwards; }
+.page-enter { animation: page-in 0.5s var(--lg-ease) backwards; }
+.hero-in { animation: rise 0.9s var(--lg-ease) backwards; animation-delay: var(--d, 0ms); }
+.stagger { animation: page-in 0.7s var(--lg-ease) backwards; animation-delay: var(--d, 0ms); }
+.drive-in { animation: drive-in 1s var(--lg-ease) backwards; animation-delay: var(--d, 120ms); }
 
 .skeleton {
   background: linear-gradient(100deg, var(--elevated) 30%, var(--raised) 50%, var(--elevated) 70%);
   background-size: 200% 100%;
   animation: shimmer 1.6s linear infinite;
-  border-radius: 0.75rem;
+  border-radius: var(--lg-radius-sm);
 }
 
 /* Reveal-on-scroll: only hidden when scripting is available, so no-JS shows everything. */
 @media (scripting: enabled) {
-  .reveal:not([data-inview]) { opacity: 0; transform: translateY(18px); }
-  .reveal { transition: opacity 0.8s var(--ease), transform 0.8s var(--ease); transition-delay: var(--reveal-delay, 0ms); }
+  .reveal:not([data-inview]) { opacity: 0; transform: translateY(14px); }
+  .reveal { transition: opacity 0.6s var(--lg-ease), transform 0.6s var(--lg-ease); transition-delay: var(--reveal-delay, 0ms); }
 }
 
-.zoom-img { transition: transform 0.9s var(--ease); }
+.zoom-img { transition: transform 0.9s var(--lg-ease); }
 @media (hover: hover) { .group:hover .zoom-img { transform: scale(1.04); } }
 
 @media (prefers-reduced-motion: reduce) {
@@ -335,29 +418,28 @@ fieldset {
 }
 
 /* ------------------------------------------------------------ dialogs ---- */
+/* Sheets are floating chrome: thick glass material. */
 .dialog {
   padding: 0;
   max-width: none;
   max-height: none;
   color: var(--fg);
-  background: var(--surface);
-  border: 1px solid var(--line-strong);
+  border: 0;
+  background: var(--lg-material-thick);
+  -webkit-backdrop-filter: blur(40px) saturate(var(--lg-saturate));
+  backdrop-filter: blur(40px) saturate(var(--lg-saturate));
+  box-shadow: var(--lg-rim), var(--lg-edge), 0 30px 80px rgb(0 0 0 / 0.3);
   overscroll-behavior: contain;
 }
-.dialog::backdrop {
-  background: rgba(0, 0, 0, 0.66);
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
-}
-.dialog[open] { animation: dialog-in 0.36s var(--ease) backwards; }
-.dialog-center { margin: auto; width: min(92vw, 34rem); max-height: 88dvh; border-radius: 1.25rem; overflow: auto; }
+.dialog::backdrop { background: rgb(0 0 0 / 0.28); }
+.dialog[open] { animation: dialog-in 0.42s var(--lg-ease-spring) backwards; }
+.dialog-center { margin: auto; width: min(92vw, 34rem); max-height: 88dvh; border-radius: var(--lg-radius-xl); overflow: auto; }
 .dialog-right {
-  inset: 0 0 0 auto;
+  inset: 0.75rem 0.75rem 0.75rem auto;
   margin: 0;
-  height: 100dvh;
-  width: min(100vw, 27rem);
-  border-radius: 1.25rem 0 0 1.25rem;
-  border-right: 0;
+  height: calc(100dvh - 1.5rem);
+  width: min(calc(100vw - 1.5rem), 27rem);
+  border-radius: var(--lg-radius-xl);
   animation-name: dialog-in-right;
 }
 .dialog-bottom {
@@ -365,240 +447,53 @@ fieldset {
   margin: 0;
   width: 100vw;
   max-height: 88dvh;
-  border-radius: 1.25rem 1.25rem 0 0;
-  border-bottom: 0;
+  border-radius: var(--lg-radius-xl) var(--lg-radius-xl) 0 0;
   animation-name: dialog-in-bottom;
 }
-@keyframes dialog-in { from { opacity: 0; transform: translateY(10px) scale(0.985); } to { opacity: 1; transform: none; } }
+@keyframes dialog-in { from { opacity: 0; transform: translateY(16px) scale(0.97); } to { opacity: 1; transform: none; } }
 @keyframes dialog-in-right { from { opacity: 0; transform: translateX(28px); } to { opacity: 1; transform: none; } }
 @keyframes dialog-in-bottom { from { opacity: 0; transform: translateY(32px); } to { opacity: 1; transform: none; } }
-
-.logo-mark {
-  display: inline-block;
-  transform: skewX(-12deg);
-  background: var(--red);
-  color: var(--on-red);
-  padding: 0.16rem 0.55rem 0.1rem;
-  font-family: var(--font-display);
-  font-weight: 700;
-  font-size: 1.15rem;
-  letter-spacing: 0.06em;
-  line-height: 1.1;
+@media (prefers-reduced-transparency: reduce) {
+  .dialog, .glass, .btn-glass { -webkit-backdrop-filter: none !important; backdrop-filter: none !important; background: var(--lg-bg-elevated) !important; }
 }
-.logo-mark > span { display: inline-block; transform: skewX(12deg); }
+
+/* ---------------------------------------------------------------- brand ---- */
+.logo-mark {
+  display: inline-grid;
+  place-items: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: 0.5rem;
+  background: linear-gradient(145deg, #ff453a, #d70015);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.45);
+  color: #fff;
+  font: italic 800 0.6875rem/1 var(--lg-font-display);
+  letter-spacing: -0.02em;
+}
 
 @supports (padding: max(0px)) {
   .safe-bottom { padding-bottom: max(0.5rem, env(safe-area-inset-bottom)); }
 }
 
+/* The designer's floating action bar on a phone: a glass capsule clear of the home indicator. */
+.action-bar { bottom: max(0.75rem, env(safe-area-inset-bottom)); }
+
 .skip-link {
   position: fixed; left: 0.75rem; top: -4rem; z-index: 100;
-  padding: 0.65rem 1.1rem; border-radius: 999px;
-  background: var(--red); color: var(--on-red);
-  font-size: 0.8125rem; font-weight: 650; letter-spacing: 0.08em; text-transform: uppercase; text-decoration: none;
+  padding: 0.8rem 1.1rem; border-radius: 999px;
+  background: var(--lg-tint-fill); color: var(--lg-on-tint);
+  font-size: 0.875rem; font-weight: 600; text-decoration: none;
 }
 .skip-link:focus { top: 0.75rem; }
 
-/* --------------------------------------------------------- hero scene ---- */
-.hero-layer {
-  transform: translate3d(calc(var(--px, 0) * var(--depth, 0) * 18px), calc(var(--py, 0) * var(--depth, 0) * 12px), 0) rotate(var(--rot, 0deg));
-  transition: transform 0.35s var(--ease);
-  will-change: transform;
-}
-@keyframes rise {
-  from { opacity: 0; transform: translateY(36px) rotate(var(--from-rot, 0deg)) scale(0.97); }
-  to { opacity: 1; transform: none; }
-}
-.hero-in { animation: rise 1s var(--ease) backwards; animation-delay: var(--d, 0ms); }
-.stagger { animation: page-in 0.8s var(--ease) backwards; animation-delay: var(--d, 0ms); }
-/* Photo hero: slow drift on the background photo; off for reduced motion. */
-@keyframes kenburns {
-  from { transform: scale(1.03) translate3d(0, 0, 0); }
-  to { transform: scale(1.11) translate3d(-1.4%, -0.8%, 0); }
-}
-.kenburns { animation: kenburns 28s ease-in-out infinite alternate; will-change: transform; }
-@media (prefers-reduced-motion: reduce) { .kenburns { animation: none !important; transform: none; will-change: auto; } }
-/* Shared colour grade so photographs from different photographers sit together. */
-.photo-cinema { filter: contrast(1.07) saturate(1.06) brightness(0.9); }
-.speed-lines {
-  background-image: repeating-linear-gradient(90deg, transparent 0 46px, color-mix(in srgb, var(--fg) 7%, transparent) 46px 47px);
-  mask-image: linear-gradient(90deg, transparent, #000 30%, #000 70%, transparent);
-}
-.marquee-fade { mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent); }
-.wall {
-  background:
-    radial-gradient(ellipse 60% 50% at 50% 0%, color-mix(in srgb, var(--fg) 10%, transparent), transparent 70%),
-    linear-gradient(180deg, var(--elevated), var(--surface));
-}
 .no-scrollbar { scrollbar-width: none; }
 .no-scrollbar::-webkit-scrollbar { display: none; }
 
-@keyframes scan {
-  0% { transform: translateY(-100%); }
-  100% { transform: translateY(300%); }
-}
-
 /* Poster SVG type families as classes (keeps the repeated font stacks out of the markup). */
-.pf-display { font-family: var(--font-display), "Barlow Condensed", "Arial Narrow", sans-serif; }
-.pf-sans { font-family: var(--font-sans), Inter, system-ui, sans-serif; }
+.pf-display { font-family: var(--font-poster); }
+.pf-sans { font-family: "Inter Variable", Inter, "Helvetica Neue", Arial, sans-serif; }
 .pf-serif { font-family: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif; }
 .pf-mono { font-family: ui-monospace, "SF Mono", "Cascadia Mono", Menlo, Consolas, monospace; }
 
 /* Skip layout/paint of long below-the-fold sections until they approach the viewport. */
 .cv-auto { content-visibility: auto; contain-intrinsic-size: auto 900px; }
-
-/* Hero photo: melt the left edge and the top of the photograph into the page so text sits on solid dark. */
-.hero-photo-mask {
-  -webkit-mask-image: linear-gradient(180deg, #000 0, #000 55%, transparent 100%);
-  mask-image: linear-gradient(180deg, #000 0, #000 55%, transparent 100%);
-}
-@media (min-width: 1024px) {
-  .hero-photo-mask {
-    -webkit-mask-image: linear-gradient(90deg, transparent 0, rgba(0, 0, 0, 0.55) 22%, #000 46%), linear-gradient(180deg, transparent 0, #000 22%, #000 78%, transparent 100%);
-    mask-image: linear-gradient(90deg, transparent 0, rgba(0, 0, 0, 0.55) 22%, #000 46%), linear-gradient(180deg, transparent 0, #000 22%, #000 78%, transparent 100%);
-    -webkit-mask-composite: source-in;
-    mask-composite: intersect;
-  }
-}
-
-/* ---------------------------------------------------------------------------
-   Studio stage: transparent ("cutout") cars on the site's own showroom floor.
-   --------------------------------------------------------------------------- */
-.studio-stage {
-  background:
-    radial-gradient(ellipse 58% 62% at 50% 0%, rgb(255 255 255 / 0.11), transparent 70%),
-    radial-gradient(ellipse 74% 42% at 50% 100%, color-mix(in srgb, var(--red) 34%, transparent), transparent 74%),
-    linear-gradient(180deg, #0b0c0f 0%, #08090b 60%, #050506 100%);
-  background-color: #050506; /* after the shorthand, which would otherwise reset it: stays dark in the light theme */
-}
-/* Glossy floor plane that fades toward the horizon and the edges. */
-.studio-floor {
-  background: linear-gradient(180deg, transparent 0, rgb(255 255 255 / 0.075) 34%, rgb(255 255 255 / 0.02) 100%);
-  -webkit-mask-image: radial-gradient(ellipse 72% 100% at 50% 0, #000 38%, transparent 76%);
-  mask-image: radial-gradient(ellipse 72% 100% at 50% 0, #000 38%, transparent 76%);
-}
-/* Red rim light + soft drop shadow follow the car's own silhouette. */
-.studio-car {
-  filter: drop-shadow(0 0 18px color-mix(in srgb, var(--red) 18%, transparent)) drop-shadow(0 26px 26px rgb(0 0 0 / 0.5));
-}
-/* Contact shadow inside a CutoutFit box: a dark ellipse right under the tyres (the car image is stacked above it). */
-.studio-contact {
-  position: absolute;
-  left: 5%;
-  right: 5%;
-  bottom: -1.6%;
-  height: 9%;
-  background: radial-gradient(ellipse 50% 50% at 50% 50%, rgb(0 0 0 / 0.78), rgb(0 0 0 / 0.32) 55%, transparent 100%);
-  pointer-events: none;
-}
-.studio-contact + picture { position: relative; z-index: 1; }
-.studio-shadow {
-  position: absolute;
-  left: 8%;
-  right: 8%;
-  bottom: -2.2%;
-  height: 8%;
-  background: radial-gradient(ellipse at center, rgb(0 0 0 / 0.85), transparent 68%);
-  filter: blur(6px);
-  pointer-events: none;
-}
-.studio-reflection {
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 100%;
-  transform: scaleY(-1);
-  opacity: 0.26;
-  pointer-events: none;
-  /* mask is in local space: after the flip, local bottom (the car's wheels) is the visual top of the reflection */
-  -webkit-mask-image: linear-gradient(to top, rgb(0 0 0 / 0.9), transparent 52%);
-  mask-image: linear-gradient(to top, rgb(0 0 0 / 0.9), transparent 52%);
-  filter: blur(0.6px);
-}
-/* Turntable ring under the car. */
-.studio-ring {
-  position: absolute;
-  border-radius: 50%;
-  border: 1px solid rgb(255 255 255 / 0.16);
-  box-shadow: 0 0 0 14px rgb(255 255 255 / 0.025), 0 0 70px color-mix(in srgb, var(--red) 28%, transparent) inset;
-  transform: perspective(800px) rotateX(74deg);
-  pointer-events: none;
-}
-/* The car drives into the frame once on load. */
-@keyframes drive-in {
-  from { opacity: 0; transform: translate3d(9%, 0, 0) scale(0.98); filter: blur(10px); }
-  to { opacity: 1; transform: none; filter: blur(0); }
-}
-.drive-in { animation: drive-in 1.15s var(--ease) backwards; animation-delay: var(--d, 120ms); }
-@media (prefers-reduced-motion: reduce) { .drive-in { animation: none !important; } }
-/* Hover: the car eases forward inside its tile. */
-.studio-lift { transition: transform 0.7s var(--ease); }
-@media (hover: hover) { .group:hover .studio-lift { transform: translate3d(1.5%, -3%, 0) scale(1.035); } }
-
-/* ---------------------------------------------------------------------------
-   Showroom v2: one lighting kit shared by every page that shows a car or a poster.
-   --------------------------------------------------------------------------- */
-/* Film grain (tiny inline SVG noise): keeps large dark gradients from banding and adds a photographic feel. */
-.grain::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: -5;
-  pointer-events: none;
-  opacity: 0.06;
-  mix-blend-mode: overlay;
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
-}
-/* A cone of light falling from above the car. */
-.spotlight-cone {
-  position: absolute;
-  inset: 0;
-  z-index: -6;
-  pointer-events: none;
-  background:
-    conic-gradient(from 180deg at 50% -6%, transparent 152deg, rgb(255 255 255 / 0.085) 167deg, rgb(255 255 255 / 0.085) 193deg, transparent 208deg),
-    radial-gradient(ellipse 46% 60% at 50% -4%, rgb(255 255 255 / 0.12), transparent 70%);
-  -webkit-mask-image: linear-gradient(180deg, #000 0, #000 45%, transparent 92%);
-  mask-image: linear-gradient(180deg, #000 0, #000 45%, transparent 92%);
-}
-/* Big outlined model name behind the car. */
-.outlined-word {
-  position: absolute;
-  inset-inline: 0;
-  z-index: -4;
-  pointer-events: none;
-  user-select: none;
-  text-align: center;
-  font-family: var(--font-display);
-  font-weight: 700;
-  text-transform: uppercase;
-  line-height: 0.85;
-  letter-spacing: 0.01em;
-  color: transparent;
-  -webkit-text-stroke: 1px var(--line-strong);
-}
-.outlined-word.is-right { text-align: right; padding-inline-end: 3%; }
-/* Dark showroom wall for framed posters: soft light from above, a faint vertical panel line rhythm. */
-.wall-dark {
-  background:
-    radial-gradient(ellipse 60% 55% at 50% 0%, rgb(255 255 255 / 0.13), transparent 72%),
-    repeating-linear-gradient(90deg, transparent 0 119px, rgb(255 255 255 / 0.028) 119px 120px),
-    linear-gradient(180deg, #0f1013, #08090b);
-}
-.picture-light {
-  position: absolute;
-  left: 50%;
-  top: 0;
-  height: 0.375rem;
-  width: 6rem;
-  translate: -50% 0;
-  border-radius: 999px;
-  background: rgb(255 255 255 / 0.75);
-  box-shadow: 0 18px 44px 16px rgb(255 255 255 / 0.16);
-}
-/* Poster fan: prints held like a hand of cards; the spread widens on hover. */
-.fan > * { transform-origin: 50% 165%; transform: rotate(var(--r)); transition: transform 0.6s var(--ease); }
-@media (hover: hover) { .fan:hover > * { transform: rotate(calc(var(--r) * 1.22)); } }
-@media (prefers-reduced-motion: reduce) { .fan > * { transition: none; } }
-/* Section rhythm shared by all pages. */
-.section-y { padding-block: clamp(2.25rem, 6vw, 4.5rem); }

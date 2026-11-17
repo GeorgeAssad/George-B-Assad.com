@@ -19,7 +19,7 @@ export function TrackingResult({ order, animate = false }: { order: PublicOrderV
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
           <p className="spec">Order number</p>
-          <h2 className="h-display mt-1 text-4xl sm:text-5xl">{order.id}</h2>
+          <h2 className="h-display mt-0.5 text-[1.75rem] sm:text-[2rem]">{order.id}</h2>
         </div>
         <div className="flex flex-wrap items-center gap-2">
           <Badge tone="red">{STATUS_LABEL[order.status]}</Badge>
@@ -44,7 +44,7 @@ export function TrackingResult({ order, animate = false }: { order: PublicOrderV
         </div>
       </dl>
 
-      <ul className="mt-8 divide-y divide-line rounded-xl border border-line" aria-label="Items">
+      <ul className="mt-8 divide-y divide-line rounded-[var(--lg-radius-sm)] bg-elevated" aria-label="Items">
         {order.items.map((i, idx) => (
           <li key={idx} className="flex items-center justify-between gap-4 px-4 py-3 text-sm">
             <span className="min-w-0"><span className="block truncate font-semibold">{i.vehicleName}</span><span className="block truncate text-muted">{i.productName} · {i.templateId} · {i.sizeLabel}</span></span>
@@ -52,7 +52,7 @@ export function TrackingResult({ order, animate = false }: { order: PublicOrderV
           </li>
         ))}
       </ul>
-      {order.mode === "demo" && <p className="mt-4 text-xs text-subtle">Demo data. In production this page reads live status from the fulfilment partner.</p>}
+      {order.mode === "demo" && <p className="mt-4 text-[0.8125rem] text-subtle">Demo data. In production this page reads live status from the fulfilment partner.</p>}
     </article>
   );
 }

@@ -4,7 +4,7 @@ import { defineConfig } from "@playwright/test";
  *   E2E_BASE_URL   defaults to http://localhost:3111
  *   CHROMIUM_PATH  defaults to the pre-installed Chromium in this environment */
 const baseURL = process.env.E2E_BASE_URL ?? "http://localhost:3111";
-const executablePath = process.env.CHROMIUM_PATH ?? "/opt/pw-browsers/chromium-1194/chrome-linux/chrome";
+const executablePath = process.env.CHROMIUM_PATH ?? "/opt/pw-browsers/chromium";
 
 export default defineConfig({
   testDir: "tests/e2e",

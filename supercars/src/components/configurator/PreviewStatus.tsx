@@ -22,8 +22,8 @@ export function PreviewStatus({ preview, onRetry }: PreviewStatusProps) {
           ? { title: "One moment", body: "You've generated a lot of previews in a short time. Please wait a minute and try again — your choices are saved." }
           : { title: "Design unavailable", body: "We couldn't generate this design right now. Please try again in a moment." };
     return (
-      <div className="rounded-2xl border border-red-text/50 bg-surface p-5" role="alert">
-        <h3 className="h-display text-3xl">{copy.title}</h3>
+      <div className="card p-5 shadow-[inset_0_0_0_1.5px_var(--lg-negative)]" role="alert">
+        <h3 className="text-xl font-semibold tracking-[-0.02em]">{copy.title}</h3>
         <p className="mt-2 text-muted">{copy.body}</p>
         <Button className="mt-4" variant="secondary" onClick={onRetry}>Try again</Button>
       </div>
@@ -31,19 +31,19 @@ export function PreviewStatus({ preview, onRetry }: PreviewStatusProps) {
   }
 
   return (
-    <div className="rounded-2xl border border-line bg-surface p-4 sm:p-5">
+    <div className="card p-4 sm:p-5">
       <div role="status" aria-live="polite" className="flex items-center justify-between gap-4">
         {status === "ready" ? (
-          <p className="flex items-center gap-2 font-semibold"><span className="flex size-5 items-center justify-center rounded-full bg-red text-on-red"><IconCheck size={12} /></span> Preview ready</p>
+          <p className="flex items-center gap-2 font-semibold"><span className="flex size-5 items-center justify-center rounded-full bg-positive text-surface"><IconCheck size={12} /></span> Preview ready</p>
         ) : (
           <p className="text-sm text-muted">Composing your poster{stageLabel ? ` — ${stageLabel.toLowerCase()}` : ""}…</p>
         )}
         <p className="text-sm font-semibold tabular-nums" aria-hidden="true">{pct}%</p>
       </div>
-      <div className="mt-3 h-1 overflow-hidden rounded-full bg-line" role="progressbar" aria-valuemin={0} aria-valuemax={100} aria-valuenow={pct} aria-label="Preview generation progress">
-        <div className="h-full bg-red transition-[width] duration-500 ease-out" style={{ width: `${pct}%` }} />
+      <div className="mt-3 h-1 overflow-hidden rounded-full bg-fill" role="progressbar" aria-valuemin={0} aria-valuemax={100} aria-valuenow={pct} aria-label="Preview generation progress">
+        <div className={`h-full rounded-full transition-[width,background-color] duration-500 ease-out ${status === "ready" ? "bg-positive" : "bg-red"}`} style={{ width: `${pct}%` }} />
       </div>
-      {status === "ready" && <p className="mt-3 text-xs text-subtle">Live preview. Print-ready files are produced after you order. Demo pipeline: no AI model is called in this prototype.</p>}
+      {status === "ready" && <p className="mt-3 text-[0.8125rem] text-subtle">Live preview. Print-ready files are produced after you order. Demo pipeline: no AI model is called in this prototype.</p>}
     </div>
   );
 }

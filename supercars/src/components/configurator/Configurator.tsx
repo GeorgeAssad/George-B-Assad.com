@@ -5,6 +5,7 @@ import { useEffect, useMemo, useReducer, useRef, useState } from "react";
 import type { CartItem, Customization } from "@/domain/cart";
 import type { TemplateId, SizeId } from "@/domain/catalog";
 import { PosterPreview } from "@/components/poster/PosterPreview";
+import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { Price } from "@/components/ui/Price";
 import { Skeleton } from "@/components/ui/Skeleton";
@@ -162,32 +163,32 @@ function ConfiguratorInner({ catalog }: { catalog: Catalog }) {
   const primaryDisabled = state.step === 1 ? !canContinue(state) : state.step === 4 ? !check.ok || !line || preview.status !== "ready" : false;
 
   return (
-    <div className="container-x pb-28 pt-6 sm:pt-10 lg:pb-10">
-      <div ref={topRef} className="scroll-mt-20" />
-      <p className="eyebrow">SC / Create{editing ? " — editing" : ""}</p>
-      <div className="mt-5"><Stepper current={state.step} maxStep={state.maxStep} onGo={go} /></div>
+    <div className="container-x pb-32 pt-6 sm:pt-8 lg:pb-12">
+      <div ref={topRef} className="scroll-mt-24" />
+      {editing && <p className="mb-4"><Badge tone="demo">Editing a poster in your cart</Badge></p>}
+      <Stepper current={state.step} maxStep={state.maxStep} onGo={go} />
 
       {/* Mobile: compact live preview pinned under the header (steps 2-3). */}
       {entry && state.step >= 2 && state.step <= 3 && (
-        <div className="glass sticky top-16 z-30 -mx-4 mt-5 flex items-center gap-3 border-x-0 px-4 py-2 lg:hidden">
-          <div className="w-11 flex-none overflow-hidden rounded-[3px] ring-1 ring-line-strong">
+        <div className="glass sticky top-[4.75rem] z-30 mt-5 flex items-center gap-3 rounded-[var(--lg-radius-md)] px-3 py-2 shadow-[var(--lg-rim),var(--lg-edge),var(--lg-lift-1)] lg:hidden">
+          <div className="w-10 flex-none overflow-hidden rounded-[3px] shadow-[var(--lg-edge)]">
             <PosterPreview template={template} vehicle={entry.generation.vehicle} customization={display} vehicleName={entry.generation.displayName} specs={entry.generation.specs} sizeId={state.sizeId} />
           </div>
           <div className="min-w-0 flex-1">
             <p className="truncate text-sm font-semibold">{entry.generation.displayName}</p>
-            <p className="truncate text-xs text-muted">{template.name} · {size.label}</p>
+            <p className="truncate text-[0.8125rem] text-muted">{template.name} · {size.label}</p>
           </div>
           {line ? <Price value={line.lineTotal} className="text-base" /> : <Skeleton className="h-5 w-14" />}
         </div>
       )}
 
-      <div className="mt-8 grid grid-cols-1 gap-10 lg:mt-12 lg:grid-cols-[minmax(0,1fr)_26rem] lg:gap-14 xl:grid-cols-[minmax(0,1fr)_30rem]">
+      <div className="mt-7 grid grid-cols-1 gap-10 lg:mt-10 lg:grid-cols-[minmax(0,1fr)_26rem] lg:gap-14 xl:grid-cols-[minmax(0,1fr)_29rem]">
         <div className="min-w-0">
           <div key={state.step} className="page-enter">
-            <h1 ref={headingRef} tabIndex={-1} className="h-display text-[clamp(2.6rem,7vw,4.5rem)] outline-none">{heading.title}</h1>
-            <p className="mt-3 max-w-lg text-muted">{heading.lead}</p>
+            <h1 ref={headingRef} tabIndex={-1} className="h-display h-page outline-none">{heading.title}</h1>
+            <p className="lead mt-2 max-w-xl">{heading.lead}</p>
 
-            <div className="mt-8">
+            <div className="mt-7">
               {state.step === 1 && <StepCar cars={catalog.cars} selected={state.carSlug} onSelect={(slug) => { dispatch({ type: "selectCar", slug }); track("car_selected", { carSlug: slug }); }} />}
               {state.step === 2 && entry && (
                 <StepDesign
@@ -218,17 +219,17 @@ function ConfiguratorInner({ catalog }: { catalog: Catalog }) {
           </div>
 
           {/* Action bar: fixed on mobile, inline on desktop */}
-          <div className="glass safe-bottom fixed inset-x-0 bottom-0 z-40 border-x-0 border-b-0 px-4 pt-3 lg:static lg:mt-10 lg:border-0 lg:bg-transparent lg:px-0 lg:pt-0 lg:backdrop-blur-none">
+          <div className="action-bar glass fixed inset-x-3 z-40 rounded-[1.75rem] p-2 shadow-[var(--lg-rim),var(--lg-edge),var(--lg-lift-2)] lg:static lg:inset-auto lg:mt-10 lg:rounded-none lg:bg-transparent lg:p-0 lg:shadow-none lg:backdrop-blur-none">
             <div className="mx-auto flex max-w-xl items-center gap-3 lg:mx-0 lg:max-w-none">
               {state.step > 1 && (
-                <Button variant="secondary" onClick={() => go((state.step - 1) as Step)} aria-label="Back" className="!px-0 size-12 flex-none !min-h-0 sm:!px-6 sm:size-auto sm:!min-h-12">
+                <Button variant="secondary" onClick={() => go((state.step - 1) as Step)} aria-label="Back" className="size-[3.125rem] flex-none !p-0 sm:size-auto sm:!px-6">
                   <IconArrowLeft size={18} /><span className="hidden sm:inline">Back</span>
                 </Button>
               )}
-              <div className="min-w-0 flex-1 text-right lg:text-left">
+              <div className="min-w-0 flex-1 pl-2 lg:pl-1">
                 {line ? (
-                  <><p className="spec">{state.quantity > 1 ? `Total ×${state.quantity}` : "Price"}</p><Price value={line.lineTotal} precise className="text-lg" /></>
-                ) : entry ? <Skeleton className="ml-auto h-9 w-24 lg:ml-0" /> : <p className="text-sm text-muted">Choose a car to see the price</p>}
+                  <><p className="spec leading-tight">{state.quantity > 1 ? `Total ×${state.quantity}` : "Price"}</p><Price value={line.lineTotal} precise className="text-lg leading-tight tracking-[-0.02em]" /></>
+                ) : entry ? <Skeleton className="h-9 w-24" /> : <p className="text-sm text-muted">Choose a car to see the price</p>}
               </div>
               {added && state.step === 4 ? (
                 <Button size="lg" onClick={openCartDrawer}><IconCheck size={18} /> View cart</Button>
@@ -243,8 +244,7 @@ function ConfiguratorInner({ catalog }: { catalog: Catalog }) {
 
         {/* Desktop live preview */}
         <aside aria-label="Poster preview" className="hidden lg:block">
-          <div className="on-dark studio-stage grain sticky top-24 isolate overflow-hidden rounded-2xl border border-line px-5 pb-5 pt-9 text-fg">
-            <div className="picture-light" aria-hidden="true" />
+          <div className="wall sticky top-24 rounded-[var(--lg-radius-xl)] px-6 pb-5 pt-8 shadow-[var(--lg-edge)]">
             {/* The poster never taller than the space under the header, so it is always fully visible. */}
             <div className="mx-auto" style={{ maxWidth: "min(100%, calc((100svh - 17rem) * 0.714))" }}>
               <PreviewPanel entry={entry} template={template} customization={display} sizeId={state.sizeId} kind={product.kind} generating={state.step === 4 && preview.status === "running"} />

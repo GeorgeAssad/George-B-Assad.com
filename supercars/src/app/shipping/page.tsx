@@ -9,7 +9,7 @@ export default async function ShippingPage() {
   const repos = getRepositories();
   const [rules, destinations] = await Promise.all([repos.products.getShippingRules(), repos.products.listShippingDestinations()]);
   return (
-    <LegalPage eyebrow="SC / Customer service" title="Shipping & returns." intro="Final shipping and returns information will be confirmed with our fulfilment partner before launch. Nothing here is a binding policy; the figures are the placeholder values used by the demo checkout.">
+    <LegalPage title="Shipping & returns." intro="Final shipping and returns information will be confirmed with our fulfilment partner before launch. Nothing here is a binding policy; the figures are the placeholder values used by the demo checkout.">
       <LegalSection title="Demo rates and timing">
         <ul className="list-disc space-y-1 pl-5">
           <li>Flat shipping: <strong>{formatPrice(rules.flatRate)}</strong>, free on orders over <strong>{formatPrice(rules.freeOver)}</strong></li>

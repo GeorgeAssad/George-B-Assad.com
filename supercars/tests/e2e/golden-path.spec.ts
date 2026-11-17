@@ -19,7 +19,9 @@ test("golden path: cart → checkout → demo payment → confirmation → track
   await page.getByRole("dialog").getByRole("link", { name: "Checkout" }).click();
   await expect(page).toHaveURL(/\/checkout$/);
   await expect(page.getByRole("heading", { name: "Checkout." })).toBeVisible();
-  await expect(page.getByText("Secure checkout")).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Payment" })).toBeVisible();
+  // The payment card is labelled as a demo (the badge, not the button, which reads the same until the total loads).
+  await expect(page.locator("section[aria-labelledby='co-pay-title'] span", { hasText: /^Demo payment$/ })).toBeVisible();
   await expect(page.getByText(/No card details are collected/)).toBeVisible();
   // There must be no card fields anywhere.
   await expect(page.locator('input[autocomplete^="cc-"], input[name*="card" i], input[name*="cvc" i]')).toHaveCount(0);

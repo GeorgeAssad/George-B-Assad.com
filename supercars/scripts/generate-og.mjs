@@ -5,7 +5,7 @@ import { mkdirSync } from "node:fs";
 import { chromium } from "playwright-core";
 
 const BASE = process.env.OG_BASE ?? "http://localhost:3111";
-const CHROMIUM = process.env.CHROMIUM_PATH ?? "/opt/pw-browsers/chromium-1194/chrome-linux/chrome";
+const CHROMIUM = process.env.CHROMIUM_PATH ?? "/opt/pw-browsers/chromium";
 
 const cars = await (await fetch(`${BASE}/sitemap.xml`)).text().then((x) => [...x.matchAll(/\/cars\/([a-z0-9-]+)</g)].map((m) => m[1]));
 const jobs = [

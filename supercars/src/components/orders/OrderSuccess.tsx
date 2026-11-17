@@ -79,28 +79,27 @@ export function OrderSuccess({ orderId, cars, templates }: OrderSuccessProps) {
 
   const header = (
     <header className="text-center">
-      <div className="mx-auto flex size-20 items-center justify-center rounded-full bg-red text-on-red [animation:pop_0.8s_var(--ease)_backwards] shadow-[0_0_0_10px_color-mix(in_srgb,var(--red)_18%,transparent)]" aria-hidden="true">
-        <svg viewBox="0 0 24 24" width="38" height="38" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="m5 12.5 4.5 4.5L19 7.5" strokeDasharray="24" strokeDashoffset="24" style={{ animation: "draw 0.7s 0.5s var(--ease) forwards" }} /></svg>
+      <div className="mx-auto flex size-16 items-center justify-center rounded-full bg-positive text-surface [animation:pop_0.8s_var(--ease)_backwards] shadow-[0_0_0_8px_var(--lg-positive-soft)]" aria-hidden="true">
+        <svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="m5 12.5 4.5 4.5L19 7.5" strokeDasharray="24" strokeDashoffset="24" style={{ animation: "draw 0.7s 0.5s var(--ease) forwards" }} /></svg>
       </div>
-      <p className="eyebrow mt-8 justify-center">SC / Confirmation</p>
-      <h1 className="h-display mt-4 text-[clamp(3rem,10vw,6.5rem)]">Order confirmed.</h1>
-      <div className="mt-5 flex flex-wrap items-center justify-center gap-3">
-        <p className="rounded-full border border-line-strong px-4 py-2 text-sm">Order number <strong className="ml-1 select-all font-semibold tabular-nums">{orderId}</strong></p>
-        <button type="button" onClick={copy} className="rounded-full px-3 py-2 text-xs font-semibold uppercase tracking-[0.12em] text-muted hover:text-fg" aria-live="polite">{copied ? "Copied" : "Copy"}</button>
+      <h1 className="h-display h-page mt-6">Order confirmed.</h1>
+      <div className="mt-5 flex flex-wrap items-center justify-center gap-2.5">
+        <p className="rounded-full bg-fill px-4 py-2 text-sm">Order number <strong className="ml-1 select-all font-semibold">{orderId}</strong></p>
+        <button type="button" onClick={copy} className="btn btn-ghost btn-sm" aria-live="polite">{copied ? "Copied" : "Copy"}</button>
         <Badge tone="demo">Demo order · no payment taken</Badge>
       </div>
     </header>
   );
 
   const actions = (
-    <div className="mt-10 flex flex-col justify-center gap-3 sm:flex-row">
+    <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
       <Button href={`/track?order=${encodeURIComponent(orderId)}`} size="lg">Track order <IconArrow size={18} /></Button>
       <Button href="/create" variant="secondary" size="lg">Create another poster</Button>
     </div>
   );
 
   if (state.kind === "public") {
-    return <div>{header}<div className="mt-12"><TrackingResult order={state.view} animate /></div>{actions}</div>;
+    return <div>{header}<div className="mt-10"><TrackingResult order={state.view} animate /></div>{actions}</div>;
   }
 
   const { order } = state;
@@ -112,28 +111,28 @@ export function OrderSuccess({ orderId, cars, templates }: OrderSuccessProps) {
   return (
     <div>
       {header}
-      <p className="mx-auto mt-6 max-w-lg text-center text-muted">Thank you{firstName ? `, ${firstName}` : ""}. A confirmation would be sent to <strong className="text-fg">{order.customer.email}</strong> — email delivery isn&apos;t connected in this prototype.</p>
+      <p className="mx-auto mt-5 max-w-lg text-center text-muted">Thank you{firstName ? `, ${firstName}` : ""}. A confirmation would be sent to <strong className="text-fg">{order.customer.email}</strong>. Email delivery isn&apos;t connected in this prototype.</p>
 
-      <section aria-labelledby="progress-title" className="card mt-12 p-6 sm:p-8">
-        <h2 id="progress-title" className="h-display text-3xl">Order progress</h2>
+      <section aria-labelledby="progress-title" className="card mt-10 p-5 sm:p-7">
+        <h2 id="progress-title" className="text-[1.375rem] font-semibold leading-tight tracking-[-0.02em]">Order progress</h2>
         <div className="mt-6"><OrderTimeline entries={timeline} animate /></div>
       </section>
 
       <div className="mt-6 grid grid-cols-1 items-start gap-6 lg:grid-cols-[minmax(0,1.4fr)_1fr]">
-        <section aria-labelledby="items-title" className="card p-6 sm:p-8">
-          <h2 id="items-title" className="h-display text-3xl">Your order</h2>
+        <section aria-labelledby="items-title" className="card p-5 sm:p-7">
+          <h2 id="items-title" className="text-[1.375rem] font-semibold leading-tight tracking-[-0.02em]">Your order</h2>
           <ul className="mt-5 divide-y divide-line">
             {order.items.map((i) => {
               const car = carBySlug.get(i.carSlug);
               const tpl = tplById.get(i.templateId);
               return (
                 <li key={i.id} className="flex gap-4 py-5 first:pt-0">
-                  <div className="w-20 flex-none overflow-hidden rounded-[3px] ring-1 ring-line-strong sm:w-24">
+                  <div className="w-20 flex-none self-start overflow-hidden rounded-[3px] shadow-[var(--lg-edge),var(--lg-lift-1)] sm:w-24">
                     {car && tpl ? <PosterPreview template={tpl} vehicle={car.generation.vehicle} customization={i.customization} vehicleName={car.generation.displayName} specs={car.generation.specs} sizeId={i.sizeId} /> : <div className="aspect-[5/7] bg-elevated" />}
                   </div>
                   <div className="min-w-0 flex-1">
                     <p className="spec">{i.productName}</p>
-                    <h3 className="h-display mt-1 text-2xl">{i.vehicleName}</h3>
+                    <h3 className="font-semibold leading-snug">{i.vehicleName}</h3>
                     <p className="mt-1 text-sm text-muted">{tpl?.name ?? i.templateId} style · {i.sizeLabel} · ×{i.quantity}</p>
                     <p className="truncate text-sm text-muted">{personalizationSummary(i.customization)}</p>
                   </div>
@@ -147,9 +146,9 @@ export function OrderSuccess({ orderId, cars, templates }: OrderSuccessProps) {
           </div>
         </section>
 
-        <section aria-labelledby="ship-title" className="card space-y-6 p-6 sm:p-8">
+        <section aria-labelledby="ship-title" className="card space-y-6 p-5 sm:p-7">
           <div>
-            <h2 id="ship-title" className="h-display text-3xl">Shipping</h2>
+            <h2 id="ship-title" className="text-[1.375rem] font-semibold leading-tight tracking-[-0.02em]">Shipping</h2>
             <address className="mt-4 not-italic leading-relaxed text-muted">
               <span className="font-medium text-fg">{order.customer.name}</span><br />
               {order.shippingAddress.line1}<br />
@@ -161,18 +160,18 @@ export function OrderSuccess({ orderId, cars, templates }: OrderSuccessProps) {
           <div className="border-t border-line pt-6">
             <p className="spec">Estimated delivery</p>
             <p className="mt-1.5 text-lg font-medium">{formatDateRange(order.estimatedDelivery.from, order.estimatedDelivery.to)}</p>
-            <p className="mt-1 text-xs text-subtle">Placeholder estimate for the prototype.</p>
+            <p className="mt-1 text-[0.8125rem] text-subtle">Placeholder estimate for the prototype.</p>
           </div>
           <div className="border-t border-line pt-6">
             <p className="spec">Payment</p>
             <p className="mt-1.5 font-medium">Demo payment · {formatMoney(order.payment.amount)}</p>
-            <p className="mt-1 text-xs text-subtle">No card data was collected. No money moved.</p>
+            <p className="mt-1 text-[0.8125rem] text-subtle">No card data was collected. No money moved.</p>
           </div>
         </section>
       </div>
 
       {actions}
-      <p className="mt-6 text-center text-xs text-subtle">Need help? <Link href="/shipping" className="underline underline-offset-4">Shipping &amp; returns</Link></p>
+      <p className="mt-6 text-center text-[0.8125rem] text-subtle">Need help? <Link href="/shipping" className="underline underline-offset-4">Shipping &amp; returns</Link></p>
     </div>
   );
 }

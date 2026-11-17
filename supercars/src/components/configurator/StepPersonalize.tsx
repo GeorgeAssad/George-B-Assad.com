@@ -42,7 +42,7 @@ export function StepPersonalize({ state, onChange, showErrors }: StepPersonalize
           <div key={f.id}>
             <div className="flex items-baseline justify-between gap-3">
               <label htmlFor={inputId} className="text-sm font-semibold">{f.label}{f.required && <span className="text-red-text" aria-hidden="true"> *</span>}</label>
-              <span className="text-xs tabular-nums text-subtle" aria-hidden="true">{value.length}/{f.max}</span>
+              <span className="text-[0.8125rem] tabular-nums text-subtle" aria-hidden="true">{value.length}/{f.max}</span>
             </div>
             <input
               id={inputId}
@@ -61,12 +61,12 @@ export function StepPersonalize({ state, onChange, showErrors }: StepPersonalize
               aria-describedby={error ? `${hintId} ${errId}` : hintId}
               className="field mt-2"
             />
-            <p id={hintId} className="mt-1.5 text-xs text-subtle">{f.hint}</p>
+            <p id={hintId} className="mt-1.5 text-[0.8125rem] text-subtle">{f.hint}</p>
             {error && <p id={errId} className="mt-1 text-sm font-medium text-red-text" role="alert">{error}</p>}
           </div>
         );
       })}
-      <p className="rounded-xl border border-line bg-surface p-4 text-sm text-muted">Everything is printed exactly as typed. Letters, numbers and simple punctuation only — we check every poster before it prints.</p>
+      <p className="card p-4 text-sm text-muted">Everything is printed exactly as typed. Letters, numbers and simple punctuation only. We check every poster before it prints.</p>
     </div>
   );
 }

@@ -8,9 +8,9 @@ export const metadata: Metadata = { title: "Checkout", robots: { index: false, f
 export default async function CheckoutPage() {
   const destinations = await getRepositories().products.listShippingDestinations();
   return (
-    <div className="container-x pb-28 pt-10 sm:pt-16 lg:pb-16">
-      <SectionHeading as="h1" eyebrow="SC / Checkout" title="Checkout." lead="Demo checkout — no real payment is taken." />
-      <div className="mt-10"><CheckoutForm destinations={destinations} /></div>
+    <div className="container-x pb-16 pt-[clamp(2.25rem,6vw,4.5rem)]">
+      <SectionHeading as="h1" title="Checkout." lead="Demo checkout. No real payment is taken." />
+      <div className="mt-8"><CheckoutForm destinations={destinations} /></div>
     </div>
   );
 }

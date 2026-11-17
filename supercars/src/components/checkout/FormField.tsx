@@ -24,7 +24,7 @@ export function FormField({ id, label, error, hint, required, className = "", ch
       <div className="mt-2">
         {children({ id, ...(error ? { "aria-invalid": true as const } : {}), ...(describedBy ? { "aria-describedby": describedBy } : {}) })}
       </div>
-      {hint && !error && <p id={hintId} className="mt-1.5 text-xs text-subtle">{hint}</p>}
+      {hint && !error && <p id={hintId} className="mt-1.5 text-[0.8125rem] text-subtle">{hint}</p>}
       {error && <p id={errId} className="mt-1.5 text-sm font-medium text-red-text">{error}</p>}
     </div>
   );

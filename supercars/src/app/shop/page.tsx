@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
-import { HeroCar } from "@/components/showroom/HeroCar";
 import { PageHero } from "@/components/showroom/PageHero";
-import { ProductScene } from "@/components/showroom/ProductScene";
+import { PlanCard } from "@/components/showroom/PlanCard";
+import { formatPrice } from "@/lib/format";
 import { getRepositories } from "@/server/repositories";
 
 export const metadata: Metadata = {
@@ -12,29 +12,29 @@ export const metadata: Metadata = {
 
 export default async function ShopPage() {
   const repos = getRepositories();
-  const [products, sizes, templates, m3, porsche, feature] = await Promise.all([
+  const [products, sizes, templates, rules, m3, porsche] = await Promise.all([
     repos.products.listProducts(),
     repos.products.listSizes(),
     repos.templates.list(),
+    repos.products.getShippingRules(),
     repos.cars.getEntryBySlug("bmw-m3-g80"),
     repos.cars.getEntryBySlug("porsche-911-992"),
-    repos.cars.getEntryBySlug("audi-r8-4s"),
   ]);
   const tpl = (id: string) => templates.find((t) => t.id === id) ?? templates[0]!;
-  const scenes = products.map((p, i) => ({ product: p, entry: (i === 0 ? m3 : porsche) ?? m3!, template: tpl(i === 0 ? "racing" : "heritage"), name: i === 0 ? "GEORGE" : "ALEX", cta: p.kind === "framed-poster" ? "Design a framed poster" : "Design a print" }));
+  const plans = products.map((p) => {
+    const framed = p.kind === "framed-poster";
+    return { product: p, entry: (framed ? porsche : m3) ?? m3!, template: tpl(framed ? "heritage" : "racing"), name: framed ? "ALEX" : "GEORGE", cta: framed ? "Design a framed poster" : "Design a print", badge: framed ? "Ready to hang" : "Gallery print", featured: framed };
+  });
   return (
     <>
-      <PageHero
-        eyebrow="SC / Shop"
-        title={<>Two ways to <span className="text-red-text">hang it.</span></>}
-        lead="Every poster is made to order around your exact car."
-        word="Shop"
-        visual={feature && <HeroCar entry={feature} priority />}
-      />
-      <div className="container-x section-y">
-        <div className="grid gap-5 md:grid-cols-2 lg:gap-8">
-          {scenes.map((s) => <ProductScene key={s.product.id} sizes={sizes} {...s} />)}
+      <PageHero title="Two ways to hang it." lead="The same personalized artwork, as a gallery print or framed and ready for the wall." />
+      <div className="container-x mt-8 sm:mt-10">
+        <div className="lg-pricing mx-auto max-w-[56rem]">
+          {plans.map((plan) => <PlanCard key={plan.product.id} sizes={sizes} {...plan} />)}
         </div>
+        <p className="mx-auto mt-6 max-w-[56rem] text-[0.9375rem] text-muted">
+          Shipping {formatPrice(rules.flatRate)}, free over {formatPrice(rules.freeOver)}. Made to order and delivered in {rules.minBusinessDays}–{rules.maxBusinessDays} business days. Demo prices in euros; this prototype takes no payment.
+        </p>
       </div>
     </>
   );

@@ -18,12 +18,12 @@ export function FilterChip({ pressed, onClick, children, count, disabled }: Filt
       onClick={onClick}
       aria-pressed={pressed}
       disabled={disabled}
-      className={`inline-flex flex-none items-center gap-2 rounded-full border px-4 py-2 text-[0.8125rem] font-semibold tracking-wide transition-colors disabled:cursor-not-allowed disabled:opacity-40 ${
-        pressed ? "border-red bg-red text-on-red" : "border-line-strong text-muted hover:border-fg hover:text-fg"
+      className={`tap inline-flex min-h-9 flex-none items-center gap-1.5 rounded-full px-3.5 text-[0.8125rem] font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-40 ${
+        pressed ? "bg-fg text-bg" : "bg-surface text-fg shadow-[inset_0_0_0_1px_var(--line)] hover:bg-elevated"
       }`}
     >
       {children}
-      {count !== undefined && <span className={`text-[0.6875rem] tabular-nums ${pressed ? "text-on-red/80" : "text-subtle"}`}>{count}</span>}
+      {count !== undefined && <span className={`tabular-nums ${pressed ? "opacity-80" : "text-subtle"}`}>{count}</span>}
     </button>
   );
 }

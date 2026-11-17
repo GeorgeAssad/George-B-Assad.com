@@ -59,7 +59,7 @@ test("configurator: a car link opens the design step, a full link opens personal
 test("configurator: no results state offers a way forward", async ({ page }) => {
   await page.goto("/create");
   await page.getByLabel("Search cars").fill("zzzzz");
-  await expect(page.getByText("No machine matched your search.")).toBeVisible();
+  await expect(page.getByText("No car matched your search.")).toBeVisible();
   await page.getByRole("button", { name: "Clear search" }).first().click();
   await expect(page.getByRole("radio").first()).toBeVisible();
 });

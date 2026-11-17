@@ -35,10 +35,10 @@ export function ToastProvider({ children }: { children: ReactNode }) {
   return (
     <ToastContext.Provider value={value}>
       {children}
-      <div className="pointer-events-none fixed inset-x-0 bottom-24 z-[90] flex flex-col items-center gap-2 px-4 lg:bottom-6 lg:items-end lg:px-8" role="status" aria-live="polite" aria-atomic="false">
+      <div className="pointer-events-none fixed inset-x-0 bottom-28 z-[90] flex flex-col items-center gap-2 px-4 lg:bottom-6 lg:items-end lg:px-8" role="status" aria-live="polite" aria-atomic="false">
         {items.map((t) => (
-          <div key={t.id} className="glass pointer-events-auto flex w-full max-w-sm items-start gap-3 rounded-2xl px-4 py-3 shadow-[var(--shadow-lift)] [animation:page-in_0.35s_var(--ease)_both]">
-            {t.tone === "success" && <span className="mt-0.5 flex size-5 flex-none items-center justify-center rounded-full bg-red text-on-red"><IconCheck size={13} /></span>}
+          <div key={t.id} className="glass pointer-events-auto flex w-full max-w-sm items-start gap-3 rounded-[var(--lg-radius-lg)] px-4 py-3 shadow-[var(--lg-rim),var(--lg-edge),var(--lg-lift-2)] [animation:page-in_0.35s_var(--ease)_both]">
+            {t.tone === "success" && <span className="mt-0.5 flex size-5 flex-none items-center justify-center rounded-full bg-positive text-surface"><IconCheck size={13} /></span>}
             <div className="min-w-0 flex-1">
               <p className="text-sm font-semibold">{t.title}</p>
               {t.description && <p className="mt-0.5 text-sm text-muted">{t.description}</p>}

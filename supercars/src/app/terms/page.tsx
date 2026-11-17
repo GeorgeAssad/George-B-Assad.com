@@ -5,7 +5,7 @@ export const metadata: Metadata = { title: "Terms", alternates: { canonical: "/t
 
 export default function TermsPage() {
   return (
-    <LegalPage eyebrow="SC / Legal" title="Terms." intro="Final terms of sale and use will be added before launch. Nothing on this page is a binding agreement.">
+    <LegalPage title="Terms." intro="Final terms of sale and use will be added before launch. Nothing on this page is a binding agreement.">
       <LegalSection title="This is a prototype">
         <p>This site demonstrates how ordering will work. No payments are taken, no orders are fulfilled, and prices, delivery times and specifications shown are placeholders.</p>
       </LegalSection>

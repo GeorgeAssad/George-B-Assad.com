@@ -11,9 +11,9 @@ interface QuantityStepperProps {
 }
 
 export function QuantityStepper({ value, onChange, label }: QuantityStepperProps) {
-  const btn = "flex size-9 items-center justify-center rounded-full text-muted transition-colors hover:text-fg disabled:cursor-not-allowed disabled:opacity-35";
+  const btn = "flex size-9 items-center justify-center rounded-full text-fg transition-colors hover:bg-fill disabled:cursor-not-allowed disabled:opacity-35";
   return (
-    <div className="inline-flex items-center rounded-full border border-line-strong" role="group" aria-label={`Quantity for ${label}`}>
+    <div className="inline-flex items-center rounded-full bg-fill" role="group" aria-label={`Quantity for ${label}`}>
       <button type="button" className={btn} onClick={() => onChange(value - 1)} disabled={value <= 1} aria-label={`Decrease quantity of ${label}`}>
         <IconMinus size={16} />
       </button>

@@ -7,14 +7,14 @@ interface CarTileProps {
   readonly entry: CarEntry;
   /** Where the tile goes. Default: straight into the designer with this car selected. */
   readonly href?: string;
-  /** Adds a years / power line and a taller image (used on the Cars page). */
+  /** Adds a years / power line (used on the Cars page). */
   readonly detail?: boolean;
   readonly priority?: boolean;
 }
 
 /**
- * One car as a small showroom: the car on its stage, its name underneath. The whole tile is the link,
- * so there is no extra button, price or spec text to read unless `detail` is on.
+ * One car as a product card: the car on a soft studio backdrop, its name underneath.
+ * The whole card is the link, so there is no extra button to read.
  */
 export function CarTile({ entry, href, detail = false, priority = false }: CarTileProps) {
   const { brand, car, generation } = entry;
@@ -22,26 +22,26 @@ export function CarTile({ entry, href, detail = false, priority = false }: CarTi
   return (
     <Link
       href={href ?? `/create?car=${generation.slug}`}
+      prefetch={false}
       aria-label={href ? `${generation.displayName}, ${generation.specs.years}` : `${generation.displayName}. Create your poster for this car`}
-      className="group on-dark studio-stage relative block overflow-hidden rounded-xl border border-line transition-[border-color,transform,box-shadow] duration-500 hover:border-red hover:shadow-[0_24px_50px_-24px_rgb(225_6_0/0.55)] focus-visible:border-red"
+      className="group card card-lift block h-full overflow-hidden text-fg no-underline"
     >
-      <div className={`relative ${detail ? "aspect-[16/10]" : "aspect-[16/9] xl:aspect-[16/8]"}`}>
-        <div className="studio-floor absolute inset-x-0 bottom-0 h-[42%]" aria-hidden="true" />
+      <div className="stage-soft aspect-[16/10]">
         {photo?.mode === "cutout" ? (
-          <CutoutFit slug={generation.slug} photo={photo} priority={priority} sizes={detail ? "(min-width:1024px) 30vw, (min-width:640px) 46vw, 92vw" : "(min-width:1280px) 14vw, (min-width:640px) 22vw, 30vw"} className="studio-lift absolute inset-x-[5%] bottom-[8%] top-[8%]" />
+          <CutoutFit slug={generation.slug} photo={photo} priority={priority} sizes="(min-width:1280px) 190px, (min-width:640px) 24vw, 46vw" className="studio-lift absolute inset-x-[7%] bottom-[11%] top-[12%]" />
         ) : (
           <>
-            {/* No photograph yet: a light-line silhouette, so it reads as "photo coming" and not as a cartoon among photos. */}
-            <VehicleArt vehicle={generation.vehicle} treatment="outline" ink="rgb(255 255 255 / 0.62)" shadow={false} className="studio-lift absolute inset-x-[10%] bottom-[12%] w-[80%]" />
-            {detail && <span className="spec absolute left-2 top-2 rounded-full bg-white/10 px-2 py-0.5 text-[0.5rem] text-white/80">Photo soon</span>}
+            {/* No photograph yet: a quiet line drawing, so it reads as "photo coming" and not as a cartoon among photos. */}
+            <div className="studio-lift absolute inset-x-[11%] bottom-[16%] text-subtle"><VehicleArt vehicle={generation.vehicle} treatment="outline" ink="currentColor" shadow={false} className="block w-full" /></div>
+            <span className="absolute left-2.5 top-2.5 rounded-full bg-fill px-2 py-0.5 text-[0.6875rem] font-medium text-muted">Photo soon</span>
           </>
         )}
       </div>
-      <p className={`px-1 pb-2 pt-0.5 text-center leading-tight sm:px-2 ${detail ? "sm:pb-3" : ""}`}>
-        <span className="spec block text-[0.5625rem] max-sm:hidden">{brand.name}</span>
-        <span className={`h-display block whitespace-nowrap ${detail ? "text-[0.8rem] sm:text-xl" : "text-[0.8rem] sm:text-lg"}`}>{car.name} <span className="text-red-text">{generation.generation}</span></span>
-        {detail && <span className="spec mt-1 block normal-case tracking-[0.06em] max-sm:hidden">{generation.specs.years} · {generation.specs.powerKw} kW</span>}
-      </p>
+      <div className="px-3.5 pb-3.5 pt-3 sm:px-4 sm:pb-4">
+        <p className="spec">{brand.name}</p>
+        <p className="mt-0.5 text-[0.9375rem] font-semibold leading-snug tracking-[-0.02em] sm:text-[1.0625rem]">{car.name} <span className="font-normal text-muted">{generation.generation}</span></p>
+        {detail && <p className="spec mt-1 max-sm:text-[0.75rem] max-sm:tracking-tight">{generation.specs.years} · {generation.specs.powerKw} kW</p>}
+      </div>
     </Link>
   );
 }
