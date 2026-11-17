@@ -1,6 +1,6 @@
 # SuperCars — handover for a new AI agent
 
-Written 2026-10-08, updated 2026-11-16 after a complete redesign (section 5). Read this first, then `README.md`, `ARCHITECTURE.md` and `INTEGRATIONS.md` in this folder. Everything here was true when it was written; verify anything that can change (PR state, live site) before relying on it.
+Written 2026-10-08, updated 2026-11-17: the complete redesign (section 5) is merged and live. Read this first, then `README.md`, `ARCHITECTURE.md` and `INTEGRATIONS.md` in this folder. Everything here was true when it was written; verify anything that can change (PR state, live site) before relying on it.
 
 **Starter prompt to paste into the new chat:** *"Read `supercars/HANDOVER.md` in the repo `GeorgeAssad/George-B-Assad.com` and continue from section 8 (open items). Do not merge anything without my explicit OK."*
 
@@ -30,20 +30,19 @@ A production-shaped **prototype storefront for personalized car posters** ("Supe
 - They will supply **AI-generated, high-detail car images later**; the pipeline is built for that drop-in (section 6).
 - Their account has a default design skill, **Liquid Glass** (Apple-style: light by default, glass only on floating chrome, one accent colour). The 2026-11-16 redesign follows it; keep following it for any visual work unless they name another style.
 
-## 4. Where things stand (2026-11-16)
+## 4. Where things stand (2026-11-17)
 
 | Item | State |
 | --- | --- |
-| `main` / live site | PR #3, #4 and #5 are merged and live: the **old "dark showroom" design** with the polished car images (PR #5 merge commit `b8951e6`). |
-| Draft PR #6 (`claude/adoring-euler-hy534z`) | **The complete redesign (section 5) plus this file. Not merged. Waiting for the user's explicit OK**; do not merge without it. |
-| Live site reliability | Cloudflare error 1102 on a varying share of Worker requests (section 8, item 2). |
+| `main` / live site | **The Liquid Glass redesign is live**: PR #6 merged on 2026-11-17 on the user's explicit OK ("publish"), merge commit `d81733f`. The production build finished about 2.5 minutes after the merge; screenshots taken from the live URL (Home, car page, Shop, designer; phone + desktop) were sent to the user. |
+| Live site reliability | A 20-request sample right after the deploy was 20/20 OK; Cloudflare error 1102 has come and gone before, so it may return (section 8, item 2). |
 | Local working tree | clean; everything is pushed |
 
 Branch workflow: develop on `claude/adoring-euler-hy534z`. If its PR is merged, restart the branch from the latest `origin/main` (same name, `git checkout -B claude/adoring-euler-hy534z origin/main`, force-with-lease push) and open a **new draft PR**. After pushing, always open a draft PR if none exists for the branch. Merging uses a merge commit (like #3 and #4).
 
 **Cloudflare "Workers Builds: supercars" check has been red on every non-production branch/PR so far.** On most runs it started and completed in the same second (no build ran). On the latest run (commit `1ee87f0`, 2026-10-08) it ran about 23 seconds and then failed, still far shorter than a real build, so something may have changed on the Cloudflare side (a guess, not verified). **Cause not diagnosed**: build logs are only visible to the user in the Cloudflare dashboard (Workers → `supercars` → Builds → "View logs" link on the bot comment in the PR). Production builds of merged code have always succeeded, and local builds/tests of the same code pass. Do not chase it in code; ask the user to open the log and paste the first error if it matters.
 
-## 5. The redesign (draft PR #6) in short
+## 5. The redesign (PR #6, merged and live) in short
 
 On 2026-11-16 the user asked: *"completely re-design this site, I need it the most beautiful site ever."* The whole look was rebuilt on the Liquid Glass kit; pages, routes, the 4-step designer flow and all mocked back-end code are unchanged.
 
@@ -90,11 +89,11 @@ tests/unit (Vitest, 109 tests) and tests/e2e (Playwright, desktop + mobile proje
 3. User asked to cut sections, pages and repeated buttons ("customers only come to order") → I over-corrected and **deleted Cars, Shop, How it works and About**. User: *"very bad design … optimize it smartly, not delete all pages, re-make it as a beautiful website."* Answers they gave: bring those four pages back; look = **cinematic dark showroom, richer**; keep live until approved.
 4. Showroom v2 (PR #4) built that and was published on their OK. They then said the **car images look poor** → PR #5.
 5. Configurator: merge tiny steps into bigger useful ones only (done: 6 → 4 steps). Nothing else there.
-6. 2026-11-16: user asked for a **complete redesign, "the most beautiful site ever"** → rebuilt in the Liquid Glass style (their default design skill): light, calm, one red accent, glass chrome, the product on a dark stage (draft PR #6, section 5). Not yet seen live by the user; they approved the plan twice and saw a work-in-progress Home screenshot.
+6. 2026-11-16: user asked for a **complete redesign, "the most beautiful site ever"** → rebuilt in the Liquid Glass style (their default design skill): light, calm, one red accent, glass chrome, the product on a dark stage (PR #6, section 5). They saw full comparison sheets of every page and said "publish" on 2026-11-17; it is live. Their reaction to the live site is not known yet.
 
 ## 8. Open items, in order
 
-1. **Draft PR #6 (the redesign) waits for the user's OK.** When they say publish: mark it ready, merge with a merge commit, wait ~2 minutes for the Cloudflare production build, confirm the new design is live, and send live screenshots (phone + desktop). If they want changes, make them on the same branch.
+1. **Feedback on the live redesign.** If the user wants changes, make them on `claude/adoring-euler-hy534z` (restarted from `main` after each merge), send screenshots, and merge only on their explicit OK.
 2. **Live-site reliability (Cloudflare error 1102), found right after PR #5 went live.** Measured on 2026-10-08 against `https://supercars.georgenba963.workers.dev` with sequential `curl` from the session sandbox: 84 page requests over ~10 minutes, **37 failed** (503 with the body `error code: 1102`, plus ~20 s hangs); separate runs of 25 requests each failed 6 times for `/api/health`, 4 for `/robots.txt` and 6 for `/about`, so **even trivial Worker routes fail**, while static files served directly from assets (car images, `/_next/static`) always returned 200. 1102 means "Worker exceeded resource limits" (CPU time or memory per request). Earlier the same day, right after PR #4, a 42-request check (14 routes × 3) and two browser runs were clean, and before PR #4 about 5–10 % of requests failed, so the problem pre-dates PR #5 and varies a lot over time; PR #5 (images are assets, plus small UI changes, Worker size 7874 → 7875 KiB) is unlikely to be the cause but that is not proven. Working hypothesis (unverified): on Cloudflare's **Free plan (10 ms CPU per request)** the ~7.9 MiB OpenNext Worker uses too much CPU per request or on cold start. How to confirm: the user opens Cloudflare → Workers → `supercars` → Metrics (errors, CPU time p50/p99) and confirms the plan. Options for the user: (a) Workers Paid plan (about 5 USD/month; much higher CPU limit), which most likely removes the errors and needs no code change; (b) code-side work to cut per-request CPU or Worker size, which cannot be proven locally (local `workerd` does not enforce the Free-plan limit) and would need trial deploys to production, so ask before doing it; (c) the redesign turns off Next's link prefetching on navigation links and tiles (`prefetch={false}`), which cuts the number of Worker requests per page view but does not remove the limit; (d) do **not** set `limits.cpu_ms` in `wrangler.jsonc` on a Free plan: it can make the deploy fail. Do not change anything in the Cloudflare dashboard yourself.
 3. **Get the AI images** from the user (which cars, format, with or without background) and run the drop-in workflow above. This is the real answer to "images look poor".
 4. **User-side Cloudflare items:** set build variables `NEXT_PUBLIC_SITE_URL` (the live URL), `NEXT_PUBLIC_APP_ENV=production`, `NEXT_PUBLIC_ALLOW_INDEXING=false` and retry the build; optionally set the runtime secret `CHECKOUT_SIGNING_SECRET` (32+ random characters; never put it in the repo). Without these the site still works.
@@ -116,5 +115,5 @@ tests/unit (Vitest, 109 tests) and tests/e2e (Playwright, desktop + mobile proje
 ## 10. Where to find more
 
 - This session: https://claude.ai/code/session_01Y5xeqZSzBeaEcyTfuFvrQh (full history). The local transcript, if still on disk, is `/root/.claude/projects/-home-user-George-B-Assad-com/c1e3fd3e-d14f-57ab-b18a-e7957f5fa397.jsonl`.
-- PRs: #1 initial prototype, #2 photos, #3 order-first, #4 Showroom v2, #5 image polish (all merged); #6 the Liquid Glass redesign (draft, waiting for the user) at https://github.com/GeorgeAssad/George-B-Assad.com/pulls?q=is%3Apr
+- PRs: #1 initial prototype, #2 photos, #3 order-first, #4 Showroom v2, #5 image polish, #6 the Liquid Glass redesign (all merged) at https://github.com/GeorgeAssad/George-B-Assad.com/pulls?q=is%3Apr
 - Docs in this folder: `README.md` (run, deploy, pages, car images), `ARCHITECTURE.md` (frontend, security, mocks to real services), `INTEGRATIONS.md` (where each real integration plugs in).
