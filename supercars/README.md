@@ -62,6 +62,7 @@ Nothing else is required: no database, KV, R2 or API keys. `NEXT_PUBLIC_SITE_URL
 | The build log shows no `npm ci` / `next build` at all | Build command is `None` | Same as above |
 | `ENOENT … package.json` or `Cannot find … supercars` | The branch being built does not contain `supercars/` (e.g. the PR isn't merged) | Merge to the production branch, or change **Git branch** in Build settings |
 | `Worker name mismatch` / build refuses to deploy | Dashboard Worker name differs from `name` in `wrangler.jsonc` | Keep the Worker named `supercars` |
+| The live site randomly answers `error code: 1102` or `Internal Server Error`, and pages lack the `x-opennext-cache: HIT` header | The built pages were not copied into the Worker's files, so every visit re-renders the page and goes over the per-request CPU limit | Build command must run `npm run cf:build` (it ends with `opennextjs-cloudflare populateCache local`); keep the cache settings in `open-next.config.ts` |
 
 The build settings are stored in the Cloudflare dashboard, **not** in this repository, so changing them requires editing them there.
 
